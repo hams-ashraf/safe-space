@@ -1,0 +1,86 @@
+.hero-section {
+  background: linear-gradient(to bottom, rgb(199, 224, 239), #77b4a6);
+  border-radius: 12px;
+  text-align: center;
+  color: white;
+}
+
+.hero-section h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+}
+
+.hero-section p {
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 1.3rem;
+  opacity: 0.95;
+}
+
+.custom-button {
+  display: inline-flex;             
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;                      
+  background-color: #41655d;       
+  color: #fff;                      
+  border: none;                      
+  border-radius: 0.5rem;            
+  padding: 0.75rem 1.5rem;           
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;            
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+
+.custom-button:hover {
+  background-color: #355047;        
+  transform: translateY(-2px);       
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+#doctors {
+    color:#41655d  ;
+}
+
+.feedback-section {
+  background-color: #ffffff;
+  padding: 100px 0;
+  color: #41655d;
+}
+
+.feedback-section .card {
+  border-radius: 15px;
+}
+
+.section-bg {
+  background-color: #f8f9fa;
+}
+
+.card img {
+  height: 250px;
+  object-fit: cover;
+}
+
+.card {
+  border: none;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.btn-custom {
+  background-color: #41655d;
+  color: white;
+  border-radius: 8px;
+  padding: 8px 18px;
+}
+
+.btn-custom:hover {
+  background-color: #355047;
+  color: white;
+}

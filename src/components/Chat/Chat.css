@@ -1,0 +1,17 @@
+img{
+    width: 100px;
+}
+.chat-box{
+    height:500px;
+    background-color:#f8f9fa ;
+}
+.btn-custom {
+  background-color: #41655d;
+  border-color: #41655d;
+  color: white;
+}
+
+.btn-custom:hover {
+  background-color: #35504b; 
+  border-color: #35504b;
+}
