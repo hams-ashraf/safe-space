@@ -108,28 +108,26 @@ export default function Signup() {
       alert("Account created successfully!");
       navigate("/");
     } 
-     catch (err) {
-  console.log("API ERROR:", err.response);
 
-  const data = err.response?.data;
+  catch (err) {
+    console.log("API ERROR:", err.response);
 
-  // لو فيه validation errors من الباك
-  if (data?.errors) {
-    const emailError = data.errors.Email || data.errors.email;
+    const data = err.response?.data;
 
-    if (emailError) {
-      setErrors((prev) => ({
-        ...prev,
-        email: "Email already exists",
-      }));
-      return;
-    }
+    // لو فيه validation errors من الباك
+      if (data === "Email already exists") {
+        setErrors((prev) => ({
+          ...prev,
+          email: data,
+        })
+          );
+        return;
+     }
+
+
+
+    //alert("Email already exists");
   }
-
-
-
-  alert("Email already exists");
-}
   };
 
   return (
