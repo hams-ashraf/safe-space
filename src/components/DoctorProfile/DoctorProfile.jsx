@@ -1,5 +1,5 @@
 import { useState } from "react";
-import doctorImg from '../assets/images.jfif';
+//import doctorImg from '../assets/images.jfif';
 import "./DoctorProfile.css";
 
 export default function DoctorProfile() {
