@@ -1,5 +1,4 @@
 import { useState } from "react";
-//import doctorImg from '../assets/images.jfif';
 import "./DoctorProfile.css";
 
 export default function DoctorProfile() {
@@ -22,11 +21,11 @@ export default function DoctorProfile() {
             <div className="col-12 col-lg-4">
               <div className="position-relative doctor-photo-wrap">
                 <div className="overflow-hidden rounded-4">
-                  <img
-                    src={doctorImg}
-                    className="w-100 doctor-photo"
-                    alt="Dr. Sarah Johnson"
-                  />
+                  {<img
+                      src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"
+                      className="w-100 doctor-photo"
+                      alt="Doctor"
+                    />}
                 </div>
                 <div className="doctor-rating-badge">
                   <i className="fa-solid fa-star text-warning me-1"></i>
