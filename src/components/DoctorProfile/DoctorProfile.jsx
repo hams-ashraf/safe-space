@@ -1,5 +1,5 @@
 import { useState } from "react";
-// import doctorImg from '../assets/images.jfif';
+import doctorImg from '../assets/images.jfif';
 import "./DoctorProfile.css";
 
 export default function DoctorProfile() {
@@ -25,7 +25,7 @@ export default function DoctorProfile() {
                   <img
                     src={doctorImg}
                     className="w-100 doctor-photo"
-                    alt="Dr. Sarah Johnson"
+                    alt="Doctor"
                   />
                 </div>
                 <div className="doctor-rating-badge">
