@@ -131,118 +131,116 @@ export default function Signup() {
   };
 
   return (
-    <div className="signup-page">
-      <div className="wrapper signup-wrapper">
-        <div className="title">Create New Account</div>
+    
+<div className="signup-page">
+  <div className="signup-wrapper">
+    <div className="signup-title">Create New Account</div>
 
-        <form className="signup" onSubmit={handleSignup}>
+    <form className="signup-form" onSubmit={handleSignup}>
 
-          <div className="field">
-            <input
-              name="fullName"
-              type="text"
-              placeholder="Full Name"
-              value={formData.fullName}
-              onChange={handleChange}
-            />
-            {errors.fullName && <p className="error">{errors.fullName}</p>}
-          </div>
-
-          <div className="field">
-            <input
-              name="displayName"
-              type="text"
-              placeholder="Display Name"
-              value={formData.displayName}
-              onChange={handleChange}
-            />
-            {errors.displayName && <p className="error">{errors.displayName}</p>}
-          </div>
-
-          <div className="field">
-            <input
-              name="email"
-              type="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-            {errors.email && <p className="error">{errors.email}</p>}
-          </div>
-
-          <div className="field">
-            <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            {errors.password && <p className="error">{errors.password}</p>}
-          </div>
-
-          <div className="field">
-            <input
-              name="confirmPassword"
-              type="password"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-            />
-            {errors.confirmPassword && (
-              <p className="error">{errors.confirmPassword}</p>
-            )}
-          </div>
-
-          <div className="field">
-            <input
-              name="age"
-              type="number"
-              placeholder="Age"
-              value={formData.age}
-              onChange={handleChange}
-            />
-            {errors.age && <p className="error">{errors.age}</p>}
-          </div>
-
-          <div className="field">
-            <div className="gender-options">
-              <label>
-                <input
-                  type="radio"
-                  name="gender"
-                  value="Male"
-                  onChange={handleChange}
-                  checked={formData.gender === "Male"}
-                />
-                Male
-              </label>
-
-              <label>
-                <input
-                  type="radio"
-                  name="gender"
-                  value="Female"
-                  onChange={handleChange}
-                  checked={formData.gender === "Female"}
-                />
-                Female
-              </label>
-            </div>
-            {errors.gender && <p className="error">{errors.gender}</p>}
-          </div>
-
-          <div className="field btn">
-            <input type="submit" value="Sign up" />
-          </div>
-
-          <div className="signup-link">
-            Already a member? <Link to="/">Login</Link>
-          </div>
-
-        </form>
+      <div className="signup-field">
+        <input
+          name="fullName"
+          type="text"
+          placeholder="Full Name"
+          value={formData.fullName}
+          onChange={handleChange}
+        />
+        {errors.fullName && <p className="error">{errors.fullName}</p>}
       </div>
-    </div>
+
+      <div className="signup-field">
+        <input
+          name="displayName"
+          type="text"
+          placeholder="Display Name"
+          value={formData.displayName}
+          onChange={handleChange}
+        />
+        {errors.displayName && <p className="error">{errors.displayName}</p>}
+      </div>
+
+      <div className="signup-field">
+        <input
+          name="email"
+          type="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+        />
+        {errors.email && <p className="error">{errors.email}</p>}
+      </div>
+
+      <div className="signup-field">
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+        />
+        {errors.password && <p className="error">{errors.password}</p>}
+      </div>
+
+      <div className="signup-field">
+        <input
+          name="confirmPassword"
+          type="password"
+          placeholder="Confirm Password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+        />
+        {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
+      </div>
+
+      <div className="signup-field">
+        <input
+          name="age"
+          type="number"
+          placeholder="Age"
+          value={formData.age}
+          onChange={handleChange}
+        />
+        {errors.age && <p className="error">{errors.age}</p>}
+      </div>
+
+      <div className="signup-field">
+        <div className="signup-gender-options">
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="Male"
+              onChange={handleChange}
+              checked={formData.gender === "Male"}
+            />
+            Male
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="Female"
+              onChange={handleChange}
+              checked={formData.gender === "Female"}
+            />
+            Female
+          </label>
+        </div>
+        {errors.gender && <p className="error">{errors.gender}</p>}
+      </div>
+
+      <div className="signup-field-btn">
+        <input type="submit" value="Sign up" />
+      </div>
+
+      <div className="signup-link">
+        Already a member? <Link to="/">Login</Link>
+      </div>
+
+    </form>
+  </div>
+</div>
   );
 }
-
