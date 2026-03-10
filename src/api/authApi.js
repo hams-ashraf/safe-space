@@ -1,8 +1,7 @@
-
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "/api", 
+  baseURL: "http://safespace.runasp.net/api",
   headers: { "Content-Type": "application/json" },
 });
 
