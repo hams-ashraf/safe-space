@@ -16,34 +16,37 @@ export default function Login() {
 
     const newErrors = { ...errors };
 
-    // Email validation
+    
     if (name === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
       newErrors.email = "Invalid email format";
     else newErrors.email = "";
 
-    // Password required
+   
     if (name === "password" && value === "") newErrors.password = "Password is required";
     else newErrors.password = "";
 
     setErrors(newErrors);
-    setServerError(""); // مسح أي رسالة من السيرفر عند التغيير
+    setServerError(""); 
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // منع الإرسال لو فيه أخطاء
+    
     if (Object.values(errors).some((err) => err !== "")) return;
 
     try {
       const res = await loginUser(formData);
-      localStorage.setItem("token", res.data.token);
-      navigate("/"); // هيروح ل  بعد login
+      //  localStorage.setItem("token", res.data.accessToken); 
+      localStorage.setItem("token", res.data.token); 
+
+      navigate("/", { replace: true }); 
     } catch (err) {
       console.log(err.response?.data);
       setServerError(err.response?.data?.message || "Login failed"); 
     }
   };
+ 
 
   return (
     <div className="login-page">
@@ -72,7 +75,7 @@ export default function Login() {
             {errors.password && <p className="error">{errors.password}</p>}
           </div>
 
-          {/* الرساله اللي هتظهر*/}
+          {}
           {serverError && <p className="error server-error">{serverError}</p>}
 
           <div className="field btn">
