@@ -5,7 +5,7 @@ import "./Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
-const isLoggedIn = localStorage.getItem("user"); 
+const isLoggedIn = localStorage.getItem("token"); 
 
   const handleProtectedRoute = (path) => {
     if (!isLoggedIn) {
@@ -16,7 +16,7 @@ const isLoggedIn = localStorage.getItem("user");
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("token");
     navigate("/");
     window.location.reload(); // عشان يعمل re-render
   };
