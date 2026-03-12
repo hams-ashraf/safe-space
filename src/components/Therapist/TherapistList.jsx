@@ -1,4 +1,3 @@
-
 import React from "react";
 import "./Therapist.css";
 import { useNavigate } from "react-router-dom";

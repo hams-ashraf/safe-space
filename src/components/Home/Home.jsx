@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
     {/* Section 1: Hero */}
-  <section className="hero-section text-center py-5">
+   <section className="hero-section text-center py-5">
     <div className="container py-5">
     <h1 className="display-3 fw-bold mb-3">
       Your Safe Space for Mental Health Support
@@ -21,11 +21,11 @@ export default function Home() {
     <div className="d-flex justify-content-center gap-3 flex-wrap">
       <a href="#get-started" className="custom-button">
   <i className="fa-solid fa-user-doctor"></i> Find a Therapist
-</a>
+ </a>
 
-<a href="#ai-support" className="custom-button">
+ <a href="#ai-support" className="custom-button">
   <i className="fa-solid fa-robot"></i> Chat with AI
-</a>
+ </a>
 
     </div>
   </div>

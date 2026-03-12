@@ -34,36 +34,10 @@ export default function Login() {
       </div>
 
       <div className="signup-link">
-        Not a member? <Link to="/signup">Sign up</Link>
+        Not a member? <Link to="/register">Sign up</Link>
       </div>
     </form>
     </div>
     </div>
   );
 }
-//  import React from "react";
-// import "./Login.css";
-
-// export default function Login() {
-//   const handleLogin = (e) => {
-//     e.preventDefault();
-//     alert("Login submitted!");
-//   };
-
-//   return (
-//     <form className="login" onSubmit={handleLogin}>
-      
-//       <div className="field">
-//         <input type="text" placeholder="Username" required />
-//       </div>
-    
-//       <div className="field">
-//         <input type="password" placeholder="Password" required />
-//       </div>
-//       <div className="field btn">
-//         <div className="btn-layer"></div>
-//         <input type="submit" value="Login" />
-//       </div>
-//     </form>
-//   );
-// }

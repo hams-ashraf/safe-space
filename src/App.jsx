@@ -9,6 +9,7 @@ import AIChat from "./components/Aichat/Aichat";
 import Symptoms from "./components/Symptoms/Symptoms";
 import Profile from "./components/Profile/Profile";
 import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
 import ProtectedRoute from "./components/Protectedroute/Protectedroute";
 
 const router = createBrowserRouter([
@@ -72,6 +73,14 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
+  {
+  path: "/login",
+  element: <Login />,
+},
+{
+  path: "/register",
+  element: <Register />,
+},
 ]);
 
 export default function App() {

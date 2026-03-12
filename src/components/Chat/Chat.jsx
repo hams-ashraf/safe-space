@@ -14,7 +14,6 @@ export default function Chat() {
   <button className="btn btn-custom">Start New Chat</button>
 </div>
 
-
       <div className="doctors-list row g-4 mb-4">
         <div className="col-md-4">
           <div className="card shadow-sm text-center">
