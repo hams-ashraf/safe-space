@@ -1,5 +1,5 @@
 import { useState } from "react";
-import doctorImg from '../assets/images.jfif';
+import doctorImg from "../../assets/images.jfif";
 import "./DoctorProfile.css";
 
 export default function DoctorProfile() {
@@ -15,7 +15,7 @@ export default function DoctorProfile() {
   ];
 
   return (
-    <div className="w-90 bg doctor-root">
+    <div className="w-90 bg doctor-root dr-body">
       <section className="mt-5">
         <div className="bg-white rounded-4 shadow p-5">
           <div className="row g-4 align-items-center">
@@ -61,11 +61,11 @@ export default function DoctorProfile() {
               </div>
 
               <div className="d-flex gap-3 mt-4 flex-wrap justify-content-between">
-                <button className="btn px-4 py-3 doctor-cta-primary w-49" type="button">
+                <button className="dr-btn px-4 py-3 doctor-cta-primary w-49" type="button">
                   <i className="fa-regular fa-calendar me-2"></i>
                   Book Session
                 </button>
-                <button className="btn btn-outline-green px-4 py-3 doctor-cta-secondary w-49" type="button">
+                <button className="dr-btn px-4 py-3 doctor-cta-secondary w-49" type="button">
                   <i className="fa-regular fa-comment-dots me-2"></i>
                   Start Chat
                 </button>
@@ -182,7 +182,7 @@ export default function DoctorProfile() {
                 </div>
 
                 <div className="justify-content-center d-flex mt-3">
-                  <button className="btn big-btn" type="button">Book Session</button>
+                  <button className="dr-btn big-btn" type="button">Book Session</button>
                 </div>
 
                 <div className="bg rounded-4 p-3 mt-3">

@@ -24,14 +24,14 @@ body {
   color: rgb(114, 114, 114);
 }
 
-.btn {
+.pa-btn {
   background: linear-gradient(to left, #2e8b6e, #4caf93);
   color: white;
   border-radius: 16px;
   transition: 0.3s ease;
 }
 
-.btn:hover {
+.pa-btn:hover {
   filter: brightness(110%);
   color: white;
 }

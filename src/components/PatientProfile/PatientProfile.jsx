@@ -1,6 +1,6 @@
 // ─── PatientProfile.jsx ──────────────────────────────────────────────
 import React from "react";
-import patientImg from '../assets/images.jfif'; // حطي الصورة في src/assets/
+import doctorImg from "../../assets/images.jfif";
 import "./PatientProfile.css";
 
 export default function PatientProfile() {
@@ -36,7 +36,7 @@ export default function PatientProfile() {
               </div>
 
               <div className="justify-content-center d-flex">
-                <button className="btn big-btn">Edit Profile</button>
+                <button className="pa-btn big-btn">Edit Profile</button>
               </div>
             </div>
 
@@ -78,7 +78,7 @@ export default function PatientProfile() {
                     </div>
                   </div>
                   <div className="align-self-center">
-                    <button className="btn small-btn pt-2 pb-2 ps-3 pe-3">Join Session</button>
+                    <button className="pa-btn small-btn pt-2 pb-2 ps-3 pe-3">Join Session</button>
                   </div>
                 </div>
               ))}
