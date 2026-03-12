@@ -10,7 +10,7 @@ import Symptoms from "./components/Symptoms/Symptoms";
 import Profile from "./components/Profile/Profile";
 import Signup from "./components/Signup/Signup"
 import Login from "./components/Login/Login";
-// import DoctorProfile from "./components/DoctorProfile/DoctorProfile"
+import DoctorProfile from "./components/DoctorProfile/DoctorProfile";
 import ProtectedRoute from "./components/Protectedroute/Protectedroute";
 
 
@@ -81,6 +81,15 @@ const router = createBrowserRouter([
     path: "/signup",
     element: <Signup />,
   },
+
+{
+  path: "doctorprofile",
+  element: (
+    <ProtectedRoute>
+      <DoctorProfile />
+    </ProtectedRoute>
+  ),
+},
 ]);
 
 export default function App() {

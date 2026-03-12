@@ -78,29 +78,36 @@ body {
 }
 
 /* Buttons */
-.btn-main {  border: 2px solid var(--main);
-  color: var(--main-dark);
-  border-radius: 20px;
-  padding: 10px;
-  font-weight: 500;
+.btn-main {  border: 2px solid var(--main)!important;
+  color: white;
+  background-color: #2E8B6E !important;
+  border-radius: 20px !important;
+  padding: 10px !important;
+  font-weight: 500 !important;
+  width: 100%;
+  margin-bottom: 4px;
+  border: none !important;
+  border-radius: 16px !important;
 }
 
 .btn-main:hover {
-  background-color: #2E8B6E; 
-  color: white;               
+  filter: brightness(110%);
+  color: white;              
 }
 
 .btn-outline-main {
-  border: 2px solid var(--main);
-  color: var(--main-dark);
-  border-radius: 20px;
-  padding: 10px;
-  font-weight: 500;
+  border: 2px solid var(--main)!important;
+  color: var(--main-dark)!important;
+  border-radius: 20px !important;
+  padding: 10px !important;
+  font-weight: 500 !important;
+  border-radius: 16px !important;
+  margin-bottom: 2px ;
 }
 
 .btn-outline-main:hover {
-   background-color: #2E8B6E; 
-  color: white;  }
+   background-color: #2E8B6E !important; 
+  color: white !important;  }
 .therapist-page {
   padding: 40px;
   background: #F8F9FA;

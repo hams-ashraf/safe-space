@@ -114,12 +114,9 @@ export default function Doctors() {
                   </div>
 
                   {/* ربط زرار View Profile بصفحة DoctorProfile */}
-                  <button 
-                    className="btn btn-main w-100 mb-2"
-                    onClick={() => navigate("/doctorprofile")}                  >
-                   <i className="bi bi-person-fill me-2"></i> View Profile
+                  <button className="btn-main" onClick={() => navigate("/doctorprofile")}>
+                    View Profile
                   </button>
-
                   <button 
                     className="btn btn-outline-main w-100"
                     onClick={() => navigate("/chat")}
