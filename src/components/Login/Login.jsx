@@ -1,5 +1,6 @@
+
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // هيودي اليوزر لصفحة بعد الـ login
+import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../../api/authApi";
 import "./Login.css";
 
@@ -15,12 +16,10 @@ export default function Login() {
 
     const newErrors = { ...errors };
 
-    // email validation
     if (name === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
       newErrors.email = "Invalid email format";
     else newErrors.email = "";
 
-    // password validation
     if (name === "password" && value === "")
       newErrors.password = "Password is required";
     else newErrors.password = "";
@@ -45,15 +44,14 @@ export default function Login() {
       setServerError(err.response?.data?.message || "Login failed");
     }
   };
- 
 
   return (
     <div className="login-page">
-      <div className="wrapper login-wrapper">
-        <div className="title">Login</div>
+      <div className="login-wrapper">
+        <div className="login-title">Login</div>
 
-        <form className="login" onSubmit={handleLogin}>
-          <div className="field">
+        <form className="login-form" onSubmit={handleLogin}>
+          <div className="login-field">
             <input
               name="email"
               type="email"
@@ -64,7 +62,7 @@ export default function Login() {
             {errors.email && <p className="error">{errors.email}</p>}
           </div>
 
-          <div className="field">
+          <div className="login-field">
             <input
               name="password"
               type="password"
@@ -77,11 +75,11 @@ export default function Login() {
 
           {serverError && <p className="error server-error">{serverError}</p>}
 
-          <div className="field btn">
-            <input type="submit" value="Login" />
+          <div className="login-field ">
+            <input className="login-btn " type="submit" value="Login" />
           </div>
 
-          <div className="signup-link">
+          <div className="login-signup-link">
             Not a member? <Link to="/signup">Sign up</Link>
           </div>
         </form>

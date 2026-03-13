@@ -5,7 +5,7 @@ import "./Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
-const isLoggedIn = localStorage.getItem("token"); 
+  const isLoggedIn = localStorage.getItem("token"); 
 
   const handleProtectedRoute = (path) => {
     if (!isLoggedIn) {
@@ -113,14 +113,14 @@ const isLoggedIn = localStorage.getItem("token");
           {/* Login / Logout */}
           {!isLoggedIn ? (
             <button
-              className="btn btn-success"
+              className="custom-login-btn"
               onClick={() => navigate("/login")}
             >
               Login
             </button>
           ) : (
             <button
-              className="btn btn-danger"
+              className="custom-logout-btn"
               onClick={handleLogout}
             >
               Logout
