@@ -29,9 +29,10 @@ body {
   color: white;
   border-radius: 16px;
   transition: 0.3s ease;
+border: none;
 }
 
-.btn:hover {
+.dr-btn:hover {
   filter: brightness(110%);
   color: white;
 }

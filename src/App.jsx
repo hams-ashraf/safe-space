@@ -8,13 +8,15 @@ import Sessions from "./components/Sessions/Sessions";
 import AIChat from "./components/Aichat/Aichat";
 import Symptoms from "./components/Symptoms/Symptoms";
 import DoctorProfile from "./components/DoctorProfile/DoctorProfile";
-import PatientProfile from './components/PatientProfile/PatientProfile';
+import PatientProfile from "./components/PatientProfile/PatientProfile";
 import Signup from "./components/Signup/Signup";
 import Login from "./components/Login/Login";
 import ProtectedRoute from "./components/Protectedroute/Protectedroute";
 
+
 const router = createBrowserRouter([
   {
+ 
     path: "/",
     element: <Layout />,
     children: [
