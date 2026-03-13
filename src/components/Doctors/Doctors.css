@@ -78,17 +78,16 @@ body {
 }
 
 /* Buttons */
-.btn-main {
-  background: var(--main);
-  color: #fff;
-  border-radius: 19px;
+.btn-main {  border: 2px solid var(--main);
+  color: var(--main-dark);
+  border-radius: 20px;
   padding: 10px;
   font-weight: 500;
-  border: none;
 }
 
 .btn-main:hover {
-  background: var(--main-dark);
+  background-color: #2E8B6E; 
+  color: white;               
 }
 
 .btn-outline-main {
@@ -100,11 +99,11 @@ body {
 }
 
 .btn-outline-main:hover {
-  background: var(--main-light);
-}
+   background-color: #2E8B6E; 
+  color: white;  }
 .therapist-page {
   padding: 40px;
-  background: #f4f6f5;
+  background: #F8F9FA;
 }
 
 .container-fluid {
