@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";//هيودي اليوزر لصفحه اي بعد ال login
+import { Link, useNavigate } from "react-router-dom"; // هيودي اليوزر لصفحة بعد الـ login
 import { loginUser } from "../../api/authApi";
 import "./Login.css";
 
@@ -8,7 +7,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
-  const [serverError, setServerError] = useState(""); 
+  const [serverError, setServerError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,34 +15,34 @@ export default function Login() {
 
     const newErrors = { ...errors };
 
-    
+    // email validation
     if (name === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
       newErrors.email = "Invalid email format";
     else newErrors.email = "";
 
-   
-    if (name === "password" && value === "") newErrors.password = "Password is required";
+    // password validation
+    if (name === "password" && value === "")
+      newErrors.password = "Password is required";
     else newErrors.password = "";
 
     setErrors(newErrors);
-    setServerError(""); 
+    setServerError("");
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    
     if (Object.values(errors).some((err) => err !== "")) return;
 
     try {
       const res = await loginUser(formData);
-      //  localStorage.setItem("token", res.data.accessToken); 
-      localStorage.setItem("token", res.data.token); 
 
-      navigate("/", { replace: true }); 
+      localStorage.setItem("token", res.data.token);
+
+      navigate("/", { replace: true });
     } catch (err) {
       console.log(err.response?.data);
-      setServerError(err.response?.data?.message || "Login failed"); 
+      setServerError(err.response?.data?.message || "Login failed");
     }
   };
  
@@ -52,6 +51,7 @@ export default function Login() {
     <div className="login-page">
       <div className="wrapper login-wrapper">
         <div className="title">Login</div>
+
         <form className="login" onSubmit={handleLogin}>
           <div className="field">
             <input
@@ -75,7 +75,6 @@ export default function Login() {
             {errors.password && <p className="error">{errors.password}</p>}
           </div>
 
-          {}
           {serverError && <p className="error server-error">{serverError}</p>}
 
           <div className="field btn">

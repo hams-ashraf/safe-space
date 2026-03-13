@@ -68,7 +68,7 @@ form {
   padding: 14px 16px;
   border-radius: 10px;
   border: none;
-  background-color: #41655d;
+  /* background-color: #41655d; */
   color: white;
   cursor: pointer;
   font-size: 17px;

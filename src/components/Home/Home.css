@@ -43,6 +43,66 @@
 #doctors {
     color:#41655d  ;
 }
+/* Top Rated Therapists Cards */
+#top-rated .top-rated-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  background-color: white;
+  display: flex;
+  flex-direction: column;  
+  height: 100%;             
+}
+
+#top-rated .top-rated-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+#top-rated .top-rated-card img {
+  width: 100%;          
+  height: 300px;         
+  object-fit: contain;    
+  background-color: #f0f0f0; 
+  display: block;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+
+#top-rated .card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #41655d;
+  margin-bottom: 0.5rem;
+}
+
+#top-rated .card-text {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 0.75rem;
+}
+
+#top-rated .text-warning i {
+  color: #f9c74f;
+  margin-right: 2px;
+}
+
+#top-rated .btn-custom {
+  background-color: #41655d;
+  color: white;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-weight: 500;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#top-rated .btn-custom:hover {
+  background-color: #355047;
+  transform: translateY(-2px);
+}
 
 .feedback-section {
   background-color: #ffffff;

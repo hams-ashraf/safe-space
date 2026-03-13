@@ -24,12 +24,12 @@ body {
   color: rgb(114, 114, 114);
 }
 
-.dr-btn {
+.btn {
   background: linear-gradient(to left, #2e8b6e, #4caf93);
   color: white;
   border-radius: 16px;
   transition: 0.3s ease;
-  border: none;
+border: none;
 }
 
 .dr-btn:hover {
@@ -114,15 +114,15 @@ body {
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-/* .dr-btn.btn-outline-green {
+.btn.btn-outline-green {
   background: transparent !important;
   color: #2e8b6e !important;
   border: 1px solid #4caf93 !important;
 }
 
-.dr-btn.btn-outline-green:hover {
+.btn.btn-outline-green:hover {
   background: rgba(76, 175, 147, 0.12) !important;
-} */
+}
 
 .doctor-avatar {
   width: 36px;

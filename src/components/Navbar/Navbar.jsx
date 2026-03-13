@@ -14,11 +14,11 @@ const isLoggedIn = localStorage.getItem("token");
       navigate(path);
     }
   };
-
+ 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
-    window.location.reload(); // عشان يعمل re-render
+    window.location.reload(); 
   };
 
   return (
@@ -101,7 +101,7 @@ const isLoggedIn = localStorage.getItem("token");
             <li className="nav-item">
               <span
                 className="nav-link"
-                onClick={() => handleProtectedRoute("/profile")}
+                onClick={() => handleProtectedRoute("/myprofile")}
                 style={{ cursor: "pointer" }}
               >
                 My Profile

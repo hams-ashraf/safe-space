@@ -1,6 +1,6 @@
 // ─── PatientProfile.jsx ──────────────────────────────────────────────
 import React from "react";
-import doctorImg from "../../assets/images.jfif";
+// import patientImg from '../assets/images.jfif';
 import "./PatientProfile.css";
 
 export default function PatientProfile() {
@@ -15,7 +15,7 @@ export default function PatientProfile() {
           <div className="col-4">
             <div className="pt-4 pb-4 rounded-4 shadow bg-white">
               <div className="justify-content-center d-flex rounded-circle overflow-hidden w-50 h-50 m-auto">
-                <img src={patientImg} alt="Patient" className="w-100" />
+                {/* <img src={patientImg} alt="Patient" className="w-100" /> */}
               </div>
               <h4 className="fw-bolder justify-content-center d-flex mt-4">Alex Thompson</h4>
               <p className="text-gray justify-content-center d-flex">Member since Jan 2026</p>
@@ -36,7 +36,7 @@ export default function PatientProfile() {
               </div>
 
               <div className="justify-content-center d-flex">
-                <button className="pa-btn big-btn">Edit Profile</button>
+                <button className="btn big-btn">Edit Profile</button>
               </div>
             </div>
 
@@ -78,7 +78,7 @@ export default function PatientProfile() {
                     </div>
                   </div>
                   <div className="align-self-center">
-                    <button className="pa-btn small-btn pt-2 pb-2 ps-3 pe-3">Join Session</button>
+                    <button className="btn small-btn pt-2 pb-2 ps-3 pe-3">Join Session</button>
                   </div>
                 </div>
               ))}

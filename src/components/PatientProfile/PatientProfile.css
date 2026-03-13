@@ -8,10 +8,6 @@
   font-family: "Inter", sans-serif;
 }
 
-body {
-  background-color: #f8faf9;
-}
-
 .bg-white {
   background-color: white;
 }
@@ -24,14 +20,14 @@ body {
   color: rgb(114, 114, 114);
 }
 
-.pa-btn {
+.btn {
   background: linear-gradient(to left, #2e8b6e, #4caf93);
   color: white;
   border-radius: 16px;
   transition: 0.3s ease;
 }
 
-.pa-btn:hover {
+.btn:hover {
   filter: brightness(110%);
   color: white;
 }
