@@ -1,5 +1,4 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
-@import url("https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css");
 
 * {
   margin: 0;
@@ -12,71 +11,71 @@ body {
   background-color: #f8faf9;
 }
 
-.bg-white {
+.doctor-bg-white {
   background-color: white;
 }
 
-.bg {
+.doctor-bg {
   background-color: #f8faf9;
 }
 
-.text-gray {
+.doctor-text-gray {
   color: rgb(114, 114, 114);
 }
 
-.btn {
+.doctor-btn {
   background: linear-gradient(to left, #2e8b6e, #4caf93);
   color: white;
   border-radius: 16px;
   transition: 0.3s ease;
-border: none;
+  border: none;
 }
 
-.dr-btn:hover {
+.doctor-btn:hover {
   filter: brightness(110%);
   color: white;
 }
 
-.big-btn {
+.doctor-big-btn {
   height: 52px;
   width: 85% !important;
   border-radius: 16px;
 }
 
-.small-btn {
+.doctor-small-btn {
   border-radius: 12px !important;
 }
 
-.zoom {
+.doctor-zoom {
   transition: 0.3s ease;
 }
 
-.zoom:hover {
+.doctor-zoom:hover {
   transform: scale(1.05);
 }
 
-.bg-lightgreen {
+.doctor-bg-lightgreen {
   background-color: #a8e6cf;
   width: 45px;
   height: 45px;
 }
 
-.text-green {
+.doctor-text-green {
   color: #2e8b6e;
 }
 
-.switch {
+.doctor-switch {
   width: 3rem !important;
   height: 1.5rem !important;
   border: #4caf93 !important;
   background-color: #2e8b6e !important;
 }
 
-.switch:focus {
+.doctor-switch:focus {
   box-shadow: 0 0 0 0.2rem #4caf93 !important;
 }
 
-.w-90 {
+.doctor-w-90 {
   width: 90%;
   margin: auto;
 }
@@ -114,13 +113,13 @@ border: none;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-.btn.btn-outline-green {
+.doctor-btn-outline-green {
   background: transparent !important;
   color: #2e8b6e !important;
   border: 1px solid #4caf93 !important;
 }
 
-.btn.btn-outline-green:hover {
+.doctor-btn-outline-green:hover {
   background: rgba(76, 175, 147, 0.12) !important;
 }
 
@@ -134,7 +133,7 @@ border: none;
   font-size: 0.7rem;
 }
 
-.time-chip {
+.doctor-time-chip {
   width: 100%;
   border-radius: 14px;
   padding: 10px 12px;
@@ -147,24 +146,24 @@ border: none;
   transition: 0.2s ease;
 }
 
-.time-chip:hover {
+.doctor-time-chip:hover {
   transform: translateY(-1px);
 }
 
-.time-chip--active {
+.doctor-time-chip--active {
   background: rgba(46, 139, 110, 0.14);
   border-color: rgba(46, 139, 110, 0.55);
   color: #2e8b6e;
 }
 
-.time-chip--disabled,
-.time-chip:disabled {
+.doctor-time-chip--disabled,
+.doctor-time-chip:disabled {
   opacity: 0.45;
   cursor: not-allowed;
   transform: none;
 }
 
-.bg-green {
+.doctor-bg-green {
   background-color: #2e8b6e;
 }
 
@@ -172,6 +171,6 @@ border: none;
   font-size: smaller;
 }
 
-.w-49 {
+.doctor-w-49 {
   width: 49%;
 }
