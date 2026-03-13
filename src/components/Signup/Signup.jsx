@@ -1,4 +1,4 @@
-//Updated
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../../api/authApi";
@@ -18,6 +18,10 @@ export default function Signup() {
   });
 
   const [errors, setErrors] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+
+//state جديده علشان الرساله اللي تظهر
+  const [formError, setFormError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -94,153 +98,158 @@ export default function Signup() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setSubmitted(true);
 
     const hasErrors = Object.values(errors).some((err) => err);
     const hasEmpty = Object.values(formData).some((v) => !v);
 
     if (hasErrors || hasEmpty) {
-      alert("Please fix the errors first");
+//اظهر الرساله 
+      setFormError("Please fix the errors before submitting");
       return;
     }
+
+    //علشان لو كل حاجه مظبوطه نمسح الرساله
+    setFormError("");
 
     try {
       await registerUser(formData);
       alert("Account created successfully!");
       navigate("/");
-    } 
+    } catch (err) {
+      console.log("API ERROR:", err.response);
 
-  catch (err) {
-    console.log("API ERROR:", err.response);
+      const data = err.response?.data;
 
-    const data = err.response?.data;
-
-    // لو فيه validation errors من الباك
       if (data === "Email already exists") {
         setErrors((prev) => ({
           ...prev,
           email: data,
-        })
-          );
+        }));
         return;
-     }
-
-
-
-    //alert("Email already exists");
-  }
+      }
+    }
   };
 
   return (
-    
-<div className="signup-page">
-  <div className="signup-wrapper">
-    <div className="signup-title">Create New Account</div>
+    <div className="signup-page">
+      <div className="signup-wrapper">
+        <div className="signup-title">Create New Account</div>
 
-    <form className="signup-form" onSubmit={handleSignup}>
+        {}
+        {formError && <p className="form-error">{formError}</p>}
 
-      <div className="signup-field">
-        <input
-          name="fullName"
-          type="text"
-          placeholder="Full Name"
-          value={formData.fullName}
-          onChange={handleChange}
-        />
-        {errors.fullName && <p className="error">{errors.fullName}</p>}
-      </div>
+        <form className="signup-form" onSubmit={handleSignup} noValidate>
 
-      <div className="signup-field">
-        <input
-          name="displayName"
-          type="text"
-          placeholder="Display Name"
-          value={formData.displayName}
-          onChange={handleChange}
-        />
-        {errors.displayName && <p className="error">{errors.displayName}</p>}
-      </div>
-
-      <div className="signup-field">
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-        {errors.email && <p className="error">{errors.email}</p>}
-      </div>
-
-      <div className="signup-field">
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-        {errors.password && <p className="error">{errors.password}</p>}
-      </div>
-
-      <div className="signup-field">
-        <input
-          name="confirmPassword"
-          type="password"
-          placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-        />
-        {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
-      </div>
-
-      <div className="signup-field">
-        <input
-          name="age"
-          type="number"
-          placeholder="Age"
-          value={formData.age}
-          onChange={handleChange}
-        />
-        {errors.age && <p className="error">{errors.age}</p>}
-      </div>
-
-      <div className="signup-field">
-        <div className="signup-gender-options">
-          <label>
+          <div className="signup-field">
             <input
-              type="radio"
-              name="gender"
-              value="Male"
+              name="fullName"
+              type="text"
+              placeholder="Full Name"
+              value={formData.fullName}
               onChange={handleChange}
-              checked={formData.gender === "Male"}
+              style={{ border: submitted && errors.fullName ? "2px solid red" : "" }}
             />
-            Male
-          </label>
+            {errors.fullName && <p className="error">{errors.fullName}</p>}
+          </div>
 
-          <label>
+          <div className="signup-field">
             <input
-              type="radio"
-              name="gender"
-              value="Female"
+              name="displayName"
+              type="text"
+              placeholder="Display Name"
+              value={formData.displayName}
               onChange={handleChange}
-              checked={formData.gender === "Female"}
+              style={{ border: submitted && errors.displayName ? "2px solid red" : "" }}
             />
-            Female
-          </label>
-        </div>
-        {errors.gender && <p className="error">{errors.gender}</p>}
-      </div>
+            {errors.displayName && <p className="error">{errors.displayName}</p>}
+          </div>
 
-      <div className="signup-field-btn">
-        <input type="submit" value="Sign up" />
-      </div>
+          <div className="signup-field">
+            <input
+              name="email"
+              type="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              style={{ border: submitted && errors.email ? "2px solid red" : "" }}
+            />
+            {errors.email && <p className="error">{errors.email}</p>}
+          </div>
 
-      <div className="signup-link">
-        Already a member? <Link to="/">Login</Link>
-      </div>
+          <div className="signup-field">
+            <input
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              style={{ border: submitted && errors.password ? "2px solid red" : "" }}
+            />
+            {errors.password && <p className="error">{errors.password}</p>}
+          </div>
 
-    </form>
-  </div>
-</div>
+          <div className="signup-field">
+            <input
+              name="confirmPassword"
+              type="password"
+              placeholder="Confirm Password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              style={{ border: submitted && errors.confirmPassword ? "2px solid red" : "" }}
+            />
+            {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
+          </div>
+
+          <div className="signup-field">
+            <input
+              name="age"
+              type="number"
+              placeholder="Age"
+              value={formData.age}
+              onChange={handleChange}
+              style={{ border: submitted && errors.age ? "2px solid red" : "" }}
+            />
+            {errors.age && <p className="error">{errors.age}</p>}
+          </div>
+
+          <div className="signup-field">
+            <div className="signup-gender-options">
+              <label>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="Male"
+                  onChange={handleChange}
+                  checked={formData.gender === "Male"}
+                />
+                Male
+              </label>
+
+              <label>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="Female"
+                  onChange={handleChange}
+                  checked={formData.gender === "Female"}
+                />
+                Female
+              </label>
+            </div>
+            {errors.gender && <p className="error">{errors.gender}</p>}
+          </div>
+
+          <div className="signup-field-btn">
+            <input type="submit" value="Sign up" />
+          </div>
+
+          <div className="signup-link">
+            Already a member? <Link to="/">Login</Link>
+          </div>
+
+        </form>
+      </div>
+    </div>
   );
 }
