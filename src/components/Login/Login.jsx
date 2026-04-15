@@ -36,8 +36,10 @@ export default function Login() {
     try {
       const res = await loginUser(formData);
 
-      localStorage.setItem("token", res.data.token);
-
+      // localStorage.setItem("token", res.data.accessToken);
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+      }
       navigate("/", { replace: true });
     } catch (err) {
       console.log(err.response?.data);

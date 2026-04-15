@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getDoctors } from "../../api/doctorsApi";
 import { useNavigate } from 'react-router-dom'; 
+
+
 import "./Home.css";
 
 export default function Home() {
@@ -8,7 +10,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
  useEffect(() => {
   async function fetchDoctors() {
     try {
@@ -86,6 +87,8 @@ export default function Home() {
       >
         Book Session
       </button>
+         
+       
     </div>
   </div>
 </div>
