@@ -66,6 +66,16 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+<<<<<<< Updated upstream
+=======
+       {
+         path: "doctorprofile/:id",
+         element: 
+         <ProtectedRoute>
+           <DoctorProfile /> 
+         </ProtectedRoute>
+        },
+>>>>>>> Stashed changes
     ],
   },
   {

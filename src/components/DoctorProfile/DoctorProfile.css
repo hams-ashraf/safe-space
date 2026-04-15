@@ -24,7 +24,7 @@ body {
   color: rgb(114, 114, 114);
 }
 
-.btn {
+.dr-btn {
   background: linear-gradient(to left, #2e8b6e, #4caf93);
   color: white;
   border-radius: 16px;
@@ -36,9 +36,8 @@ body {
   color: white;
 }
 
-.big-btn {
-  height: 52px;
-  width: 85% !important;
+.big-btn{
+  width: 100% !important;
   border-radius: 16px;
 }
 
@@ -172,5 +171,23 @@ body {
 }
 
 .w-49 {
+<<<<<<< Updated upstream
   width: 49%;
 }
+=======
+  width: 48%;
+}
+.doctor-photo-wrap {
+  width: 100%;
+  height: 280px; /* طول ثابت للـ card */
+  border-radius: 1rem;
+  overflow: hidden; /* يخلي الصورة ماتطلعش برا */
+  position: relative;
+}
+
+.doctor-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* الصورة تغطي كامل المساحة بدون تشويه */
+}
+>>>>>>> Stashed changes

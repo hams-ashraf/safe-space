@@ -1,8 +1,17 @@
+<<<<<<< Updated upstream
 import { useState } from "react";
 import doctorImg from '../assets/images.jfif';
+=======
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { getDoctors } from "../../api/doctorsApi"; // <--- import الداتا كلها
+import doctorImg from "../../assets/images.jfif";
+>>>>>>> Stashed changes
 import "./DoctorProfile.css";
 
 export default function DoctorProfile() {
+  const { id } = useParams(); // index زي 0,1,2
+  const [doctor, setDoctor] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
 
   const slots = [
@@ -14,39 +23,62 @@ export default function DoctorProfile() {
     { label: "4:30 PM", disabled: false },
   ];
 
+  // ---------- Fetch doctor from API ----------
+  useEffect(() => {
+    async function fetchDoctor() {
+      try {
+        const res = await getDoctors();
+        const doctorByIndex = res.data[Number(id)];
+        setDoctor(doctorByIndex);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    fetchDoctor();
+  }, [id]);
+
+  if (!doctor) return <h2 className="text-center mt-5">Loading...</h2>;
+
   return (
-    <div className="w-90 bg doctor-root">
-      <section className="mt-5">
+    <div className="doctor-root">
+      {/* Doctor Card - مرتبط بالـ API */}
+      <section className="mt-5 w-100">
         <div className="bg-white rounded-4 shadow p-5">
           <div className="row g-4 align-items-center">
             <div className="col-12 col-lg-4">
               <div className="position-relative doctor-photo-wrap">
-                <div className="overflow-hidden rounded-4">
+                <div className="overflow-hidden rounded-4 doctor-photo-wrap">
                   <img
+<<<<<<< Updated upstream
                     src={doctorImg}
                     className="w-100 doctor-photo"
                     alt="Dr. Sarah Johnson"
+=======
+                    src={doctor.imageUrl ? `http://doctorprofile.runasp.net${doctor.imageUrl}` : doctorImg}
+                    className="w-100"
+                    alt={doctor.fullName}
+>>>>>>> Stashed changes
                   />
                 </div>
                 <div className="doctor-rating-badge">
                   <i className="fa-solid fa-star text-warning me-1"></i>
-                  <span className="fw-bold">4.9</span>
+                  <span className="fw-bold">{doctor.rating || "4.9"}</span>
                 </div>
               </div>
             </div>
 
             <div className="col-12 col-lg-8">
-              <h2 className="fw-bolder mb-1">Dr. Sarah Johnson</h2>
-              <p className="text-gray mb-1">Clinical Psychologist</p>
+              <h2 className="fw-bolder mb-1">{doctor.fullName}</h2>
+              <p className="text-gray mb-1">{doctor.position}</p>
               <p className="text-green mb-4 doctor-specialties">
-                Specializes in: Anxiety &amp; Depression
+                Specializes in: {doctor.specialization}
               </p>
 
               <div className="row g-3">
                 {[
-                  { icon: "fa-briefcase", label: "Experience", value: "12 years", color: "text-green" },
-                  { icon: "fa-star", label: "Rating", value: "4.9/5.0", color: "text-warning" },
-                  { icon: "fa-regular fa-message", label: "Reviews", value: "287", color: "text-green" },
+                  { icon: "fa-briefcase", label: "Experience", value: `${doctor.yearOfExperience || "10"} years`, color: "text-green" },
+                  { icon: "fa-star", label: "Rating", value: doctor.rating || "4.9", color: "text-warning" },
+                  { icon: "fa-regular fa-message", label: "Reviews", value: doctor.reviewsCount || "0", color: "text-green" },
                 ].map(({ icon, label, value, color }) => (
                   <div className="col-12 col-md-4" key={label}>
                     <div className="bg rounded-4 p-3 doctor-stat">
@@ -61,7 +93,7 @@ export default function DoctorProfile() {
               </div>
 
               <div className="d-flex gap-3 mt-4 flex-wrap justify-content-between">
-                <button className="btn px-4 py-3 doctor-cta-primary w-49" type="button">
+                <button className="dr-btn px-4 py-3 doctor-cta-primary w-49" type="button">
                   <i className="fa-regular fa-calendar me-2"></i>
                   Book Session
                 </button>
@@ -75,8 +107,8 @@ export default function DoctorProfile() {
         </div>
       </section>
 
-      {/* About + Credentials + Reviews */}
-      <section className="mt-4 pb-5">
+      {/* ------------------------- About + Credentials + Reviews ------------------------- */}
+      <section className="mt-4 pb-5 w-100">
         <div className="row g-4 align-items-start">
           <div className="col-12 col-lg-8">
             {/* About */}
@@ -84,19 +116,14 @@ export default function DoctorProfile() {
               <div className="border-bottom">
                 <h5 className="fw-bolder mb-3">About</h5>
                 <p className="text-gray small mb-3">
-                  Dr. Sarah Johnson is a dedicated clinical psychologist with over 12 years of
-                  experience helping individuals overcome anxiety, depression, and stress-related
-                  challenges. She believes in creating a warm, non-judgmental space where clients feel
-                  heard and supported.
+                  Dr. {doctor.fullName} is a dedicated clinical psychologist with years of experience.
+                  She creates a warm, non-judgmental space for clients.
                 </p>
               </div>
               <div className="mt-3">
                 <h6 className="fw-bolder mb-2">Therapy Approach</h6>
                 <p className="text-gray small mb-0">
-                  I use evidence-based approaches including Cognitive Behavioral Therapy (CBT),
-                  Mindfulness-Based Stress Reduction (MBSR), and person-centered therapy. My goal is to
-                  help you develop practical coping skills while addressing the root causes of your
-                  concerns.
+                  Evidence-based approaches including Cognitive Behavioral Therapy (CBT) and Mindfulness.
                 </p>
               </div>
             </div>
@@ -122,10 +149,9 @@ export default function DoctorProfile() {
             {/* Reviews */}
             <div className="bg-white rounded-4 shadow p-4 mt-4">
               <h5 className="fw-bolder mb-3">Client Reviews</h5>
-              {[
-                { initials: "M", date: "Feb 2026", stars: 5, text: "Dr. Johnson has been incredibly supportive throughout my journey. Her approach is gentle yet effective." },
-                { initials: "RK", date: "Jan 2026", stars: 5, text: "Highly recommended. She truly listens and provides practical strategies that have made a real difference." },
-                { initials: "LS", date: "Jan 2026", stars: 4.5, text: "Professional and empathetic. I felt comfortable sharing my thoughts and concerns with Dr. Johnson." },
+              {[{ initials: "M", date: "Feb 2026", stars: 5, text: "Very supportive therapist." },
+                { initials: "RK", date: "Jan 2026", stars: 5, text: "Highly recommended." },
+                { initials: "LS", date: "Jan 2026", stars: 4.5, text: "Professional and empathetic." },
               ].map(({ initials, date, stars, text }, i, arr) => (
                 <div key={i} className={`doctor-review ${i < arr.length - 1 ? "pb-3 border-bottom" : "pt-3"}`}>
                   <div className="d-flex justify-content-between align-items-start gap-3">
@@ -149,7 +175,7 @@ export default function DoctorProfile() {
             </div>
           </div>
 
-          {/* Booking */}
+          {/* Booking Section */}
           <div className="col-12 col-lg-4">
             <div className="bg-white rounded-4 shadow p-4">
               <div className="d-flex align-items-center gap-2 mb-3">
@@ -167,9 +193,7 @@ export default function DoctorProfile() {
                     {slots.map(({ label, disabled }) => (
                       <div className="col-6" key={label}>
                         <button
-                          className={`time-chip ${
-                            selectedTime === label ? "time-chip--active" : ""
-                          } ${disabled ? "time-chip--disabled" : ""}`}
+                          className={`time-chip ${selectedTime === label ? "time-chip--active" : ""} ${disabled ? "time-chip--disabled" : ""}`}
                           type="button"
                           disabled={disabled}
                           onClick={() => !disabled && setSelectedTime(label)}
@@ -182,7 +206,7 @@ export default function DoctorProfile() {
                 </div>
 
                 <div className="justify-content-center d-flex mt-3">
-                  <button className="btn big-btn" type="button">Book Session</button>
+                  <button className="dr-btn big-btn" type="button">Book Session</button>
                 </div>
 
                 <div className="bg rounded-4 p-3 mt-3">
