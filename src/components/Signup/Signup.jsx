@@ -245,7 +245,7 @@ export default function Signup() {
           </div>
 
           <div className="signup-link">
-            Already a member? <Link to="/">Login</Link>
+            Already a member? <Link to="/login">Login</Link>
           </div>
 
         </form>
