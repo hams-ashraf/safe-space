@@ -70,11 +70,8 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-
-
        {
-         path: "doctorprofile/:id",
-
+         path: "doctorprofile",
          element: 
          <ProtectedRoute>
            <DoctorProfile /> 

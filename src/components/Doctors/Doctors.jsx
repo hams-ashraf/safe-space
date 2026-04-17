@@ -14,7 +14,6 @@ export default function Doctors() {
     async function fetchDoctors() {
       try {
         const res = await getDoctors();
-        console.log("All Doctors Response:", res.data);
         setTherapists(res.data);
       } catch (err) {
         console.log(err);
@@ -30,33 +29,30 @@ export default function Doctors() {
   if (error) return <p className="text-danger">{error}</p>;
 
   return (
-    <div className="therapist-page">
-      <h2 className="page-title text-center">Find Your Therapist</h2>
-      <p className="page-subtitle text-center">
+    <div className="doctors-therapist-page">
+      <h2 className="doctors-page-title text-center">Find Your Therapist</h2>
+      <p className="doctors-page-subtitle text-center">
         Browse our network of licensed mental health professionals
       </p>
 
-      <div className="container-fluid">
+      <div className="doctors-container-fluid">
         <div className="row row-cols-3 g-4">
           {therapists.map((t, index) => (
             <div className="col" key={index}>
-              <div className="therapist-card">
-
-                <div className="img-wrapper">
+              <div className="doctors-therapist-card">
+                <div className="doctors-img-wrapper">
                   <img
                     src={`http://doctorprofile.runasp.net${t.imageUrl}`}
                     alt={t.fullName}
                   />
-                  <span className="rating-badge">⭐ {t.rating}</span>
+                  <span className="doctors-rating-badge">⭐ {t.rating}</span>
                 </div>
 
                 <div className="card-body">
                   <h5 className="fw-bold">{t.fullName}</h5>
-
                   <p className="small text-muted mb-1">
                     {t.position || t.specialization}
                   </p>
-
                   <p className="small text-success mb-3">
                     {t.specialization}
                   </p>
@@ -66,7 +62,6 @@ export default function Doctors() {
                       <strong>Experience</strong><br />
                       {t.yearOfExperience} years
                     </span>
-
                     <span className="text-end">
                       <strong>Reviews</strong><br />
                       {t.reviewsCount}
@@ -74,19 +69,18 @@ export default function Doctors() {
                   </div>
 
                   <button
-                    className="btn btn-main w-100 mb-2"
-                    onClick={() => navigate(`/doctorprofile/${index}`)}
+                    className="btn doctors-btn-main w-100 mb-2"
+                    onClick={() => navigate(`/doctorprofile`)}
                   >
                     View Profile
                   </button>
 
                   <button
-                    className="btn btn-outline-main w-100"
+                    className="btn doctors-btn-outline-main w-100"
                     onClick={() => navigate("/chat")}
                   >
                     Start Chat
                   </button>
-
                 </div>
               </div>
             </div>
