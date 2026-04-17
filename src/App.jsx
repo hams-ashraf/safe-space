@@ -66,8 +66,7 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-<<<<<<< Updated upstream
-=======
+
        {
          path: "doctorprofile/:id",
          element: 
@@ -75,7 +74,7 @@ const router = createBrowserRouter([
            <DoctorProfile /> 
          </ProtectedRoute>
         },
->>>>>>> Stashed changes
+
     ],
   },
   {

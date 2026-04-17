@@ -2,12 +2,7 @@ import React from 'react'
 
 
 export default function Doctors() {
-<<<<<<< Updated upstream
-  return (
-    <div>Doctors</div>
-  )
-}
-=======
+
   const [therapists, setTherapists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -17,7 +12,7 @@ export default function Doctors() {
     async function fetchDoctors() {
       try {
         const res = await getDoctors();
-        console.log("All Doctors Response:", res.data); // <--- ده اللي يوريكي كل حاجة
+        console.log("All Doctors Response:", res.data);
         setTherapists(res.data);
       } catch (err) {
         console.log(err);
@@ -68,13 +63,10 @@ export default function Doctors() {
                     </span>
                   </div>
 
-                  {/* import { useNavigate } from "react-router-dom";
-
-                  const navigate = useNavigate(); */}
 
   <button
   className="btn btn-main w-100 mb-2"
-  onClick={() => navigate(`/doctorprofile/${index}`)} // بدل t.id
+  onClick={() => navigate(`/doctorprofile/${index}`)} 
 >
   View Profile
 </button>
@@ -94,4 +86,4 @@ export default function Doctors() {
     </div>
   );
 }
->>>>>>> Stashed changes
+

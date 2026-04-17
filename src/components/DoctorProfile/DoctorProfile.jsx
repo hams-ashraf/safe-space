@@ -1,16 +1,13 @@
-<<<<<<< Updated upstream
-import { useState } from "react";
-import doctorImg from '../assets/images.jfif';
-=======
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getDoctors } from "../../api/doctorsApi"; // <--- import الداتا كلها
+import { getDoctors } from "../../api/doctorsApi"; 
 import doctorImg from "../../assets/images.jfif";
->>>>>>> Stashed changes
+
 import "./DoctorProfile.css";
 
 export default function DoctorProfile() {
-  const { id } = useParams(); // index زي 0,1,2
+  const { id } = useParams(); 
   const [doctor, setDoctor] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
 
@@ -23,7 +20,7 @@ export default function DoctorProfile() {
     { label: "4:30 PM", disabled: false },
   ];
 
-  // ---------- Fetch doctor from API ----------
+  -
   useEffect(() => {
     async function fetchDoctor() {
       try {
@@ -41,7 +38,7 @@ export default function DoctorProfile() {
 
   return (
     <div className="doctor-root">
-      {/* Doctor Card - مرتبط بالـ API */}
+      
       <section className="mt-5 w-100">
         <div className="bg-white rounded-4 shadow p-5">
           <div className="row g-4 align-items-center">
@@ -49,15 +46,11 @@ export default function DoctorProfile() {
               <div className="position-relative doctor-photo-wrap">
                 <div className="overflow-hidden rounded-4 doctor-photo-wrap">
                   <img
-<<<<<<< Updated upstream
-                    src={doctorImg}
-                    className="w-100 doctor-photo"
-                    alt="Dr. Sarah Johnson"
-=======
+
                     src={doctor.imageUrl ? `http://doctorprofile.runasp.net${doctor.imageUrl}` : doctorImg}
                     className="w-100"
                     alt={doctor.fullName}
->>>>>>> Stashed changes
+
                   />
                 </div>
                 <div className="doctor-rating-badge">
@@ -206,7 +199,7 @@ export default function DoctorProfile() {
                 </div>
 
                 <div className="justify-content-center d-flex mt-3">
-                  <button className="dr-btn big-btn" type="button">Book Session</button>
+                  <button className="doctor-btn doctor-big-btn" type="button">Book Session</button>
                 </div>
 
                 <div className="bg rounded-4 p-3 mt-3">
