@@ -1,8 +1,10 @@
-import React from 'react'
 
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getDoctors } from "../../api/doctorsApi";
+import "./Doctors.css";
 
 export default function Doctors() {
-
   const [therapists, setTherapists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -39,6 +41,7 @@ export default function Doctors() {
           {therapists.map((t, index) => (
             <div className="col" key={index}>
               <div className="therapist-card">
+
                 <div className="img-wrapper">
                   <img
                     src={`http://doctorprofile.runasp.net${t.imageUrl}`}
@@ -49,34 +52,41 @@ export default function Doctors() {
 
                 <div className="card-body">
                   <h5 className="fw-bold">{t.fullName}</h5>
-                  <p className="small text-muted mb-1">{t.position || t.specialization}</p>
-                  <p className="small text-success mb-3">{t.specialization}</p>
+
+                  <p className="small text-muted mb-1">
+                    {t.position || t.specialization}
+                  </p>
+
+                  <p className="small text-success mb-3">
+                    {t.specialization}
+                  </p>
 
                   <div className="d-flex justify-content-between small text-muted mb-3">
                     <span>
                       <strong>Experience</strong><br />
                       {t.yearOfExperience} years
                     </span>
+
                     <span className="text-end">
                       <strong>Reviews</strong><br />
                       {t.reviewsCount}
                     </span>
                   </div>
 
+                  <button
+                    className="btn btn-main w-100 mb-2"
+                    onClick={() => navigate(`/doctorprofile/${index}`)}
+                  >
+                    View Profile
+                  </button>
 
-  <button
-  className="btn btn-main w-100 mb-2"
-  onClick={() => navigate(`/doctorprofile/${index}`)} 
->
-  View Profile
-</button>
-
-                  <button 
+                  <button
                     className="btn btn-outline-main w-100"
                     onClick={() => navigate("/chat")}
                   >
                     Start Chat
                   </button>
+
                 </div>
               </div>
             </div>
@@ -86,4 +96,3 @@ export default function Doctors() {
     </div>
   );
 }
-

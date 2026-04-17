@@ -1,3 +1,4 @@
+
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -5,7 +6,7 @@ import "./Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
-const isLoggedIn = localStorage.getItem("user"); 
+  const isLoggedIn = localStorage.getItem("token"); 
 
   const handleProtectedRoute = (path) => {
     if (!isLoggedIn) {
@@ -14,11 +15,11 @@ const isLoggedIn = localStorage.getItem("user");
       navigate(path);
     }
   };
-
+ 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("token");
     navigate("/");
-    window.location.reload(); // عشان يعمل re-render
+    window.location.reload(); 
   };
 
   return (
@@ -101,7 +102,7 @@ const isLoggedIn = localStorage.getItem("user");
             <li className="nav-item">
               <span
                 className="nav-link"
-                onClick={() => handleProtectedRoute("/profile")}
+                onClick={() => handleProtectedRoute("/myprofile")}
                 style={{ cursor: "pointer" }}
               >
                 My Profile
@@ -113,14 +114,14 @@ const isLoggedIn = localStorage.getItem("user");
           {/* Login / Logout */}
           {!isLoggedIn ? (
             <button
-              className="btn btn-success"
+              className="custom-login-btn"
               onClick={() => navigate("/login")}
             >
               Login
             </button>
           ) : (
             <button
-              className="btn btn-danger"
+              className="custom-logout-btn"
               onClick={handleLogout}
             >
               Logout

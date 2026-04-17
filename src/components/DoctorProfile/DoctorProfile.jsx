@@ -1,13 +1,11 @@
-
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getDoctors } from "../../api/doctorsApi"; 
+import { getDoctors } from "../../api/doctorsApi";
 import doctorImg from "../../assets/images.jfif";
-
 import "./DoctorProfile.css";
 
 export default function DoctorProfile() {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [doctor, setDoctor] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
 
@@ -20,7 +18,6 @@ export default function DoctorProfile() {
     { label: "4:30 PM", disabled: false },
   ];
 
-  -
   useEffect(() => {
     async function fetchDoctor() {
       try {
@@ -38,21 +35,25 @@ export default function DoctorProfile() {
 
   return (
     <div className="doctor-root">
-      
       <section className="mt-5 w-100">
         <div className="bg-white rounded-4 shadow p-5">
           <div className="row g-4 align-items-center">
+
+            {/* IMAGE */}
             <div className="col-12 col-lg-4">
               <div className="position-relative doctor-photo-wrap">
                 <div className="overflow-hidden rounded-4 doctor-photo-wrap">
                   <img
-
-                    src={doctor.imageUrl ? `http://doctorprofile.runasp.net${doctor.imageUrl}` : doctorImg}
+                    src={
+                      doctor.imageUrl
+                        ? `http://doctorprofile.runasp.net${doctor.imageUrl}`
+                        : doctorImg
+                    }
                     className="w-100"
                     alt={doctor.fullName}
-
                   />
                 </div>
+
                 <div className="doctor-rating-badge">
                   <i className="fa-solid fa-star text-warning me-1"></i>
                   <span className="fw-bold">{doctor.rating || "4.9"}</span>
@@ -60,38 +61,46 @@ export default function DoctorProfile() {
               </div>
             </div>
 
+            {/* INFO */}
             <div className="col-12 col-lg-8">
               <h2 className="fw-bolder mb-1">{doctor.fullName}</h2>
               <p className="text-gray mb-1">{doctor.position}</p>
+
               <p className="text-green mb-4 doctor-specialties">
                 Specializes in: {doctor.specialization}
               </p>
 
               <div className="row g-3">
-                {[
-                  { icon: "fa-briefcase", label: "Experience", value: `${doctor.yearOfExperience || "10"} years`, color: "text-green" },
-                  { icon: "fa-star", label: "Rating", value: doctor.rating || "4.9", color: "text-warning" },
-                  { icon: "fa-regular fa-message", label: "Reviews", value: doctor.reviewsCount || "0", color: "text-green" },
-                ].map(({ icon, label, value, color }) => (
-                  <div className="col-12 col-md-4" key={label}>
-                    <div className="bg rounded-4 p-3 doctor-stat">
-                      <div className="d-flex align-items-center gap-2 mb-1">
-                        <i className={`fa-solid ${icon} ${color}`}></i>
-                        <small className="text-gray fw-bold">{label}</small>
-                      </div>
-                      <div className="fw-bolder">{value}</div>
+                <div className="col-12 col-md-4">
+                  <div className="doctor-bg rounded-4 p-3">
+                    <small className="text-gray fw-bold">Experience</small>
+                    <div className="fw-bolder">
+                      {doctor.yearOfExperience || 10} years
                     </div>
                   </div>
-                ))}
+                </div>
+
+                <div className="col-12 col-md-4">
+                  <div className="doctor-bg rounded-4 p-3">
+                    <small className="text-gray fw-bold">Rating</small>
+                    <div className="fw-bolder">{doctor.rating || "4.9"}</div>
+                  </div>
+                </div>
+
+                <div className="col-12 col-md-4">
+                  <div className="doctor-bg rounded-4 p-3">
+                    <small className="text-gray fw-bold">Reviews</small>
+                    <div className="fw-bolder">{doctor.reviewsCount || 0}</div>
+                  </div>
+                </div>
               </div>
 
               <div className="d-flex gap-3 mt-4 flex-wrap justify-content-between">
-                <button className="dr-btn px-4 py-3 doctor-cta-primary w-49" type="button">
-                  <i className="fa-regular fa-calendar me-2"></i>
+                <button className="doctor-btn doctor-big-btn" type="button">
                   Book Session
                 </button>
-                <button className="btn btn-outline-green px-4 py-3 doctor-cta-secondary w-49" type="button">
-                  <i className="fa-regular fa-comment-dots me-2"></i>
+
+                <button className="doctor-btn-outline-green doctor-big-btn">
                   Start Chat
                 </button>
               </div>
@@ -100,116 +109,70 @@ export default function DoctorProfile() {
         </div>
       </section>
 
-      {/* ------------------------- About + Credentials + Reviews ------------------------- */}
+      {/* DETAILS */}
       <section className="mt-4 pb-5 w-100">
-        <div className="row g-4 align-items-start">
+        <div className="row g-4">
+
+          {/* LEFT */}
           <div className="col-12 col-lg-8">
-            {/* About */}
-            <div className="bg-white rounded-4 shadow p-4">
-              <div className="border-bottom">
-                <h5 className="fw-bolder mb-3">About</h5>
-                <p className="text-gray small mb-3">
-                  Dr. {doctor.fullName} is a dedicated clinical psychologist with years of experience.
-                  She creates a warm, non-judgmental space for clients.
-                </p>
-              </div>
-              <div className="mt-3">
-                <h6 className="fw-bolder mb-2">Therapy Approach</h6>
-                <p className="text-gray small mb-0">
-                  Evidence-based approaches including Cognitive Behavioral Therapy (CBT) and Mindfulness.
-                </p>
-              </div>
+
+            <div className="doctor-bg-white rounded-4 shadow p-4">
+              <h5 className="fw-bolder mb-3">About</h5>
+              <p className="doctor-text-gray small mb-0">
+                Dr. {doctor.fullName} is a clinical psychologist with experience
+                helping patients with anxiety, depression and stress.
+              </p>
             </div>
 
-            {/* Credentials */}
-            <div className="bg-white rounded-4 shadow p-4 mt-4">
-              <h5 className="fw-bolder mb-3">Certifications & Credentials</h5>
-              <ul className="mb-0 ps-0 doctor-credential-list">
-                {[
-                  "Licensed Clinical Psychologist (LCP)",
-                  "Certified CBT Practitioner",
-                  "MBSR Instructor Certification",
-                  "Trauma-Informed Care Specialist",
-                ].map((c) => (
-                  <li key={c} className="d-flex gap-2 align-items-start mb-2">
-                    <i className="fa-solid fa-circle text-green mt-1 smallfont"></i>
-                    <span className="text-gray small">{c}</span>
-                  </li>
-                ))}
+            <div className="doctor-bg-white rounded-4 shadow p-4 mt-4">
+              <h5 className="fw-bolder mb-3">Certifications</h5>
+              <ul className="ps-0">
+                <li>Licensed Clinical Psychologist</li>
+                <li>CBT Certified</li>
+                <li>MBSR Training</li>
               </ul>
             </div>
-
-            {/* Reviews */}
-            <div className="bg-white rounded-4 shadow p-4 mt-4">
-              <h5 className="fw-bolder mb-3">Client Reviews</h5>
-              {[{ initials: "M", date: "Feb 2026", stars: 5, text: "Very supportive therapist." },
-                { initials: "RK", date: "Jan 2026", stars: 5, text: "Highly recommended." },
-                { initials: "LS", date: "Jan 2026", stars: 4.5, text: "Professional and empathetic." },
-              ].map(({ initials, date, stars, text }, i, arr) => (
-                <div key={i} className={`doctor-review ${i < arr.length - 1 ? "pb-3 border-bottom" : "pt-3"}`}>
-                  <div className="d-flex justify-content-between align-items-start gap-3">
-                    <div className="d-flex gap-3 align-items-start">
-                      <div className="doctor-avatar bg-green rounded-circle d-flex justify-content-center align-items-center">
-                        <small className="fw-bolder text-light">{initials}</small>
-                      </div>
-                      <div>
-                        <div className="fw-bolder smallfont">Anonymous</div>
-                        <small className="text-gray smallfont">{date}</small>
-                      </div>
-                    </div>
-                    <div className="doctor-stars">
-                      {[1, 2, 3, 4].map((s) => <i key={s} className="fa-solid fa-star text-warning"></i>)}
-                      {stars === 5 ? <i className="fa-solid fa-star text-warning"></i> : <i className="fa-solid fa-star-half-stroke text-warning"></i>}
-                    </div>
-                  </div>
-                  <p className="text-gray smallfont mb-0 mt-2">{text}</p>
-                </div>
-              ))}
-            </div>
           </div>
 
-          {/* Booking Section */}
+          {/* RIGHT */}
           <div className="col-12 col-lg-4">
-            <div className="bg-white rounded-4 shadow p-4">
-              <div className="d-flex align-items-center gap-2 mb-3">
-                <i className="fa-regular fa-calendar text-green"></i>
-                <h5 className="fw-bolder mb-0">Available Slots</h5>
+
+            <div className="doctor-bg-white rounded-4 shadow p-4">
+              <h5 className="fw-bolder mb-3">Available Slots</h5>
+
+              <div className="row g-2">
+                {slots.map(({ label, disabled }) => (
+                  <div className="col-6" key={label}>
+                    <button
+                      className={`doctor-time-chip ${
+                        selectedTime === label
+                          ? "doctor-time-chip--active"
+                          : ""
+                      } ${disabled ? "doctor-time-chip--disabled" : ""}`}
+                      disabled={disabled}
+                      onClick={() => setSelectedTime(label)}
+                    >
+                      {label}
+                    </button>
+                  </div>
+                ))}
               </div>
 
-              <div className="w-90">
-                <label className="small fw-bold">Select Date</label>
-                <input type="date" className="form-control rounded-4 mt-2 doctor-input" defaultValue="2026-02-24" />
+              <div className="d-flex justify-content-center mt-3">
+                <button className="doctor-btn doctor-big-btn">
+                  Book Session
+                </button>
+              </div>
 
-                <div className="mt-3">
-                  <label className="small fw-bold">Select Time</label>
-                  <div className="row g-2 mt-2">
-                    {slots.map(({ label, disabled }) => (
-                      <div className="col-6" key={label}>
-                        <button
-                          className={`time-chip ${selectedTime === label ? "time-chip--active" : ""} ${disabled ? "time-chip--disabled" : ""}`}
-                          type="button"
-                          disabled={disabled}
-                          onClick={() => !disabled && setSelectedTime(label)}
-                        >
-                          {label}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="justify-content-center d-flex mt-3">
-                  <button className="doctor-btn doctor-big-btn" type="button">Book Session</button>
-                </div>
-
-                <div className="bg rounded-4 p-3 mt-3">
-                  <small className="text-gray d-block mb-2">Session Details</small>
-                  <small className="d-block">50-minute session</small>
-                  <small className="text-gray d-block">Video or voice call</small>
-                </div>
+              <div className="doctor-bg rounded-4 p-3 mt-3">
+                <small className="doctor-text-gray">
+                  50-minute video/voice session
+                </small>
               </div>
             </div>
+
           </div>
+
         </div>
       </section>
     </div>

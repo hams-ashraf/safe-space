@@ -1,6 +1,6 @@
 // ─── PatientProfile.jsx ──────────────────────────────────────────────
 import React from "react";
-import patientImg from '../assets/images.jfif'; // حطي الصورة في src/assets/
+// import patientImg from '../assets/images.jfif';
 import "./PatientProfile.css";
 
 export default function PatientProfile() {
@@ -15,7 +15,7 @@ export default function PatientProfile() {
           <div className="col-4">
             <div className="pt-4 pb-4 rounded-4 shadow bg-white">
               <div className="justify-content-center d-flex rounded-circle overflow-hidden w-50 h-50 m-auto">
-                <img src={patientImg} alt="Patient" className="w-100" />
+                {/* <img src={patientImg} alt="Patient" className="w-100" /> */}
               </div>
               <h4 className="fw-bolder justify-content-center d-flex mt-4">Alex Thompson</h4>
               <p className="text-gray justify-content-center d-flex">Member since Jan 2026</p>

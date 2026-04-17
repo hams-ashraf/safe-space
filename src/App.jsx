@@ -7,12 +7,16 @@ import Doctors from "./components/Doctors/Doctors";
 import Sessions from "./components/Sessions/Sessions";
 import AIChat from "./components/Aichat/Aichat";
 import Symptoms from "./components/Symptoms/Symptoms";
-import Profile from "./components/Profile/Profile";
+import DoctorProfile from "./components/DoctorProfile/DoctorProfile";
+import PatientProfile from "./components/PatientProfile/PatientProfile";
+import Signup from "./components/Signup/Signup";
 import Login from "./components/Login/Login";
 import ProtectedRoute from "./components/Protectedroute/Protectedroute";
 
+
 const router = createBrowserRouter([
   {
+ 
     path: "/",
     element: <Layout />,
     children: [
@@ -59,30 +63,39 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "profile",
+        path: "myprofile",
         element: (
           <ProtectedRoute>
-            <Profile />
+            <PatientProfile />
           </ProtectedRoute>
         ),
       },
 
+
        {
          path: "doctorprofile/:id",
+
          element: 
          <ProtectedRoute>
            <DoctorProfile /> 
          </ProtectedRoute>
         },
-
     ],
   },
   {
     path: "/login",
     element: <Login />,
   },
+   {
+    path: "/signup",
+    element: <Signup />,
+  },
+
 ]);
 
 export default function App() {
   return <RouterProvider router={router} />;
 }
+
+
+

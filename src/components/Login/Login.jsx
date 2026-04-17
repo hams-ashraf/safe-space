@@ -1,69 +1,91 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../../api/authApi";
 import "./Login.css";
 
 export default function Login() {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState("");
 
-    const handleLogin = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    const newErrors = { ...errors };
+
+    if (name === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+      newErrors.email = "Invalid email format";
+    else newErrors.email = "";
+
+    if (name === "password" && value === "")
+      newErrors.password = "Password is required";
+    else newErrors.password = "";
+
+    setErrors(newErrors);
+    setServerError("");
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    localStorage.setItem("user", JSON.stringify({ name: "User" }));
 
-    navigate("/");
-    window.location.reload();
+    if (Object.values(errors).some((err) => err !== "")) return;
+
+    try {
+      const res = await loginUser(formData);
+
+      // localStorage.setItem("token", res.data.accessToken);
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+      }
+      navigate("/", { replace: true });
+    } catch (err) {
+      console.log(err.response?.data);
+      setServerError(err.response?.data?.message || "Login failed");
+    }
   };
 
   return (
     <div className="login-page">
-    <div className="wrapper login-wrapper">
-      <div className="title">Login</div>
-    <form className="login" onSubmit={handleLogin}>
-      <div>
-      <div className="field">
-        <input type="text" placeholder="Username" required />
-      </div>
+      <div className="login-wrapper">
+        <div className="login-title">Login</div>
 
-        <div className="field">
-          <input type="password" placeholder="Password" required />
-        </div>
-     </div>
-      <div className="field btn">
-        <div className="btn-layer"></div>
-        <input type="submit" value="Login" />
-      </div>
+        <form className="login-form" onSubmit={handleLogin}>
+          <div className="login-field">
+            <input
+              name="email"
+              type="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+            {errors.email && <p className="error">{errors.email}</p>}
+          </div>
 
-      <div className="signup-link">
-        Not a member? <Link to="/signup">Sign up</Link>
+          <div className="login-field">
+            <input
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            {errors.password && <p className="error">{errors.password}</p>}
+          </div>
+
+          {serverError && <p className="error server-error">{serverError}</p>}
+
+          <div className="login-field ">
+            <input className="login-btn " type="submit" value="Login" />
+          </div>
+
+          <div className="login-signup-link">
+            Not a member? <Link to="/signup">Sign up</Link>
+          </div>
+        </form>
       </div>
-    </form>
-    </div>
     </div>
   );
 }
-//  import React from "react";
-// import "./Login.css";
-
-// export default function Login() {
-//   const handleLogin = (e) => {
-//     e.preventDefault();
-//     alert("Login submitted!");
-//   };
-
-//   return (
-//     <form className="login" onSubmit={handleLogin}>
-      
-//       <div className="field">
-//         <input type="text" placeholder="Username" required />
-//       </div>
-    
-//       <div className="field">
-//         <input type="password" placeholder="Password" required />
-//       </div>
-//       <div className="field btn">
-//         <div className="btn-layer"></div>
-//         <input type="submit" value="Login" />
-//       </div>
-//     </form>
-//   );
-// }
