@@ -23,7 +23,10 @@ body {
   color: rgb(114, 114, 114);
 }
 
+
+
 .doctor-btn {
+
   background: linear-gradient(to left, #2e8b6e, #4caf93);
   color: white;
   border-radius: 16px;
@@ -35,6 +38,7 @@ body {
   filter: brightness(110%);
   color: white;
 }
+
 
 .doctor-big-btn {
   height: 52px;
@@ -170,6 +174,22 @@ body {
 .smallfont {
   font-size: smaller;
 }
+
+
+.doctor-photo-wrap {
+  width: 100%;
+  height: 280px; 
+  border-radius: 1rem;
+  overflow: hidden; 
+  position: relative;
+}
+
+.doctor-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+}
+
 
 .doctor-w-49 {
   width: 49%;
