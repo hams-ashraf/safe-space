@@ -70,7 +70,7 @@ export default function Doctors() {
 
                   <button
                     className="btn doctors-btn-main w-100 mb-2"
-                    onClick={() => navigate(`/doctorprofile`)}
+                    onClick={() => navigate(`/doctorprofile/${t.id}`)}
                   >
                     View Profile
                   </button>
