@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { getMyProfile } from "../../api/patientApi";
 import defaultImg from "../../assets/myprofile.avif";
+import { useNavigate } from "react-router-dom";
 import "./PatientProfile.css";
 
 export default function PatientProfile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchProfile() {
@@ -39,15 +41,15 @@ export default function PatientProfile() {
               {/* Image */}
               <div className="justify-content-center d-flex rounded-circle overflow-hidden w-50 h-50 m-auto">
                 <img
-                  src={defaultImg}
+                  src={user.imageUrl || defaultImg}
                   alt="Patient"
-                  className="w-100"
+                  className="w-100 h-100"
                 />
               </div>
 
               {/* Name */}
               <h4 className="fw-bolder justify-content-center d-flex mt-4">
-                {user.fullName || "No Name"}
+                {user.displayName || user.fullName || "No Name"}
               </h4>
 
               {/* Member since */}
@@ -72,13 +74,18 @@ export default function PatientProfile() {
                 <div className="d-flex align-items-center gap-3 mb-2">
                   <i className="fa-solid fa-location-dot text-gray"></i>
                   <small className="text-gray mb-0">
-                    {user.address || "Not set"}
+                    {user.location || "Not set"}
                   </small>
                 </div>
               </div>
 
               <div className="justify-content-center d-flex">
-                <button className="btn big-btn">Edit Profile</button>
+                <button 
+                  className="btn big-btn"
+                  onClick={() => navigate("/edit-profile")}
+                >
+                  Edit Profile
+                </button>
               </div>
             </div>
 

@@ -12,6 +12,7 @@ import PatientProfile from "./components/PatientProfile/PatientProfile";
 import Signup from "./components/Signup/Signup";
 import Login from "./components/Login/Login";
 import ProtectedRoute from "./components/Protectedroute/Protectedroute";
+import EditProfile from "./components/editProfile/editProfile";
 
 
 const router = createBrowserRouter([
@@ -68,6 +69,14 @@ const router = createBrowserRouter([
           <ProtectedRoute>
             <PatientProfile />
           </ProtectedRoute>
+        ),
+      },
+      {
+        path: "edit-profile",
+        element:(
+        <ProtectedRoute>
+          <EditProfile /> 
+        </ProtectedRoute>
         ),
       },
        {
