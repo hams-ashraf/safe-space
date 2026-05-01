@@ -14,6 +14,8 @@ import Login from "./components/Login/Login";
 import ProtectedRoute from "./components/Protectedroute/Protectedroute";
 import StartNewChat from "./components/Startnewchat/Startnewchat";
 import CurrentChats from "./components/CurrentChats/CurrentChats";
+//import لشات الدكتور 
+import DoctorCurrentChat from "./components/DoctorCurrentChat/DoctorCurrentChat";
 const router = createBrowserRouter([
   {
  
@@ -46,7 +48,11 @@ const router = createBrowserRouter([
                   <CurrentChats />
               ),
         },
-
+        //ازود الpath بتاع شات الدكتور
+      {
+      path: "DoctorCC/:id", 
+      element: <DoctorCurrentChat />,
+    },
 
       {
         path: "doctors",

@@ -1,0 +1,208 @@
+/* .chat-page {
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+.chat-box {
+  background: #fdfdfd;
+  border-radius: 15px;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.back-btn-simple {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #4CAF93;
+  cursor: pointer;
+  margin-right: 10px;
+  line-height: 1;
+}
+
+.doctor-img {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+}
+
+.messages {
+  overflow-y: auto;
+  background-color: #f0f2f5;
+}
+
+.msg-bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  font-size: 0.95rem;
+  position: relative;
+  line-height: 1.4;
+}
+
+.msg-doctor {
+  background-color: #ffffff;
+  color: #333;
+  border-bottom-left-radius: 2px;
+}
+
+.msg-patient {
+  background-color: #dcf8c6;
+  color: #333;
+  border-bottom-right-radius: 2px;
+}
+
+.msg-time {
+  font-size: 0.7rem;
+  color: #999;
+  display: block;
+  text-align: right;
+}
+
+.input-group {
+  padding: 15px;
+  background: white;
+}
+
+.chat-input-field {
+  border-radius: 25px !important;
+  padding-left: 20px;
+  border: 1px solid #ddd;
+}
+
+.send-btn {
+  background-color: #4CAF93;
+  color: white;
+  border-radius: 50% !important;
+  width: 45px;
+  height: 45px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+}
+
+.send-btn:hover {
+  background-color: #3d8b75;
+  color: white;
+}
+
+.send-btn:disabled {
+  background-color: #ccc;
+} */
+ .chat-page {
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+.chat-box {
+  background: #fdfdfd;
+  border-radius: 15px;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.back-btn-simple {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #4CAF93;
+  cursor: pointer;
+  margin-right: 10px;
+  line-height: 1;
+}
+
+.cc-initials-circle {
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.messages {
+  overflow-y: auto;
+  background-color: #f0f2f5; 
+}
+
+.msg-bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  font-size: 0.95rem;
+  position: relative;
+  line-height: 1.4;
+}
+
+/* رسايل الدكتور (المرسل) - خليتها بلونك الأخضر المميز */
+.msg-doctor-sender {
+  background-color: #4CAF93; 
+  color: white;
+  border-bottom-right-radius: 2px;
+}
+
+.msg-doctor-sender .msg-time {
+  color: #e0e0e0;
+}
+
+/* رسايل المريض (المستقبل) - لون أبيض سادة */
+.msg-patient-receiver {
+  background-color: #ffffff;
+  color: #333;
+  border-bottom-left-radius: 2px;
+}
+
+.msg-time {
+  font-size: 0.7rem;
+  color: #999;
+  display: block;
+  text-align: right;
+}
+
+.input-group {
+  padding: 15px;
+  background: white;
+}
+
+.chat-input-field {
+  border-radius: 25px !important;
+  padding-left: 20px;
+  border: 1px solid #ddd;
+}
+
+.send-btn {
+  background-color: #4CAF93;
+  color: white;
+  border-radius: 50% !important;
+  width: 45px;
+  height: 45px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+}
+
+.send-btn:hover {
+  background-color: #3d8b75;
+}
+
+.send-btn:disabled {
+  background-color: #ccc;
+}
