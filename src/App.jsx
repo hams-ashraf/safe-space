@@ -12,8 +12,8 @@ import PatientProfile from "./components/PatientProfile/PatientProfile";
 import Signup from "./components/Signup/Signup";
 import Login from "./components/Login/Login";
 import ProtectedRoute from "./components/Protectedroute/Protectedroute";
-
-
+import StartNewChat from "./components/Startnewchat/Startnewchat";
+import CurrentChats from "./components/CurrentChats/CurrentChats";
 const router = createBrowserRouter([
   {
  
@@ -30,6 +30,24 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+
+      {
+        path: "start-new-chat",
+          element: (
+          <StartNewChat />
+          )
+        },
+
+
+        {
+        path: "start-chat/:doctorId", 
+              element: (
+              
+                  <CurrentChats />
+              ),
+        },
+
+
       {
         path: "doctors",
         element: (

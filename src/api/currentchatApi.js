@@ -1,0 +1,3 @@
+import api from "./axiosInstance";
+
+export const getChatMessages = (chatId) => api.get(`/Chat/Messages/${chatId}`);

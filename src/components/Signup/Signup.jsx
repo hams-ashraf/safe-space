@@ -157,7 +157,7 @@ export default function Signup() {
             <input
               name="displayName"
               type="text"
-              placeholder="Display Name"
+              placeholder="Anonymous Name"
               value={formData.displayName}
               onChange={handleChange}
               style={{ border: submitted && errors.displayName ? "2px solid red" : "" }}

@@ -35,17 +35,21 @@ export default function Login() {
 
     try {
       const res = await loginUser(formData);
-
+      
       // localStorage.setItem("token", res.data.accessToken);
       if (res.data?.token) {
         localStorage.setItem("token", res.data.token);
+      }
+      if (res.data.user?.id) {
+        localStorage.setItem("patientId", res.data.user.id);
       }
       navigate("/", { replace: true });
     } catch (err) {
       console.log(err.response?.data);
       setServerError(err.response?.data?.message || "Login failed");
     }
-  };
+  
+};
 
   return (
     <div className="login-page">

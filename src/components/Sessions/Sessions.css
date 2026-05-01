@@ -1,18 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 .page-wrapper {
-  height: 476px;       /* الصفحة تغطي الشاشة بالكامل */
-  width: 100vh;
+  /* التعديلات الجوهرية هنا */
+  min-height: 80vh;      
+  width: 100%;           
+  display: flex;
+  flex-direction: column;
+  
   background: #F8F9FA !important;
-  padding: 20px;
+  padding: 40px 20px;    
   font-family: 'Inter', sans-serif;
   color: #1f2937;
   box-sizing: border-box;
-
-  display: flex;
-  flex-direction: column;
-
-  justify-content: center; /* توسيط الكروت رأسياً */
-  overflow: hidden;        /* يمنع أي scroll رأسي */
+  overflow: visible;    
 }
 .page-title {
   font-size: 26px;
@@ -23,13 +22,12 @@
 
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* مرونة الكروت */
-  gap: 20px;
-  flex-grow: 1; /* يأخذ كل المساحة المتاحة */
-  overflow-y: auto; /* scroll رأسي يظهر جوا الكروت لو محتوى كبير */
-  overflow-x: hidden; /* يمنع scroll أفقي */
-  padding-right: 10px; /* لتجنب قص الكروت الأخيرة */
-  
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+  gap: 25px;
+  width: 100%;
+  max-width: 1200px;     
+  margin: 0 auto;        
+  padding-bottom: 50px;  
 }
 
 .room-card {
@@ -43,7 +41,7 @@
   justify-content: space-between;
   min-height: 180px;
   max-height: 220px;
-  overflow: hidden; /* يمنع scroll داخل الكرت */
+  overflow: hidden; 
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
