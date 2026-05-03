@@ -1,165 +1,4 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-.page-wrapper {
-  min-height: 80vh;      
-  width: 100%;           
-  display: flex;
-  flex-direction: column;
-  
-  background: #F8F9FA !important;
-  padding: 40px 20px;    
-  font-family: 'Inter', sans-serif;
-  color: #1f2937;
-  box-sizing: border-box;
-  overflow: visible;    
-}
-.page-title {
-  font-size: 26px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  flex-shrink: 0;
-}
 
-.cards-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-  gap: 25px;
-  width: 100%;
-  max-width: 1200px;     
-  margin: 0 auto;        
-  padding-bottom: 50px;  
-}
-
-.room-card {
-  background: #FFFFFF;
-  border: 1px solid #e5e7eb;
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 180px;
-  max-height: 220px;
-  overflow: hidden; 
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.room-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
-}
-
-.members {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #9ca3af;
-  font-size: 14px;
-  margin: 12px 0 16px;
-}
-
-.join-btn {
-  width: 100%;
-  height: 45px;
-  border-radius: 12px;
-  border: 2px solid #198754;
-  background: transparent;
-  color: #198754;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: 0.25s ease;
-}
-
-.join-btn:hover {
-  background: #198754;
-  color: white;
-}
-
-.join-btn.primary {
-  background: #198754;
-  color: white;
-  border: none;
-}
-
-.join-btn.primary:hover {
-  background: #3da989;
-}
-
-.reschedule-btn {
-  width: 48%;
-  height: 45px;
-  border-radius: 12px;
-  border: 1.5px solid #e5e7eb;
-  background: white;
-  color: #111827;
-  font-weight: 500;
-  font-size: 14px;
-  cursor: pointer;
-  transition: 0.25s ease;
-}
-
-.reschedule-btn:hover {
-  background: #f3f4f6;
-}
-
-.session-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
-}
-
-.session-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.session-doctor {
-  font-size: 14px;
-  color: #6b7280;
-  margin-top: 4px;
-}
-
-.call-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: #E8F7F2;
-  color: #2FAE8F;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.session-info {
-  display: flex;
-  gap: 16px;
-  font-size: 14px;
-  color: #6b7280;
-  margin: 12px 0 16px;
-}
-
-.session-info span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.card-actions {
-  display: flex;
-  gap: 12px;
-}
-
-@media (max-width: 992px) {
-  .cards-container {
-    grid-template-columns: 1fr;
-  }
-}
- */
  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 .page-wrapper {
@@ -173,6 +12,7 @@
   color: #1f2937;
   box-sizing: border-box;
   overflow: visible;
+  
 }
 
 .page-title {
@@ -186,7 +26,6 @@
   width: 100%;
 }
 
-/* --- Upcoming Sessions (Grid System) --- */
 .cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -195,6 +34,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding-bottom: 30px;
+
 }
 
 .room-card {
@@ -215,12 +55,11 @@
   box-shadow: 0 8px 16px rgba(0,0,0,0.12);
 }
 
-/* --- Past Sessions (List System) --- */
 .past-sessions-container {
   width: 100%;
   max-width: 1200px;
   margin: 20px auto 50px;
-  background: #F4FBF9; /* اللون المينت الفاتح للخلفية */
+  background: #f4f6f6; 
   padding: 30px;
   border-radius: 24px;
 }
@@ -277,7 +116,6 @@
   gap: 6px;
 }
 
-/* --- Shared Elements & Buttons --- */
 .session-header {
   display: flex;
   justify-content: space-between;
@@ -333,13 +171,13 @@
 }
 
 .join-btn.primary {
-  background: #198754;
+  background: #2E8B6E;
   color: white;
   border: none;
 }
 
 .join-btn.primary:hover {
-  background: #146c43;
+  background: #4CAF93;
 }
 
 .reschedule-btn {
@@ -353,11 +191,9 @@
   font-size: 14px;
   cursor: pointer;
 }
-/* زرار Book Again المخصص ليطابق ستايل View Notes */
 .book-again-btn {
   padding: 10px 25px;
   border-radius: 10px;
-  /* اللون الأخضر الموحد للتصميم */
   border: 1.5px solid #2FAE8F; 
   background: white;
   color: #2FAE8F;
@@ -368,7 +204,7 @@
 }
 
 .book-again-btn:hover {
-  background: #A8E6CF;
+  background: #4CAF93;
   color: white;
   box-shadow: 0 4px 8px rgba(183, 204, 199, 0.2);
 }
@@ -384,7 +220,6 @@
   width: 100%;
 }
 
-/* --- Responsiveness --- */
 @media (max-width: 992px) {
   .cards-container {
     grid-template-columns: 1fr;
