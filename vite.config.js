@@ -25,6 +25,18 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/callHub': {
+        target: 'http://doctorprofile.runasp.net',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+      },
+      '/hubs': {
+        target: 'http://doctorprofile.runasp.net',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+      },
     },
   },
 })

@@ -1,0 +1,19 @@
+.app-layout {
+  min-height: 100vh;
+}
+
+.app-layout--auth {
+  background: linear-gradient(
+    to bottom,
+    rgb(227, 230, 241),
+    #77b4a6,
+    #77b4a6,
+    #77b4a6
+  );
+}
+
+.auth-outlet {
+  margin: 0;
+  padding: 0;
+}
+

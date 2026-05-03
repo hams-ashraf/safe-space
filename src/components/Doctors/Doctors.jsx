@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDoctors } from "../../api/doctorsApi";
+import { isPatientUser } from "../../api/roleApi";
 import "./Doctors.css";
 
 export default function Doctors() {
@@ -9,6 +10,7 @@ export default function Doctors() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const showCardActions = isPatientUser();
 
   useEffect(() => {
     async function fetchDoctors() {
@@ -68,19 +70,23 @@ export default function Doctors() {
                     </span>
                   </div>
 
-                  <button
-                    className="btn doctors-btn-main w-100 mb-2"
-                    onClick={() => navigate(`/doctorprofile/${t.id}`)}
-                  >
-                    View Profile
-                  </button>
+                  {showCardActions && (
+                    <>
+                      <button
+                        className="btn doctors-btn-main w-100 mb-2"
+                        onClick={() => navigate(`/doctorprofile/${t.id}`)}
+                      >
+                        View Profile
+                      </button>
 
-                  <button
-                    className="btn doctors-btn-outline-main w-100"
-                    onClick={() => navigate("/chat")}
-                  >
-                    Start Chat
-                  </button>
+                      <button
+                        className="btn doctors-btn-outline-main w-100"
+                        onClick={() => navigate("/chat")}
+                      >
+                        Start Chat
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

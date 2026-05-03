@@ -34,12 +34,7 @@ export default function Login() {
     if (Object.values(errors).some((err) => err !== "")) return;
 
     try {
-      const res = await loginUser(formData);
-
-      // localStorage.setItem("token", res.data.accessToken);
-      if (res.data?.token) {
-        localStorage.setItem("token", res.data.token);
-      }
+      await loginUser(formData);
       navigate("/", { replace: true });
     } catch (err) {
       console.log(err.response?.data);
