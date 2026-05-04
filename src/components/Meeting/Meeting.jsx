@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Meeting.css";
 import { isDoctorUser, getStoredUser } from "../../api/roleApi";
-import { endCall } from "../../api/sessionsApi";
+import { endCall, updateNotes } from "../../api/sessionsApi";
 
 export default function Meeting() {
   const [selectedVoice, setSelectedVoice] = useState("Normal");
@@ -13,6 +13,12 @@ export default function Meeting() {
   const [participants, setParticipants] = useState([]);
   const [isMuted, setIsMuted] = useState(false);
   const [micError, setMicError] = useState("");
+  const [micReady, setMicReady] = useState(false);
+  const [forceEndCall, setForceEndCall] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
+  const [notesContent, setNotesContent] = useState("");
+  const [isSavingNotes, setIsSavingNotes] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const localStreamRef = useRef(null);
@@ -82,6 +88,23 @@ export default function Meeting() {
     return () => clearInterval(timerId);
   }, []);
 
+
+  const handleSaveNotes = async () => {
+    if (!session?.sessionId) return;
+    setIsSavingNotes(true);
+    setSaveSuccess(false);
+    try {
+      await updateNotes(session.sessionId, notesContent);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000); // Hide success message after 3s
+    } catch (err) {
+      console.error("Failed to save notes", err);
+      alert("Failed to save notes. Please try again.");
+    } finally {
+      setIsSavingNotes(false);
+    }
+  };
+
   useEffect(() => {
     const setupMicrophone = async () => {
       try {
@@ -98,7 +121,16 @@ export default function Meeting() {
         const dest = ctx.createMediaStreamDestination();
         destRef.current = dest;
 
-        // Nodes (created once, re-used)
+        // For Doctor: Just pass the raw audio without heavy Voice Changer nodes
+        if (isDoctor) {
+          source.connect(dest);
+          localStreamRef.current = dest.stream;
+          setMicError("");
+          setMicReady(true);
+          return;
+        }
+
+        // For Patient: Initialize Voice Changer nodes
         const filter = ctx.createBiquadFilter();
         filter.type = "lowpass";
         filter.frequency.value = 20000;
@@ -115,7 +147,7 @@ export default function Meeting() {
 
         const distortion = ctx.createWaveShaper();
         distortion.oversample = "4x";
-        distortion.curve = new Float32Array([0, 0]); // placeholder
+        distortion.curve = new Float32Array([0, 0]); 
         distortionRef.current = distortion;
 
         const tremoloGain = ctx.createGain();
@@ -124,7 +156,7 @@ export default function Meeting() {
 
         const osc = ctx.createOscillator();
         osc.type = "square";
-        osc.frequency.value = 30; // robotic-ish tremolo
+        osc.frequency.value = 30; 
         tremoloOscRef.current = osc;
         osc.connect(tremoloGain.gain);
         osc.start();
@@ -133,6 +165,7 @@ export default function Meeting() {
         source.connect(dest);
         localStreamRef.current = dest.stream;
         setMicError("");
+        setMicReady(true);
       } catch (err) {
         console.error("Microphone access failed:", err);
         setMicError("Microphone permission denied.");
@@ -211,17 +244,25 @@ export default function Meeting() {
     }
 
     // Defaults
+    filter.type = "lowpass";
     filter.frequency.value = 20000;
     filter.Q.value = 0.7;
+    filter.gain.value = 0; // Reset gain for shelf filters
     compressor.threshold.value = -22;
     compressor.ratio.value = 6;
     tremoloGain.gain.value = 1;
     setDistortionAmount(0);
+    if (tremoloOscRef.current) tremoloOscRef.current.frequency.value = 30;
 
     if (option === "Soft Voice") {
-      filter.frequency.value = 1800;
-      compressor.threshold.value = -28;
-      compressor.ratio.value = 8;
+      // Thin, airy, whispering sound
+      filter.type = "highpass";
+      filter.frequency.value = 800; // Cut off all bass/mids below 800Hz
+      filter.Q.value = 1.0;
+      
+      compressor.threshold.value = -35;
+      compressor.ratio.value = 12; // Heavy compression to pick up whispers
+      
       source.connect(filter);
       filter.connect(compressor);
       compressor.connect(dest);
@@ -229,17 +270,26 @@ export default function Meeting() {
     }
 
     if (option === "Deep Voice") {
-      filter.frequency.value = 900;
-      filter.Q.value = 1.1;
+      // Massive bass boost
+      filter.type = "lowshelf";
+      filter.frequency.value = 350; // Boost everything below 350Hz
+      filter.gain.value = 25; // +25dB bass boost! (extremely noticeable)
+      
       source.connect(filter);
       filter.connect(dest);
       return;
     }
 
     if (option === "Robotic Voice") {
-      filter.frequency.value = 2200;
-      setDistortionAmount(35);
-      tremoloGain.gain.value = 0.7; // tremolo depth
+      // Walkie-talkie EQ + heavy distortion + fast AM modulation
+      filter.type = "bandpass";
+      filter.frequency.value = 1500;
+      filter.Q.value = 1.5;
+      
+      setDistortionAmount(80); // Very high distortion
+      tremoloGain.gain.value = 1; // 100% AM depth
+      if (tremoloOscRef.current) tremoloOscRef.current.frequency.value = 50; // 50Hz Dalek modulation
+      
       source.connect(filter);
       filter.connect(distortion);
       distortion.connect(tremoloGain);
@@ -259,6 +309,11 @@ export default function Meeting() {
   useEffect(() => {
     if (!roomId) {
       setConnectionStatus("No room id found");
+      return undefined;
+    }
+
+    if (!micReady) {
+      setConnectionStatus("Waiting for microphone...");
       return undefined;
     }
 
@@ -399,6 +454,14 @@ export default function Meeting() {
         setParticipants((prev) =>
           prev.filter((p) => String(p.userId) !== String(leftUserId))
         );
+        
+        // If the other person leaves the 1-on-1 call, end the session for us too
+        setForceEndCall(true);
+      });
+
+      // Just in case the backend broadcasts an explicit CallEnded event
+      hubConnection.on("CallEnded", () => {
+        setForceEndCall(true);
       });
 
       hubConnection.onreconnecting(() => setConnectionStatus("Reconnecting..."));
@@ -471,7 +534,14 @@ export default function Meeting() {
       };
       cleanup();
     };
-  }, [roomId]);
+  }, [roomId, micReady]);
+
+  useEffect(() => {
+    if (forceEndCall) {
+      alert("The session has ended because the other participant left.");
+      handleLeaveSession();
+    }
+  }, [forceEndCall]);
 
   const handleToggleMute = () => {
     const stream = localStreamRef.current;
@@ -494,7 +564,7 @@ export default function Meeting() {
     setIsMuted(nextMuted);
   };
 
-  const handleLeaveSession = async () => {
+  async function handleLeaveSession() {
     try {
       if (isDoctor) {
         // Try different properties where the call ID might be stored
@@ -504,6 +574,15 @@ export default function Meeting() {
             await endCall(callId);
           } catch (endErr) {
             console.error("End call API failed:", endErr);
+          }
+          // Locally save that we ended this session so it instantly disappears from the Home page
+          const sid = session?.sessionId || session?.sessionsId || session?.id;
+          if (sid) {
+            const endedSessions = JSON.parse(localStorage.getItem("ended_sessions") || "[]");
+            if (!endedSessions.includes(sid)) {
+              endedSessions.push(sid);
+              localStorage.setItem("ended_sessions", JSON.stringify(endedSessions));
+            }
           }
         }
       }
@@ -605,7 +684,7 @@ export default function Meeting() {
         <div className="meeting-realtime-bar">
           <span className="badge text-bg-light">Hub: {connectionStatus}</span>
           <span className="badge text-bg-light">
-            Participants: {participants.length || 1}
+            Participants: {participants.length + 1}
           </span>
         </div>
         {hubError && <p className="text-danger text-center mb-3">Hub error: {hubError}</p>}
@@ -663,7 +742,7 @@ export default function Meeting() {
           )}
 
           {isDoctor && (
-            <button type="button" className="action-btn">
+            <button type="button" className={`action-btn ${showNotes ? "active" : ""}`} onClick={() => setShowNotes(!showNotes)}>
               <span className="action-icon light">
                 <i className="fa-regular fa-note-sticky" />
               </span>
@@ -683,6 +762,40 @@ export default function Meeting() {
           </button>
         </div>
       </div>
+
+      {/* Notes Slide-out Panel */}
+      {isDoctor && (
+        <div className={`notes-side-panel ${showNotes ? "open" : ""}`}>
+          <div className="notes-panel-header">
+            <h3>Session Notes</h3>
+            <button className="notes-close-btn" onClick={() => setShowNotes(false)}>
+              <i className="fa-solid fa-xmark" />
+            </button>
+          </div>
+          <div className="notes-panel-body">
+            <textarea
+              className="notes-textarea"
+              placeholder="Write your session notes here..."
+              value={notesContent}
+              onChange={(e) => setNotesContent(e.target.value)}
+            />
+          </div>
+          <div className="notes-panel-footer">
+            {saveSuccess && (
+              <div className="text-success text-center mb-2 fw-bold" style={{ fontSize: "0.9rem" }}>
+                <i className="fa-solid fa-circle-check me-1"></i> Notes saved successfully!
+              </div>
+            )}
+            <button
+              className="btn btn-success w-100 fw-bold"
+              onClick={handleSaveNotes}
+              disabled={isSavingNotes}
+            >
+              {isSavingNotes ? "Saving..." : "Save Notes"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

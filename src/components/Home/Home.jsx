@@ -46,6 +46,33 @@ export default function Home() {
             // Just in case it's nested or has different keys
             upcoming = res.data || res.upcoming || [];
           }
+
+          // Filter out completed sessions AND only show TODAY's sessions
+          const today = new Date();
+          const endedSessions = JSON.parse(localStorage.getItem("ended_sessions") || "[]");
+
+          upcoming = upcoming.filter(s => {
+            const sid = s.sessionId || s.sessionsId || s.id;
+            if (sid && endedSessions.some(es => String(es) === String(sid))) {
+              return false; // We ended it locally!
+            }
+
+            const status = String(s.status || s.Status || "").toLowerCase();
+            if (status === "completed" || status === "ended" || status === "done") {
+              return false;
+            }
+
+            const sessionDateStr = s.date || s.Date;
+            if (sessionDateStr) {
+              const sessionDate = new Date(sessionDateStr);
+              // Compare if the session date matches today's date
+              if (sessionDate.toDateString() !== today.toDateString()) {
+                return false;
+              }
+            }
+            return true;
+          });
+
           setUpcomingSessions(upcoming);
         } catch (err) {
           console.error("Error loading sessions:", err);
@@ -63,7 +90,7 @@ export default function Home() {
     .slice(0, 3);
 
   const handleJoinSession = async (session) => {
-    const sessionId = session.sessionId || session.sessionsId;
+    const sessionId = session.sessionId || session.sessionsId || session.id;
     if (!sessionId) return;
     
     setJoiningSessionId(sessionId);
@@ -81,7 +108,12 @@ export default function Home() {
         },
       });
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to join call.");
+      console.error("Join call error detail:", err.response || err);
+      let errorMsg = "Failed to join call.";
+      if (err.response?.data) {
+        errorMsg = typeof err.response.data === 'string' ? err.response.data : (err.response.data.message || errorMsg);
+      }
+      alert(`Backend Error: ${errorMsg}`);
     } finally {
       setJoiningSessionId(null);
     }
@@ -118,12 +150,12 @@ export default function Home() {
         <section className="py-5 mb-5 bg-white">
           <div className="container">
             <h2 className="text-center fw-bold mb-4" style={{ color: "#41655d" }}>
-              Upcoming Sessions
+              Today's Sessions
             </h2>
             {loadingSessions ? (
               <p className="text-center">Loading your sessions...</p>
             ) : upcomingSessions.length === 0 ? (
-              <p className="text-center text-muted">You have no upcoming sessions scheduled.</p>
+              <p className="text-center text-muted">You have no sessions scheduled for today.</p>
             ) : (
               <div className="card section-bg shadow-sm border-0 rounded-4 p-4">
                 {upcomingSessions.map((session, index) => (

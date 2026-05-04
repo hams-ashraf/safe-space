@@ -34,3 +34,9 @@ export const endCall = async (id) => {
   const res = await API.post(`/Call/end/${id}`);
   return res.data;
 };
+
+
+export const updateNotes = async (id, notes) => {
+  const res = await API.post(`/DoctorSessions/${id}/Notes`, { notes });
+  return res.data;
+};
