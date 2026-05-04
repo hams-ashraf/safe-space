@@ -54,6 +54,12 @@
   display: flex;
   flex-direction: column;  
   height: 100%;             
+  cursor: pointer;
+}
+
+#top-rated .top-rated-card:focus-visible {
+  outline: 3px solid rgba(25, 135, 84, 0.35);
+  outline-offset: 3px;
 }
 
 #top-rated .top-rated-card:hover {

@@ -34,39 +34,7 @@ export default function Login() {
     if (Object.values(errors).some((err) => err !== "")) return;
 
     try {
-      const res = await loginUser(formData);
-      
-      // localStorage.setItem("token", res.data.accessToken);
-      if (res.data?.token) {
-        localStorage.setItem("token", res.data.token);
-      }
-
-
-      // if (res.data.user?.id) {
-      //   localStorage.setItem("patientId", res.data.user.id);
-      // }
-      
-      if (res.data.user?.id) {
-      const userId = res.data.user.id;
-      const role = res.data.role;
-
-      localStorage.setItem("userRole", role);
-
-      if (role === "Doctor") {
-        localStorage.setItem("doctorId", userId); // لو دكتور يتخزن هنا
-        localStorage.removeItem("patientId");    // نمسح القديم عشان اللخبطة
-      } else {
-        localStorage.setItem("patientId", userId); // لو مريض يتخزن هنا
-        localStorage.removeItem("doctorId");
-      }
-    }
-
-
-      //علشان يخزن هو دكتور ولا patient
-      if (res.data?.role) {
-        localStorage.setItem("userRole", res.data.role);
-      }
-      
+      await loginUser(formData);
       navigate("/", { replace: true });
     } catch (err) {
       console.log(err.response?.data);

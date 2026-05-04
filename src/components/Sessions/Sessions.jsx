@@ -186,13 +186,50 @@
 // export default RoomCards;
 
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Sessions.css";
-import { getMySessions, getDoctorSessions } from "../../api/sessionsApi"; // استيراد الدالتين
+import { getMySessions, joinCall } from "../../api/sessionsApi";
 
 function RoomCards() {
   const [upcoming, setUpcoming] = useState([]);
   const [past, setPast] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [joiningSessionId, setJoiningSessionId] = useState(null);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const getSessionId = (session) => session.sessionsId;
+
+  const handleJoinSession = async (session) => {
+    const sessionId = getSessionId(session);
+
+    if (!sessionId) {
+      setError("Session ID is missing for this session.");
+      return;
+    }
+
+    setError("");
+    setJoiningSessionId(sessionId);
+
+    try {
+      const callData = await joinCall({
+        sessionId,
+        isGroupCall: true,
+        callSessionId: 0,
+      });
+
+      navigate("/meeting", {
+        state: {
+          session,
+          callData,
+        },
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to join call.");
+    } finally {
+      setJoiningSessionId(null);
+    }
+  };
 
   const userRole = localStorage.getItem("userRole");
 
@@ -225,16 +262,15 @@ useEffect(() => {
 
   return (
     <div className="page-wrapper">
-      <h3 className="page-title">
-        {userRole === "Doctor" ? "My Appointments" : "Upcoming Sessions"}
-      </h3>
+      <h3 className="page-title">My Sessions</h3>
+      {error && <p className="text-danger">{error}</p>}
 
       <div className="cards-container">
         {upcoming.length === 0 ? (
           <p className="no-data">No upcoming sessions found</p>
         ) : (
-          upcoming.map((session, index) => (
-            <div className="room-card" key={`up-${index}`}>
+          sessions.map((session, index) => (
+            <div className="room-card" key={getSessionId(session) || index}>
               <div className="session-header">
                 <div>
                   <div className="session-type-name">{session.sessionType || "Session"}</div>
@@ -257,8 +293,19 @@ useEffect(() => {
                 <span><i className="bi bi-clock"></i> {session.time}</span>
               </div>
               <div className="card-actions">
-                <button className="join-btn primary">Join Session</button>
-                {userRole === "Patient" && <button className="reschedule-btn">Reschedule</button>}
+                <button
+                  className="join-btn primary"
+                  onClick={() => handleJoinSession(session)}
+                  disabled={joiningSessionId === getSessionId(session)}
+                >
+                  {joiningSessionId === getSessionId(session)
+                    ? "Joining..."
+                    : "Join Session"}
+                </button>
+
+                <button className="reschedule-btn">
+                  Reschedule
+                </button>
               </div>
             </div>
           ))
