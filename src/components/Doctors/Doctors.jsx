@@ -114,27 +114,12 @@ export default function Doctors() {
 
                       <button
                         className="btn doctors-btn-outline-main w-100"
-                        onClick={() => navigate("/chat")}
+                        onClick={() => handleStartChat(t)} 
                       >
                         Start Chat
                       </button>
                     </>
                   )}
-                  <p className="small text-muted">{t.specialization}</p>
-                  
-                  <button
-                    className="btn doctors-btn-main w-100 mb-2"
-                    onClick={() => navigate(`/doctorprofile/${t.id}`)}
-                  >
-                    View Profile
-                  </button>
-
-                  <button
-                    className="btn doctors-btn-outline-main w-100"
-                    onClick={() => handleStartChat(t)} 
-                  >
-                    Start Chat
-                  </button>
                 </div>
               </div>
             </div>

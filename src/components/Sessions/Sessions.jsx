@@ -188,7 +188,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Sessions.css";
-import { getMySessions, joinCall } from "../../api/sessionsApi";
+import { getMySessions, joinCall, getDoctorSessions, canJoinSession } from "../../api/sessionsApi";
 
 function RoomCards() {
   const [upcoming, setUpcoming] = useState([]);
@@ -201,6 +201,10 @@ function RoomCards() {
   const getSessionId = (session) => session.sessionsId;
 
   const handleJoinSession = async (session) => {
+    if (!canJoinSession(session)) {
+      setError("The session hasn't started yet. You can join up to 15 minutes before the scheduled time.");
+      return;
+    }
     const sessionId = getSessionId(session);
 
     if (!sessionId) {
@@ -263,13 +267,18 @@ useEffect(() => {
   return (
     <div className="page-wrapper">
       <h3 className="page-title">My Sessions</h3>
-      {error && <p className="text-danger">{error}</p>}
+      {error && (
+        <div className="alert alert-danger alert-dismissible fade show mt-3 text-center" role="alert" style={{ fontSize: "14px", maxWidth: "500px", margin: "0 auto 20px" }}>
+          {error}
+          <button type="button" className="btn-close" onClick={() => setError("")} aria-label="Close"></button>
+        </div>
+      )}
 
       <div className="cards-container">
         {upcoming.length === 0 ? (
           <p className="no-data">No upcoming sessions found</p>
         ) : (
-          sessions.map((session, index) => (
+          upcoming.map((session, index) => (
             <div className="room-card" key={getSessionId(session) || index}>
               <div className="session-header">
                 <div>

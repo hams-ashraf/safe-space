@@ -24,8 +24,19 @@ export default function CurrentChats() {
   const [connection, setConnection] = useState(null);
   const messagesEndRef = useRef(null);
 
-  const patientId = localStorage.getItem("patientId");
-  const doctorId = localStorage.getItem("doctorId"); 
+  let patientId = localStorage.getItem("patientId");
+  let doctorId = localStorage.getItem("doctorId"); 
+
+  if (!patientId || !doctorId) {
+    try {
+      const user = JSON.parse(localStorage.getItem("authUser"));
+      if (user && user.id) {
+        if (!patientId && userRole === "Patient") patientId = user.id;
+        if (!doctorId && userRole === "Doctor") doctorId = user.id;
+      }
+    } catch(e) {}
+  }
+
   const currentUserId = userRole === "Doctor" ? doctorId : patientId;
 
   const getInitial = (name) => {

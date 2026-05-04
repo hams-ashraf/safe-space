@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getDoctors } from "../../api/doctorsApi";
-import { getMySessions, getDoctorSessions, joinCall } from "../../api/sessionsApi";
+import { getMySessions, getDoctorSessions, joinCall, canJoinSession } from "../../api/sessionsApi";
 import { isDoctorUser } from "../../api/roleApi";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
@@ -14,6 +14,7 @@ export default function Home() {
   const [upcomingSessions, setUpcomingSessions] = useState([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
   const [joiningSessionId, setJoiningSessionId] = useState(null);
+  const [joinError, setJoinError] = useState("");
 
   const navigate = useNavigate();
 
@@ -90,6 +91,11 @@ export default function Home() {
     .slice(0, 3);
 
   const handleJoinSession = async (session) => {
+    setJoinError("");
+    if (!canJoinSession(session)) {
+      setJoinError("The session hasn't started yet. You can join up to 15 minutes before the scheduled time.");
+      return;
+    }
     const sessionId = session.sessionId || session.sessionsId || session.id;
     if (!sessionId) return;
     
@@ -113,7 +119,7 @@ export default function Home() {
       if (err.response?.data) {
         errorMsg = typeof err.response.data === 'string' ? err.response.data : (err.response.data.message || errorMsg);
       }
-      alert(`Backend Error: ${errorMsg}`);
+      setJoinError(`Backend Error: ${errorMsg}`);
     } finally {
       setJoiningSessionId(null);
     }
@@ -152,6 +158,12 @@ export default function Home() {
             <h2 className="text-center fw-bold mb-4" style={{ color: "#41655d" }}>
               Today's Sessions
             </h2>
+            {joinError && (
+              <div className="alert alert-danger alert-dismissible fade show text-center" role="alert" style={{ fontSize: "14px", maxWidth: "500px", margin: "0 auto 20px" }}>
+                {joinError}
+                <button type="button" className="btn-close" onClick={() => setJoinError("")} aria-label="Close"></button>
+              </div>
+            )}
             {loadingSessions ? (
               <p className="text-center">Loading your sessions...</p>
             ) : upcomingSessions.length === 0 ? (
