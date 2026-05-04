@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyProfile } from "../../api/patientApi";
-import { getMySessions, joinCall } from "../../api/sessionsApi";
+import { getMySessions, joinCall, canJoinSession } from "../../api/sessionsApi";
 import defaultImg from "../../assets/myprofile.avif";
 import "./PatientProfile.css";
 
@@ -60,6 +60,10 @@ export default function PatientProfile() {
   }, [upcomingSessions]);
 
   const handleJoinSession = async (session) => {
+    if (!canJoinSession(session)) {
+      setSessionsError("The session hasn't started yet. You can join up to 15 minutes before the scheduled time.");
+      return;
+    }
     const sessionId = getSessionId(session);
     if (!sessionId) {
       setSessionsError("Session ID is missing for this session.");
@@ -187,7 +191,12 @@ export default function PatientProfile() {
             {/* Upcoming Sessions */}
             <div className="bg-white rounded-4 shadow p-4">
               <h3 className="fw-bolder">Upcoming Sessions</h3>
-              {sessionsError && <p className="text-danger mt-3 mb-0">{sessionsError}</p>}
+              {sessionsError && (
+                <div className="alert alert-danger alert-dismissible fade show mt-3 text-center" role="alert" style={{ fontSize: "14px", maxWidth: "500px", margin: "0 auto 20px" }}>
+                  {sessionsError}
+                  <button type="button" className="btn-close" onClick={() => setSessionsError("")} aria-label="Close"></button>
+                </div>
+              )}
 
               {sessionsLoading ? (
                 <p className="text-gray mt-3 mb-0">Loading upcoming sessions...</p>
