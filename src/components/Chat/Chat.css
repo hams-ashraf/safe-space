@@ -1,77 +1,115 @@
-img{
-    width: 100px;
-}
-#top-rated .top-rated-card {
-  border: none;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
-  background-color: white;
+
+.cc-page-container {
+  min-height: 80vh; 
   display: flex;
-  flex-direction: column;  
-  height: 100%;             
+  flex-direction: column;
+  position: relative;
+  padding-bottom: 50px; 
 }
 
-#top-rated .top-rated-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+.cc-main-title {
+  color: #3f3f3f;
+  font-weight: bold;
+  text-align: left;
+  padding-left: 15px;
+  margin-top: 20px;
 }
 
-#top-rated .top-rated-card img {
-  width: 100%;          
-  height: 300px;         
-  object-fit: contain;    
-  background-color: #f0f0f0; 
-  display: block;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+.cc-header-action {
+  display: flex;
+  justify-content: flex-end; 
+  padding: 0 15px 15px 15px;
+}
+.cc-add-btn-top {
+  width: 40px;           
+  height: 40px;          
+  background-color: #4CAF93; 
+  color: white;
+  border-radius: 37%;    
+  border: none;
+  font-size: 20px;       
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 
+.cc-add-btn-top:hover {
+  background-color: #A8E6CF;
+  transform: scale(1.1);
+}
 
-#top-rated .card-title {
-  font-size: 1.25rem;
+.cc-whatsapp-card {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  position: relative;
+  direction: ltr; 
+}
+
+.cc-whatsapp-card:hover {
+  background-color: #f8f9fa;
+}
+
+.cc-avatar-side {
+  margin-right: 15px;
+}
+
+.cc-initials-circle {
+  width: 55px;
+  height: 55px;
+  background-color: #4CAF93;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.cc-info-side {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column; 
+  overflow: hidden;
+  text-align: left; 
+}
+
+.cc-info-header {
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-start; 
+}
+
+.cc-doctor-name {
+  margin: 0;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #41655d;
-  margin-bottom: 0.5rem;
+  color: #333;
+  margin-bottom: 2px; 
 }
 
-#top-rated .card-text {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 0.75rem;
+.cc-chat-time {
+  position: absolute;
+  right: 15px; 
+  top: 15px; 
+  font-size: 0.75rem;
+  color: #888;
 }
 
-#top-rated .text-warning i {
-  color: #f9c74f;
-  margin-right: 2px;
-}
-
-#top-rated .btn-custom {
-  background-color: #41655d;
-  color: white;
-  border-radius: 8px;
-  padding: 8px 18px;
-  font-weight: 500;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-#top-rated .btn-custom:hover {
-  background-color: #355047;
-  transform: translateY(-2px);
-}
-
-.chat-box{
-    height:500px;
-    background-color:#f8f9fa ;
-}
-.btn-custom {
-  background-color: #41655d;
-  border-color: #41655d;
-  color: white;
-}
-
-.btn-custom:hover {
-  background-color: #35504b; 
-  border-color: #35504b;
+.cc-last-msg {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 85%; 
 }

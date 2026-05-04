@@ -40,7 +40,8 @@ export default function Login() {
       console.log(err.response?.data);
       setServerError(err.response?.data?.message || "Login failed");
     }
-  };
+  
+};
 
   return (
     <div className="login-page">

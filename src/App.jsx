@@ -13,8 +13,10 @@ import Meeting from "./components/Meeting/Meeting";
 import Signup from "./components/Signup/Signup";
 import Login from "./components/Login/Login";
 import ProtectedRoute from "./components/Protectedroute/Protectedroute";
-
-
+import StartNewChat from "./components/Startnewchat/Startnewchat";
+import CurrentChats from "./components/CurrentChats/CurrentChats";
+//import لشات الدكتور 
+// import DoctorCurrentChat from "./components/DoctorCurrentChat/DoctorCurrentChat";
 const router = createBrowserRouter([
   {
  
@@ -33,6 +35,38 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+
+      {
+        path: "start-new-chat",
+          element: (
+          <StartNewChat />
+          )
+        },
+
+
+        // {
+        // path: "start-chat/:doctorId", 
+        //       element: (
+              
+        //           <CurrentChats />
+        //       ),
+        // },
+
+        {
+  // المريض والدكتور هيدخلوا هنا للمحادثة
+  path: "start-chat/:id", 
+  element: (
+    <ProtectedRoute>
+      <CurrentChats /> 
+    </ProtectedRoute>
+  ),
+},
+        //ازود الpath بتاع شات الدكتور
+    //   {
+    //   path: "DoctorCC/:id", 
+    //   element: <DoctorCurrentChat />,
+    // },
+
       {
         path: "doctors",
         element: (
