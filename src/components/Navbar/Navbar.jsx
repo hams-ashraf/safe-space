@@ -1,12 +1,14 @@
 
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Navbar.css";
+import { clearLoginIdentity } from "../../api/roleApi";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const isLoggedIn = localStorage.getItem("token"); 
+  const location = useLocation();
+  const isLoggedIn = localStorage.getItem("token");
 
   const handleProtectedRoute = (path) => {
     if (!isLoggedIn) {
@@ -15,15 +17,18 @@ export default function Navbar() {
       navigate(path);
     }
   };
+
+  const isActivePath = (path) => location.pathname === path;
  
   const handleLogout = () => {
     localStorage.removeItem("token");
+    clearLoginIdentity();
     navigate("/");
-    window.location.reload(); 
+    window.location.reload();
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4 sticky-top">
       <div className="container-fluid">
 
         {/* Logo */}
@@ -44,14 +49,14 @@ export default function Navbar() {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
 
             <li className="nav-item">
-              <NavLink className="nav-link" to="/">
+              <NavLink className="nav-link" to="/" end>
                 Home
               </NavLink>
             </li>
 
             <li className="nav-item">
               <span
-                className="nav-link"
+                className={`nav-link ${isActivePath("/doctors") ? "active" : ""}`}
                 onClick={() => handleProtectedRoute("/doctors")}
                 style={{ cursor: "pointer" }}
               >
@@ -61,7 +66,7 @@ export default function Navbar() {
 
             <li className="nav-item">
               <span
-                className="nav-link"
+                className={`nav-link ${isActivePath("/sessions") ? "active" : ""}`}
                 onClick={() => handleProtectedRoute("/sessions")}
                 style={{ cursor: "pointer" }}
               >
@@ -71,7 +76,7 @@ export default function Navbar() {
 
             <li className="nav-item">
               <span
-                className="nav-link"
+                className={`nav-link ${isActivePath("/chat") ? "active" : ""}`}
                 onClick={() => handleProtectedRoute("/chat")}
                 style={{ cursor: "pointer" }}
               >
@@ -81,7 +86,7 @@ export default function Navbar() {
 
             <li className="nav-item">
               <span
-                className="nav-link"
+                className={`nav-link ${isActivePath("/ai-chat") ? "active" : ""}`}
                 onClick={() => handleProtectedRoute("/ai-chat")}
                 style={{ cursor: "pointer" }}
               >
@@ -91,7 +96,7 @@ export default function Navbar() {
 
             <li className="nav-item">
               <span
-                className="nav-link"
+                className={`nav-link ${isActivePath("/symptoms") ? "active" : ""}`}
                 onClick={() => handleProtectedRoute("/symptoms")}
                 style={{ cursor: "pointer" }}
               >
@@ -101,7 +106,7 @@ export default function Navbar() {
 
             <li className="nav-item">
               <span
-                className="nav-link"
+                className={`nav-link ${isActivePath("/myprofile") ? "active" : ""}`}
                 onClick={() => handleProtectedRoute("/myprofile")}
                 style={{ cursor: "pointer" }}
               >
