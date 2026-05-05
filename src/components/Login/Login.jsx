@@ -34,17 +34,12 @@ export default function Login() {
     if (Object.values(errors).some((err) => err !== "")) return;
 
     try {
+      
       const res = await loginUser(formData);
       
-      // localStorage.setItem("token", res.data.accessToken);
       if (res.data?.token) {
         localStorage.setItem("token", res.data.token);
       }
-
-
-      // if (res.data.user?.id) {
-      //   localStorage.setItem("patientId", res.data.user.id);
-      // }
       
       if (res.data.user?.id) {
       const userId = res.data.user.id;
