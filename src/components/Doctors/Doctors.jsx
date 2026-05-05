@@ -1,8 +1,7 @@
-
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDoctors } from "../../api/doctorsApi";
+import { isPatientUser } from "../../api/roleApi";
 import { startChatApi, getMyChats } from "../../api/chatApi"; 
 import "./Doctors.css";
 
@@ -11,6 +10,7 @@ export default function Doctors() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const showCardActions = isPatientUser();
 
   useEffect(() => {
     async function fetchDoctors() {
@@ -85,21 +85,41 @@ export default function Doctors() {
                 </div>
                 <div className="card-body">
                   <h5 className="fw-bold">{t.fullName}</h5>
-                  <p className="small text-muted">{t.specialization}</p>
-                  
-                  <button
-                    className="btn doctors-btn-main w-100 mb-2"
-                    onClick={() => navigate(`/doctorprofile/${t.id}`)}
-                  >
-                    View Profile
-                  </button>
+                  <p className="small text-muted mb-1">
+                    {t.position || t.specialization}
+                  </p>
+                  <p className="small text-success mb-3">
+                    {t.specialization}
+                  </p>
 
-                  <button
-                    className="btn doctors-btn-outline-main w-100"
-                    onClick={() => handleStartChat(t)} 
-                  >
-                    Start Chat
-                  </button>
+                  <div className="d-flex justify-content-between small text-muted mb-3">
+                    <span>
+                      <strong>Experience</strong><br />
+                      {t.yearOfExperience} years
+                    </span>
+                    <span className="text-end">
+                      <strong>Reviews</strong><br />
+                      {t.reviewsCount}
+                    </span>
+                  </div>
+
+                  {showCardActions && (
+                    <>
+                      <button
+                        className="btn doctors-btn-main w-100 mb-2"
+                        onClick={() => navigate(`/doctorprofile/${t.id}`)}
+                      >
+                        View Profile
+                      </button>
+
+                      <button
+                        className="btn doctors-btn-outline-main w-100"
+                        onClick={() => handleStartChat(t)} 
+                      >
+                        Start Chat
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

@@ -49,7 +49,7 @@ export default function Login() {
 
       if (role === "Doctor") {
         localStorage.setItem("doctorId", userId); // لو دكتور يتخزن هنا
-        localStorage.removeItem("patientId");    // نمسح القديم عشان اللخبطة
+        localStorage.removeItem("patientId");   
       } else {
         localStorage.setItem("patientId", userId); // لو مريض يتخزن هنا
         localStorage.removeItem("doctorId");
@@ -112,3 +112,4 @@ export default function Login() {
     </div>
   );
 }
+
