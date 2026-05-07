@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../../api/authApi";
@@ -6,13 +5,7 @@ import "./Login.css";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ 
-    email: localStorage.getItem("savedEmail") || "", 
-    password: localStorage.getItem("savedPassword") || "" 
-  });
-  const [rememberMe, setRememberMe] = useState(
-    localStorage.getItem("savedEmail") ? true : false
-  );
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
 
@@ -40,14 +33,34 @@ export default function Login() {
     if (Object.values(errors).some((err) => err !== "")) return;
 
     try {
-      await loginUser(formData);
-      if (rememberMe) {
-        localStorage.setItem("savedEmail", formData.email);
-        localStorage.setItem("savedPassword", formData.password);
-      } else {
-        localStorage.removeItem("savedEmail");
-        localStorage.removeItem("savedPassword");
+      
+      const res = await loginUser(formData);
+      
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
       }
+      
+      if (res.data.user?.id) {
+      const userId = res.data.user.id;
+      const role = res.data.role;
+
+      localStorage.setItem("userRole", role);
+
+      if (role === "Doctor") {
+        localStorage.setItem("doctorId", userId); // لو دكتور يتخزن هنا
+        localStorage.removeItem("patientId");   
+      } else {
+        localStorage.setItem("patientId", userId); // لو مريض يتخزن هنا
+        localStorage.removeItem("doctorId");
+      }
+    }
+
+
+      //علشان يخزن هو دكتور ولا patient
+      if (res.data?.role) {
+        localStorage.setItem("userRole", res.data.role);
+      }
+      
       navigate("/", { replace: true });
     } catch (err) {
       console.log(err.response?.data);
@@ -82,19 +95,6 @@ export default function Login() {
               onChange={handleChange}
             />
             {errors.password && <p className="error">{errors.password}</p>}
-          </div>
-
-          <div className="form-check text-start my-3 ms-2">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              id="rememberMe"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-            />
-            <label className="form-check-label text-muted" htmlFor="rememberMe" style={{fontSize: "14px"}}>
-              Remember Me
-            </label>
           </div>
 
           {serverError && <p className="error server-error">{serverError}</p>}
