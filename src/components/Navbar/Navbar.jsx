@@ -3,12 +3,13 @@ import React from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Navbar.css";
-import { clearLoginIdentity } from "../../api/roleApi";
+import { clearLoginIdentity, isDoctorUser } from "../../api/roleApi";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const isLoggedIn = localStorage.getItem("token");
+  const isDoctor = isDoctorUser();
 
   const handleProtectedRoute = (path) => {
     if (!isLoggedIn) {
@@ -83,16 +84,17 @@ export default function Navbar() {
                 Chat
               </span>
             </li>
-
-            <li className="nav-item">
-              <span
-                className={`nav-link ${isActivePath("/ai-chat") ? "active" : ""}`}
-                onClick={() => handleProtectedRoute("/ai-chat")}
-                style={{ cursor: "pointer" }}
-              >
-                AI Chat
-              </span>
-            </li>
+            {!isDoctor && (
+              <li className="nav-item">
+                <span
+                  className={`nav-link ${isActivePath("/ai-chat") ? "active" : ""}`}
+                  onClick={() => handleProtectedRoute("/ai-chat")}
+                  style={{ cursor: "pointer" }}
+                >
+                  AI Chat
+                </span>
+              </li>
+            )}
 
             <li className="nav-item">
               <span

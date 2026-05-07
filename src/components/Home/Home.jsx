@@ -140,18 +140,19 @@ export default function Home() {
           </h1>
           <p className="lead fs-4 mb-4">
             Connect anonymously with licensed therapists through private voice
-            sessions, join supportive group therapy, or chat instantly with our AI
-            assistant.
+            sessions, join supportive group therapy{!isDoctor && ", or chat instantly with our AI assistant"}.
           </p>
           <div className="d-flex justify-content-center gap-3 flex-wrap">
             {!isDoctor && (
-              <button className="custom-button" onClick={() => navigate("/doctors")}>
-                <i className="fa-solid fa-user-doctor"></i> Find a Therapist
-              </button>
+              <>
+                <button className="custom-button" onClick={() => navigate("/doctors")}>
+                  <i className="fa-solid fa-user-doctor"></i> Find a Therapist
+                </button>
+                <button className="custom-button" onClick={() => navigate("/ai-chat")} >
+                  <i className="fa-solid fa-robot"></i> Chat with AI
+                </button>
+              </>
             )}
-            <button className="custom-button" onClick={() => navigate("/ai-chat")} >
-              <i className="fa-solid fa-robot"></i> Chat with AI
-            </button>
           </div>
         </div>
       </section>

@@ -43,7 +43,13 @@ const router = createBrowserRouter([
         },
 
 
-     
+        // {
+        // path: "start-chat/:doctorId", 
+        //       element: (
+              
+        //           <CurrentChats />
+        //       ),
+        // },
 
         {
   // المريض والدكتور هيدخلوا هنا للمحادثة
@@ -54,6 +60,11 @@ const router = createBrowserRouter([
     </ProtectedRoute>
   ),
 },
+        //ازود الpath بتاع شات الدكتور
+    //   {
+    //   path: "DoctorCC/:id", 
+    //   element: <DoctorCurrentChat />,
+    // },
 
       {
         path: "doctors",
