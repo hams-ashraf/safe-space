@@ -174,3 +174,65 @@ body {
 .doctor-w-48 {
   width: 48%;
 }
+.review-item {
+  padding: 8px 0;
+  margin: 0;
+}
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.review-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.review-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #2e8b6e;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+.review-user {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-user h6 {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.review-user small {
+  font-size: 0.75rem;
+  color: rgb(114,114,114);
+  margin-top: 2px;
+}
+.review-stars {
+  font-size: 1.1rem;   
+  color: #f6b73c;
+  white-space: nowrap;
+}
+.review-text {
+  font-size: 0.85rem;
+  color: rgb(114,114,114);
+  margin-top: 6px;
+}
+.review-divider {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.12); 
+  margin: 6px 0 0;
+}
+
+.doctor-cta-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}

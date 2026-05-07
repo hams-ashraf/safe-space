@@ -6,5 +6,5 @@ export const updateMyProfile = (data) =>
   api.put("/Patient/UpdateProfile", data);
 
 export const updatePassword = (data) => {
-  return api.put("/Patient/ChangePassword", data);
+  return api.post("/Patient/UpdatePassword", data);
 };

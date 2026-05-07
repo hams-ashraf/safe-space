@@ -148,8 +148,9 @@ const handleSubmit = async (e) => {
       }
 
       await updatePassword({
-        currentPassword,
-        newPassword,
+        CurrentPassword: currentPassword,
+        NewPassword: newPassword,
+        ConfirmNewPassword: confirmPassword,
       });
     }
     const formData = new FormData();

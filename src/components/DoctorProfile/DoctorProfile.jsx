@@ -4,6 +4,7 @@ import doctorImg from "../../assets/images.jfif";
 import "./DoctorProfile.css";
 import { getDoctorById } from "../../api/doctorsApi";
 
+
 export default function DoctorProfile() {
   const { id } = useParams();
   console.log("DOCTOR ID:", id);
@@ -12,19 +13,23 @@ const [slots, setSlots] = useState([]);
 const [selectedTime, setSelectedTime] = useState(null);
 const [selectedDate, setSelectedDate] = useState("");
 const [sessionType, setSessionType] = useState(0);
+const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     async function fetchDoctor() {
       try {
         const res = await getDoctorById(id);
         setDoctor(res.data);
+        setReviews(res.data.review || []);
       } catch (err) {
         console.log(err);
       }
     }
 
     fetchDoctor();
+    
   }, [id]);
+  
 
   useEffect(() => {
   if (!selectedDate || !id) return;
@@ -88,34 +93,41 @@ const handleBookSession = async () => {
   }
 
   try {
-    const res = await fetch(
-      "http://doctorprofile.runasp.net/api/Sessions/Book",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          availableSlotsId: selectedSlot.availableSlotsId,
-        }),
-      }
-    );
+   const token = localStorage.getItem("token");
 
-    if (res.ok) {
-      alert("Session booked successfully");
+const res = await fetch(
+  "http://doctorprofile.runasp.net/api/Sessions/Book",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      availableSlotsId: selectedSlot.availableSlotsId,
+    }),
+  }
+);
 
-      setSlots((prev) =>
-        prev.map((s) =>
-          s.availableSlotsId === selectedSlot.availableSlotsId
-            ? { ...s, isBooked: true }
-            : s
-        )
-      );
+if (res.ok) {
+  alert("Session booked successfully");
 
-      setSelectedTime(null);
-    } else {
-      alert("Booking failed");
-    }
+  setSlots((prev) =>
+    prev.map((s) =>
+      s.availableSlotsId === selectedSlot.availableSlotsId
+        ? { ...s, isBooked: true }
+        : s
+    )
+  );
+
+  setSelectedTime(null);
+  
+
+} else {
+  const errorText = await res.text();
+  console.log("BOOKING ERROR:", errorText);
+  alert("Booking failed");
+}
   } catch (err) {
     console.log(err);
     alert("Something went wrong");
@@ -197,10 +209,7 @@ const handleBookSession = async () => {
                 ))}
               </div>
 
-              <div
-                className="d-flex gap-3 mt-4 flex-wrap justify-content-between"
-                style={{ justifyContent: "center" }}
-              >
+              <div className="doctor-cta-wrapper mt-4">
                 <button
                   className="doctor-btn-outline-green px-4 py-3 doctor-cta-secondary doctor-w-48 rounded-4"
                   type="button"
@@ -260,6 +269,49 @@ const handleBookSession = async () => {
                 )}
               </ul>
             </div>
+            <div className="doctor-bg-white rounded-4 shadow p-4 mt-4">
+
+            <h5 className="fw-bolder mb-3">Client Reviews</h5>
+
+            {reviews.length > 0 ? (
+              reviews.map((review, index) => (
+                <div key={index} className="review-item">
+                  <div className="review-header">
+                    <div className="review-left">
+
+                      <div className="review-avatar">
+                        {review.userDisplayName?.[0] || "A"}
+                      </div>
+
+                      <div className="review-user">
+                        <h6 className="mb-0 fw-bold">Anonymous</h6>
+                        <small className="doctor-text-gray">
+                          {review.formattedDate}
+                        </small>
+                      </div>
+
+                    </div>
+                    <div className="review-stars">
+                      {"★".repeat(review.reviewValue)}
+                      {"☆".repeat(5 - review.reviewValue)}
+                    </div>
+
+                  </div>
+                  <p className="review-text mb-0">
+                    "{review.reviewDescription}"
+                  </p>
+
+                  {index !== reviews.length - 1 && (
+                    <hr className="review-divider" />
+                  )}
+
+                </div>
+              ))
+            ) : (
+              <p className="doctor-text-gray mb-0">No reviews yet</p>
+            )}
+
+          </div>
           </div>
 
           <div className="col-12 col-lg-4">
@@ -299,7 +351,7 @@ const handleBookSession = async () => {
                         
                       }}
                     >
-                      One-to-One Session
+                      One-to-One
                     </button>
                   </div>
 

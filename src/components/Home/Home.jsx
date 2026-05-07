@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getDoctors } from "../../api/doctorsApi";
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate, Link } from "react-router-dom";
 
 
 import "./Home.css";
@@ -62,37 +62,39 @@ export default function Home() {
     {error && <p className="text-danger text-center">{error}</p>}
 
     <div className="row g-4">
-      {topRatedDoctors.map((t, index) => (
-       <div className="col-md-4" key={index}>
-  <div className="card shadow-sm text-center top-rated-card">
-    <img
-      src={`http://doctorprofile.runasp.net${t.imageUrl}`}
-      className="card-img-top"
-      alt={t.fullName}
-    />
-    <div className="card-body">
-      <h5 className="card-title">{t.fullName}</h5>
-      <p className="card-text">{t.specialization}</p>
-      <div className="text-warning">
-        {Array.from({ length: Math.floor(t.rating) }).map((_, i) => (
-          <i key={i} className="fa-solid fa-star"></i>
-        ))}
-        {Array.from({ length: 5 - Math.floor(t.rating) }).map((_, i) => (
-          <i key={i} className="fa-regular fa-star"></i>
-        ))}
-      </div>
-      <button
-        className="btn btn-custom mt-3"
+      {topRatedDoctors.map((t) => (
+  <div className="col-md-4" key={t.id}>
+    <div
+      className="card shadow-sm text-center top-rated-card h-100 d-flex flex-column"
+      onClick={() => navigate(`/doctor/${t.id}`)}
+      style={{ cursor: "pointer" }}
+    >
+      <img
+        src={`http://doctorprofile.runasp.net${t.imageUrl}`}
+        className="card-img-top"
+        alt={t.fullName}
+      />
 
-      >
-        Book Session
-      </button>
-         
-       
+      <div className="card-body d-flex flex-column flex-grow-1">
+        <h5 className="card-title">{t.fullName}</h5>
+        <p className="card-text">{t.specialization}</p>
+
+        <div className="text-warning">
+          {Array.from({ length: Math.floor(t.rating) }).map((_, i) => (
+            <i key={i} className="fa-solid fa-star"></i>
+          ))}
+          {Array.from({ length: 5 - Math.floor(t.rating) }).map((_, i) => (
+            <i key={i} className="fa-regular fa-star"></i>
+          ))}
+        </div>
+
+        <p className="card-text mb-0 mt-3 flex-grow-1 d-flex align-items-center justify-content-center text-center">
+          Years of Experience: {t.yearOfExperience}
+        </p>
+      </div>
     </div>
   </div>
-</div>
-      ))}
+))}
     </div>
   </div>
 </section>
