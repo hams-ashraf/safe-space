@@ -9,12 +9,13 @@ import AIChat from "./components/Aichat/Aichat";
 import Symptoms from "./components/Symptoms/Symptoms";
 import DoctorProfile from "./components/DoctorProfile/DoctorProfile";
 import PatientProfile from "./components/PatientProfile/PatientProfile";
+import Meeting from "./components/Meeting/Meeting";
 import Signup from "./components/Signup/Signup";
 import Login from "./components/Login/Login";
 import ProtectedRoute from "./components/Protectedroute/Protectedroute";
 import EditProfile from "./components/editProfile/editProfile";
-
-
+import StartNewChat from "./components/Startnewchat/Startnewchat";
+import CurrentChats from "./components/CurrentChats/CurrentChats";
 const router = createBrowserRouter([
   {
  
@@ -22,6 +23,8 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { index: true, element: <Home /> },
+      { path: "login", element: <Login /> },
+      { path: "signup", element: <Signup /> },
 
       {
         path: "chat",
@@ -31,6 +34,27 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+
+      {
+        path: "start-new-chat",
+          element: (
+          <StartNewChat />
+          )
+        },
+
+
+     
+
+        {
+  // المريض والدكتور هيدخلوا هنا للمحادثة
+  path: "start-chat/:id", 
+  element: (
+    <ProtectedRoute>
+      <CurrentChats /> 
+    </ProtectedRoute>
+  ),
+},
+
       {
         path: "doctors",
         element: (
@@ -77,6 +101,13 @@ const router = createBrowserRouter([
         <ProtectedRoute>
           <EditProfile /> 
         </ProtectedRoute>
+        )},
+      {
+        path: "meeting",
+        element: (
+          <ProtectedRoute>
+            <Meeting />
+          </ProtectedRoute>
         ),
       },
        {
@@ -96,15 +127,6 @@ const router = createBrowserRouter([
         },
     ],
   },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-   {
-    path: "/signup",
-    element: <Signup />,
-  },
-
 ]);
 
 export default function App() {
