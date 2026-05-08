@@ -1,0 +1,142 @@
+
+
+.detection-overlay {
+    position: fixed;
+    inset: 0;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.detection-container {
+    width: 95vw;
+    height: 85vh;
+    max-width: 1200px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.progress-container {
+    height: 6px;
+    margin-bottom: 24px;
+}
+
+.custom-progress-bar {
+background-color: #4CAF93 !important;
+    transition: width 0.3s ease;
+}
+
+.text-main-green {
+    color: #4CAF93;
+}
+
+.feeling-card {
+    cursor: pointer;
+    border: 2px solid #e5e5e5; 
+    background: white;
+    border-radius: 16px;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+
+.feeling-card.active {
+    background-color: rgba(47, 174, 143, 0.2);
+    border-color: #198754; 
+}
+
+.emoji-text {
+    font-size: 32px;
+}
+
+.check-mark-circle {
+    margin-top: 8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #4CAF93; 
+    color: white;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.option-label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    width: 100%;
+    position: relative;
+    border: 2px solid #d8d8d8; 
+    background-color: white;
+    transition: all 0.2s ease;
+}
+
+.option-label.selected {
+    background-color: rgba(47, 174, 143, 0.2);
+    border-color: #198754;
+}
+
+.radio-check-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #d8d8d8;
+    margin-right: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.option-label.selected .radio-check-circle {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.btn-detection {
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.btn-green {
+    background-color:#2E8B6E;
+    border: 1px solid #4CAF93;
+    color: white;
+    width: 100%;
+}
+
+.btn-prev {
+    width: 30%;
+    background-color: white;
+    border: 1px solid #d8d8d8;
+    color: black;
+}
+
+.btn-next-step {
+    width: 65%;
+    background-color:#2E8B6E;
+    border: 1px solid #4CAF93;
+    color: white;
+}
+
+button:disabled {
+    opacity: 0.5; 
+    cursor: not-allowed;
+}
