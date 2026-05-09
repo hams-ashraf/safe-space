@@ -6,7 +6,7 @@ import "./Signup.css";
 
 export default function Signup() {
   const navigate = useNavigate();
-
+  const [successMessage, setSuccessMessage] = useState("");
   const [formData, setFormData] = useState({
     fullName: "",
     displayName: "",
@@ -114,8 +114,16 @@ export default function Signup() {
 
     try {
       await registerUser(formData);
-      alert("Account created successfully!");
-      navigate("/");
+
+      // alert("Account created successfully!");
+      // navigate("/login");
+    setSuccessMessage("Account created successfully! Verify Email to login...");
+    
+    setTimeout(() => {
+        navigate("/login");
+    }, 3000);
+
+
     } catch (err) {
       console.log("API ERROR:", err.response);
 
@@ -135,7 +143,13 @@ export default function Signup() {
     <div className="signup-page">
       <div className="signup-wrapper">
         <div className="signup-title">Create New Account</div>
-
+        {successMessage && (
+          <div className="alert alert-success text-center" role="alert" 
+              style={{ transition: 'all 0.5s ease' }}>
+            <i className="bi bi-check-circle-fill me-2"></i>
+            {successMessage}
+          </div>
+        )}
         {}
         {formError && <p className="form-error">{formError}</p>}
 
