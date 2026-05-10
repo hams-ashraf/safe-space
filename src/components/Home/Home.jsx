@@ -149,7 +149,7 @@ export default function Home() {
                   <i className="fa-solid fa-user-doctor"></i> Find a Therapist
                 </button>
                 <button className="custom-button" onClick={() => navigate("/ai-chat")} >
-                  <i className="fa-solid fa-robot"></i> Chat with AI
+                  <i className="fa-solid fa-robot"></i> Chat with Wanees
                 </button>
               </>
             )}
