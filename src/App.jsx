@@ -16,6 +16,20 @@ import ProtectedRoute from "./components/Protectedroute/Protectedroute";
 import EditProfile from "./components/editProfile/editProfile";
 import StartNewChat from "./components/Startnewchat/Startnewchat";
 import CurrentChats from "./components/CurrentChats/CurrentChats";
+import MyProfileDoctor from "./components/MyProfileDoctor/MyProfileDoctor";
+import EditProfileDoctor from "./components/EditProfileDoctor/EditProfileDoctor";
+import ViewHistory from "./components/ViewHistory/ViewHistory";
+import SessionDetails from "./components/SessionDetails/SessionDetails";
+
+import AdminLayout from "./components/Shared/AdminLayout";
+import AdminDashboard from "./components/AdminDashboard/AdminDashboard";
+import UsersPage from "./components/AdminDashboard/UsersPage";
+import UserDetails from "./components/AdminDashboard/UserDetails";
+import AdminDoctorsPage from "./components/AdminDashboard/DoctorsPage";
+import DoctorDetails from "./components/AdminDashboard/DoctorDetails";
+import EditDoctor from "./components/AdminDashboard/EditDoctor";
+import AddDoctorPage from "./components/AdminDashboard/AddDoctorPage";
+
 const router = createBrowserRouter([
   {
  
@@ -107,6 +121,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path:"doctor-profile",
+        element: (
+          <ProtectedRoute>
+            <MyProfileDoctor />
+          </ProtectedRoute>
+        )
+      },
+      {
         path: "edit-profile",
         element:(
         <ProtectedRoute>
@@ -136,8 +158,49 @@ const router = createBrowserRouter([
             </ProtectedRoute>
           ),
         },
+        {
+          path: "doctor/edit-profile",
+          element: (
+            <ProtectedRoute>
+              <EditProfileDoctor />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "doctor/history",
+          element: (
+            <ProtectedRoute>
+              <ViewHistory />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "doctor/session-details/:id",
+          element: (
+            <ProtectedRoute>
+              <SessionDetails />
+            </ProtectedRoute>
+          ),
+        },
     ],
   },
+  {
+  path: "/admin", 
+  element: (
+    <ProtectedRoute>
+      <AdminLayout />
+    </ProtectedRoute>
+  ),
+  children: [
+    { path: "dashboard", element: <AdminDashboard /> },
+    { path: "users", element: <UsersPage /> },
+    { path: "doctors", element: <AdminDoctorsPage /> },
+    { path: "add-doctor", element: <AddDoctorPage /> },
+    { path: "user/:id", element: <UserDetails /> },
+    { path: "doctor/:id", element: <DoctorDetails /> },
+    { path: "edit-doctor/:id", element: <EditDoctor /> },
+  ],
+}
 ]);
 
 export default function App() {

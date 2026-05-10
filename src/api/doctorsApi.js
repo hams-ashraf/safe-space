@@ -11,3 +11,6 @@ export const getDoctorReviews = async (doctorId) => {
   const data = await res.json();
   return data;
 };
+export const addDoctorSlot = (data) => {
+  return api.post("/DoctorSlots/AddSlot", data);
+};

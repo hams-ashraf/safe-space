@@ -109,7 +109,9 @@ export default function Navbar() {
             <li className="nav-item">
               <span
                 className={`nav-link ${isActivePath("/myprofile") ? "active" : ""}`}
-                onClick={() => handleProtectedRoute("/myprofile")}
+                onClick={() =>
+                  handleProtectedRoute(isDoctor ? "/doctor-profile" : "/myprofile")
+                }
                 style={{ cursor: "pointer" }}
               >
                 My Profile

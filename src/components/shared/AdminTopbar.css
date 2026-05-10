@@ -1,0 +1,41 @@
+.admin-topbar {
+  background: #ffffff;
+  border: 1px solid #e7efeb;
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: 0 8px 22px rgba(32, 60, 49, 0.05);
+}
+
+.admin-topbar-title {
+  margin: 0;
+  color: #41655d;       
+;
+  font-weight: 800;
+}
+
+.admin-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.logout-btn {
+  background: #c73636; 
+  color: white;
+  border: none;
+
+  padding: 6px 12px;   
+  font-size: 15px;     
+
+  border-radius: 20px; 
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.logout-btn:hover {
+  background: #a30000;
+}

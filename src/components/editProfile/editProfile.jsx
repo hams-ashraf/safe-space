@@ -170,6 +170,7 @@ const handleSubmit = async (e) => {
     const updated = await getMyProfile();
 
     console.log("IMAGE URL FROM BACKEND:", updated.data.imageUrl);
+          console.log("PROFILE AFTER LOGIN:", res.data);
 
     setAvatarPreview(updated.data.imageUrl || defaultAvatar);
     setFullName(updated.data.fullName || "");

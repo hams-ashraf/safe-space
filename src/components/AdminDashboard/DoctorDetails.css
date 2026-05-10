@@ -1,0 +1,68 @@
+.doctor-details-card {
+  background: #ffffff;
+  border: 1px solid #e7efeb;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(32, 60, 49, 0.06);
+  padding: 16px;
+}
+
+.doctor-details-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.doctor-details-head h3 {
+  margin: 0;
+  color: #1f3a33;
+}
+
+.doctor-details-grid {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 18px;
+}
+
+.doctor-details-image {
+  width: 180px;
+  height: 180px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 1px solid #e4ece8;
+}
+
+.doctor-details-info p {
+  margin: 8px 0;
+  color: #324741;
+}
+
+@media (max-width: 720px) {
+  .doctor-details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.slots-container {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 20px;
+}
+
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 10px;
+}
+
+.slot-card {
+  background: #f5f7fa;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+.icon {
+  color: #2E8B6E;
+  margin-right: 5px;
+}

@@ -1,0 +1,17 @@
+/* Edit Profile Doctor — page-specific fields (extends editProfile.css) */
+
+.edit-profile-doctor-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.edit-profile-doctor-map {
+  height: 300px;
+  width: 100%;
+  border-radius: 12px;
+}
+.profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; 
+}

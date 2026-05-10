@@ -1,0 +1,11 @@
+/* View History — session row layout */
+
+.view-history-session-btn {
+  width: 80%;
+  max-width: 100%;
+}
+
+.view-history-col-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+}

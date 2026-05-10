@@ -1,0 +1,55 @@
+.edit-doctor-card {
+  background: #ffffff;
+  border: 1px solid #e7efeb;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(32, 60, 49, 0.06);
+  padding: 16px;
+}
+
+.edit-doctor-head h3 {
+  margin: 0 0 14px;
+  color: #1f3a33;
+}
+
+.edit-doctor-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.edit-input {
+  border: 1px solid #d7e6df;
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+}
+
+.edit-input:focus {
+  border-color: #2f6f62;
+}
+
+.edit-textarea {
+  grid-column: 1 / -1;
+  min-height: 90px;
+  resize: vertical;
+}
+
+.edit-doctor-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.edit-label {
+  display: block;
+  margin: 10px 0 6px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+@media (max-width: 720px) {
+  .edit-doctor-form {
+    grid-template-columns: 1fr;
+  }
+}
+

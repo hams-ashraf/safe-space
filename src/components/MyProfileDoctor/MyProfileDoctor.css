@@ -1,0 +1,15 @@
+/* My Profile Doctor — page-specific layout (doctor theme classes from DoctorProfile.css) */
+
+.my-profile-doctor-actions {
+  justify-content: center;
+}
+
+.my-profile-doctor-actions-btn {
+  flex-basis: 45%;
+  min-width: 200px;
+}
+
+.my-profile-doctor-actions-btn--solid {
+  min-height: 52px;
+  border: none;
+}

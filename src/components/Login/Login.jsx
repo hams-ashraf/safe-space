@@ -28,45 +28,32 @@ export default function Login() {
   };
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (Object.values(errors).some((err) => err !== "")) return;
+  try {
+    const res = await loginUser(formData);
 
-    try {
-      
-      const res = await loginUser(formData);
-      
-      if (res.data?.token) {
-        localStorage.setItem("token", res.data.token);
-      }
-      
-      if (res.data.user?.id) {
-      const userId = res.data.user.id;
-      const role = res.data.role;
+    const token = res.data?.token;
+    const user = res.data?.user;
+    const role = res.data?.role;
 
-      localStorage.setItem("userRole", role);
+    if (token) localStorage.setItem("token", token);
+    if (role) localStorage.setItem("userRole", role);
 
-      if (role === "Doctor") {
-        localStorage.setItem("doctorId", userId); // لو دكتور يتخزن هنا
-        localStorage.removeItem("patientId");   
-      } else {
-        localStorage.setItem("patientId", userId); // لو مريض يتخزن هنا
-        localStorage.removeItem("doctorId");
-      }
-    }
+    if (role === "Admin") {
+  navigate("/admin/dashboard", { replace: true });
+} 
+else if (role === "Doctor") {
+  navigate("/", { replace: true }); د
+} 
+else {
+  navigate("/", { replace: true });
+}
 
-
-      //علشان يخزن هو دكتور ولا patient
-      if (res.data?.role) {
-        localStorage.setItem("userRole", res.data.role);
-      }
-      
-      navigate("/", { replace: true });
-    } catch (err) {
-      console.log(err.response?.data);
-      setServerError(err.response?.data?.message || "Login failed");
-    }
-  
+  } catch (err) {
+    console.log(err.response?.data);
+    setServerError(err.response?.data?.message || "Login failed");
+  }
 };
 
   return (

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyChats, getDoctorRecentChats } from "../../api/chatApi";
 import "./Chat.css";
+import { useParams } from "react-router-dom";
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ export default function Chat() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const userRole = localStorage.getItem("userRole");
+  const { chatId } = useParams();
 
   useEffect(() => {
     async function fetchChats() {

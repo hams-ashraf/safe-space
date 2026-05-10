@@ -1,0 +1,97 @@
+.admin-dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-table-card {
+  background: #ffffff;
+  border: 1px solid #e7efeb;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(32, 60, 49, 0.06);
+  overflow: hidden;
+}
+
+.admin-table-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid #edf3f0;
+}
+
+.admin-table-card-header h3 {
+  margin: 0;
+  color: #1f3a33;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #edf3f0;
+  text-align: left;
+}
+
+.admin-table th {
+  color: #6b7d77;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 7px 12px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.admin-btn-primary {
+  background: #2f6f62;
+  color: #fff;
+}
+
+.admin-btn-primary:hover {
+  background: #24594f;
+}
+
+.admin-btn-secondary {
+  background: #edf6f2;
+  color: #2f6f62;
+}
+
+.admin-btn-secondary:hover {
+  background: #deefe8;
+}
+
+.admin-btn-danger {
+  background: #fde8e8;
+  color: #a12626;
+}
+
+.admin-btn-danger:hover {
+  background: #f8d7d7;
+}
+
+@media (max-width: 900px) {
+  .admin-dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+}
+

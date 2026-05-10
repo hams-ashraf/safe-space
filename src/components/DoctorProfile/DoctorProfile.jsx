@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import doctorImg from "../../assets/images.jfif";
+import { useNavigate } from "react-router-dom";
 import "./DoctorProfile.css";
 import { getDoctorById } from "../../api/doctorsApi";
+import { startChatApi, getMyChats } from "../../api/chatApi";
 
 
 export default function DoctorProfile() {
   const { id } = useParams();
+  const navigate = useNavigate();
   console.log("DOCTOR ID:", id);
   const [doctor, setDoctor] = useState(null);
 const [slots, setSlots] = useState([]);
@@ -14,7 +17,43 @@ const [selectedTime, setSelectedTime] = useState(null);
 const [selectedDate, setSelectedDate] = useState("");
 const [sessionType, setSessionType] = useState(0);
 const [reviews, setReviews] = useState([]);
+const handleStartChat = async () => {
+  try {
+    const patientId = localStorage.getItem("patientId");
 
+    if (!patientId) {
+      alert("Please login first");
+      navigate("/login");
+      return;
+    }
+
+    const myChatsRes = await getMyChats(patientId);
+
+    const existingChat = myChatsRes.data.find(
+      c => c.doctorId === Number(id)
+    );
+
+    if (existingChat) {
+      navigate(`/start-chat/${existingChat.id}?docId=${id}`);
+      return;
+    }
+
+    const chatPayload = {
+      doctorId: Number(id),
+      patientProfileId: Number(patientId),
+    };
+
+    const res = await startChatApi(chatPayload);
+
+    if (res.data?.id) {
+      navigate(`/start-chat/${res.data.id}?docId=${id}`);
+    }
+
+  } catch (err) {
+    console.log("CHAT ERROR:", err?.response?.data || err);
+    alert("Error starting chat");
+  }
+};
   useEffect(() => {
     async function fetchDoctor() {
       try {
@@ -213,6 +252,7 @@ if (res.ok) {
                 <button
                   className="doctor-btn-outline-green px-4 py-3 doctor-cta-secondary doctor-w-48 rounded-4"
                   type="button"
+                  onClick={handleStartChat}
                 >
                   <i className="fa-regular fa-comment-dots me-2"></i>
                   Start Chat

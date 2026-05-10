@@ -1,0 +1,46 @@
+.user-details-card {
+  background: #ffffff;
+  border: 1px solid #e7efeb;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(32, 60, 49, 0.06);
+  padding: 16px;
+  margin-bottom: 100px;
+}
+
+.user-details-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.user-details-head h3 {
+  margin: 0;
+  color: #1f3a33;
+}
+
+.user-details-grid {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 18px;
+}
+
+.user-details-image {
+  width: 180px;
+  height: 180px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 1px solid #e4ece8;
+}
+
+.user-details-info p {
+  margin: 8px 0;
+  color: #324741;
+}
+
+@media (max-width: 720px) {
+  .user-details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
