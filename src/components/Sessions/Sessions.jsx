@@ -181,13 +181,13 @@ function RoomCards() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const getSessionId = (session) => session.sessionsId;
+  // const getSessionId = (session) => session.sessionsId;
+const getSessionId = (session) => session.sessionId || session.sessionsId || session.id;
 
-  // دالة ذكية لتحويل الوقت من 12 ساعة (PM/AM) لـ 24 ساعة عشان الحساب يبقى صح
+
   const parseDateTime = (dateStr, timeStr) => {
     try {
       const datePart = dateStr.split("T")[0];
-      // لو الوقت بييجي فيه AM أو PM هنحتاج نحوله، لو بييجي 24 ساعة هيفضل زي ما هو
       let [time, modifier] = timeStr.split(" ");
       let [hours, minutes] = time.split(":");
       
@@ -196,7 +196,6 @@ function RoomCards() {
       
       return new Date(`${datePart}T${hours.toString().padStart(2, '0')}:${minutes}:00`);
     } catch (e) {
-      // fallback في حالة الصيغة كانت مختلفة
       return new Date(dateStr);
     }
   };
@@ -243,7 +242,6 @@ function RoomCards() {
             const diffInMinutes = (now - sessionStart) / (1000 * 60);
 
             const isEndedByDoc = session.status === "Completed" || session.isEnded === true;
-            // لو عدى 15 دقيقة على الميعاد (diffInMinutes > 15)
             const isExpired = diffInMinutes > 15;
 
             if (isEndedByDoc || isExpired) {
@@ -253,7 +251,6 @@ function RoomCards() {
             }
           });
 
-          // تنظيف القوائم من أي تكرار
           const unique = (arr) => Array.from(new Map(arr.map(s => [getSessionId(s), s])).values());
           
           setUpcoming(unique(refinedUpcoming));
@@ -272,7 +269,7 @@ function RoomCards() {
 
   return (
     <div className="page-wrapper">
-      <h3 className="page-title">My Sessions</h3>
+      <h3 className="page-title">Upcoming Sessions</h3>
       {error && (
         <div className="alert alert-danger text-center" style={{ maxWidth: "500px", margin: "0 auto 20px" }}>
           {error} <button className="btn-close" onClick={() => setError("")}></button>
