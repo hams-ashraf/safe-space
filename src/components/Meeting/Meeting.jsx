@@ -62,12 +62,12 @@ export default function Meeting() {
 
   if (isDoctor) {
     // Doctor Interface 
-    myGenderStr = session?.doctorGender || session?.DoctorGender; // Doctor's own gender
-    otherGenderStr = session?.gender || session?.Gender;         // Patient's gender in this API
+    myGenderStr = session?.doctorGender || session?.DoctorGender; 
+    otherGenderStr = session?.gender || session?.Gender;        
   } else {
-    // Patient Interface (using Sessions API)
-    myGenderStr = session?.patientGender || session?.PatientGender; // Patient's own gender
-    otherGenderStr = session?.doctorGender || session?.DoctorGender; // Doctor's gender in this API
+    // Patient Interface 
+    myGenderStr = session?.patientGender || session?.PatientGender; 
+    otherGenderStr = session?.doctorGender || session?.DoctorGender; 
   }
 
   const myAvatarUrl = getAvatarUrl(myGenderStr);
@@ -100,7 +100,7 @@ export default function Meeting() {
     try {
       await updateNotes(session.sessionId, notesContent);
       setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000); // Hide success message after 3s
+      setTimeout(() => setSaveSuccess(false), 3000); 
     } catch (err) {
       console.error("Failed to save notes", err);
       alert("Failed to save notes. Please try again.");
@@ -236,7 +236,6 @@ export default function Meeting() {
       ctx.resume().catch(() => {});
     }
 
-    // Clear old graph
     try {
       source.disconnect();
       filter.disconnect();
@@ -247,7 +246,7 @@ export default function Meeting() {
       // no-op
     }
 
-    // Defaults
+    
     filter.type = "lowpass";
     filter.frequency.value = 20000;
     filter.Q.value = 0.7;
@@ -307,7 +306,6 @@ export default function Meeting() {
 
   useEffect(() => {
     applyVoiceOption(selectedVoice);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedVoice]);
 
   useEffect(() => {
@@ -382,9 +380,8 @@ export default function Meeting() {
         const joinedConnId = payload?.connectionId;
         const myUserId = currentUser?.id;
         
-        // Use user ID to ignore our own connection
         if (joinedUserId && myUserId && String(joinedUserId) === String(myUserId)) {
-          return; // Ignore ourselves
+          return; 
         }
         
         setParticipants((prev) => {
@@ -397,7 +394,6 @@ export default function Meeting() {
           }];
         });
 
-        // We are the existing participant, send an offer to the new participant
         if (joinedConnId) {
           try {
             const pc = setupPeerConnection(hubConnection, joinedConnId);
@@ -413,7 +409,6 @@ export default function Meeting() {
       hubConnection.on("ReceiveOffer", async (payload) => {
         const { fromConnectionId, sdp } = payload;
         
-        // Fallback to register the other person if we didn't get ParticipantJoined
         setParticipants((prev) => {
           if (prev.some((p) => p.connectionId === fromConnectionId)) return prev;
           return [...prev, { 
@@ -469,8 +464,7 @@ export default function Meeting() {
           prev.filter((p) => String(p.userId) !== String(leftUserId))
         );
         
-        // Only force end the call for everyone if the DOCTOR leaves 
-        // OR if it's a 1-on-1 session and the other person leaves.
+    
         const isLeftUserDoctor = String(leftUserId) === String(doctorId);
         
         if (!isGroup || isLeftUserDoctor) {
@@ -592,7 +586,6 @@ export default function Meeting() {
   async function handleLeaveSession() {
     try {
       if (isDoctor) {
-        // Try different properties where the call ID might be stored
         const callId = callData?.id || callData?.callSessionId || session?.sessionId;
         if (callId) {
           try {
@@ -600,7 +593,6 @@ export default function Meeting() {
           } catch (endErr) {
             console.error("End call API failed:", endErr);
           }
-          // Locally save that we ended this session so it instantly disappears from the Home page
           const sid = session?.sessionId || session?.sessionsId || session?.id;
           if (sid) {
             const endedSessions = JSON.parse(localStorage.getItem("ended_sessions") || "[]");

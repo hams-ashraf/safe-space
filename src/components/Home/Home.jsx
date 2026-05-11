@@ -49,7 +49,6 @@ export default function Home() {
           } else if (res && Array.isArray(res.upcoming)) {
             upcoming = res.upcoming;
           } else if (res && typeof res === "object") {
-            // Just in case it's nested or has different keys
             upcoming = res.data || res.upcoming || [];
           }
 
@@ -73,15 +72,12 @@ export default function Home() {
 
             const dateRaw = s.date || s.Date;
             if (dateRaw) {
-              // Try to parse YYYY-MM-DD or YYYY-DD-MM manually to avoid JS confusion
               const parts = dateRaw.split('T')[0].split(/[-/]/);
               if (parts.length === 3) {
                 const year = parseInt(parts[0], 10);
                 const p1 = parseInt(parts[1], 10);
                 const p2 = parseInt(parts[2], 10);
 
-                // If today is May 11th (11-05), we check if the date has 11 and 5
-                // This covers both YYYY-MM-DD and YYYY-DD-MM formats
                 const isSameYear = year === todayYear;
                 const matchesToday = (p1 === todayMonth && p2 === todayDay) || (p1 === todayDay && p2 === todayMonth);
                 
