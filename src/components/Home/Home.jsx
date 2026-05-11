@@ -53,14 +53,17 @@ export default function Home() {
             upcoming = res.data || res.upcoming || [];
           }
 
-          // Filter out completed sessions AND only show TODAY's sessions
-          const today = new Date();
+          const now = new Date();
+          const todayDay = now.getDate();
+          const todayMonth = now.getMonth() + 1;
+          const todayYear = now.getFullYear();
+
           const endedSessions = JSON.parse(localStorage.getItem("ended_sessions") || "[]");
 
           upcoming = upcoming.filter(s => {
             const sid = s.sessionId || s.sessionsId || s.id;
             if (sid && endedSessions.some(es => String(es) === String(sid))) {
-              return false; // We ended it locally!
+              return false; 
             }
 
             const status = String(s.status || s.Status || "").toLowerCase();
@@ -68,12 +71,23 @@ export default function Home() {
               return false;
             }
 
-            const sessionDateStr = s.date || s.Date;
-            if (sessionDateStr) {
-              const sessionDate = new Date(sessionDateStr);
-              // Compare if the session date matches today's date
-              if (sessionDate.toDateString() !== today.toDateString()) {
-                return false;
+            const dateRaw = s.date || s.Date;
+            if (dateRaw) {
+              // Try to parse YYYY-MM-DD or YYYY-DD-MM manually to avoid JS confusion
+              const parts = dateRaw.split('T')[0].split(/[-/]/);
+              if (parts.length === 3) {
+                const year = parseInt(parts[0], 10);
+                const p1 = parseInt(parts[1], 10);
+                const p2 = parseInt(parts[2], 10);
+
+                // If today is May 11th (11-05), we check if the date has 11 and 5
+                // This covers both YYYY-MM-DD and YYYY-DD-MM formats
+                const isSameYear = year === todayYear;
+                const matchesToday = (p1 === todayMonth && p2 === todayDay) || (p1 === todayDay && p2 === todayMonth);
+                
+                if (!isSameYear || !matchesToday) {
+                  return false;
+                }
               }
             }
             return true;
