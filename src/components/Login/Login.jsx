@@ -32,14 +32,12 @@ export default function Login() {
 
   try {
     const res = await loginUser(formData);
-
     const token = res.data?.token;
     const user = res.data?.user;
     const role = res.data?.role;
 
     if (token) localStorage.setItem("token", token);
     if (role) localStorage.setItem("userRole", role);
-
     if (role === "Admin") {
   navigate("/admin/dashboard", { replace: true });
 } 
