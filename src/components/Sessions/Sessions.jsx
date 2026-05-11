@@ -53,49 +53,49 @@ function RoomCards() {
   const userRole = localStorage.getItem("userRole");
 
   useEffect(() => {
-    const fetchSessions = async () => {
-      try {
-        let data;
-        if (userRole === "Doctor") {
-          data = await getDoctorSessions();
-          const raw = Array.isArray(data) ? data : (data?.upcoming || []);
-          setUpcoming(raw.filter(s => s.status !== "Completed" && !s.isEnded));
-        } 
-        else {
-          data = await getMySessions();
-          const all = [...(data?.upcoming || []), ...(data?.past || [])];
-          
-          const refinedUpcoming = [];
-          const refinedPast = [];
-          const now = new Date();
+  const fetchSessions = async () => {
+    try {
+      let data;
+      const now = new Date();
+      const refinedUpcoming = [];
+      const refinedPast = [];
 
-          all.forEach(session => {
-            const sessionStart = parseDateTime(session.date, session.time);
-            const diffInMinutes = (now - sessionStart) / (1000 * 60);
-
-            const isEndedByDoc = session.status === "Completed" || session.isEnded === true;
-            const isExpired = diffInMinutes > 15;
-
-            if (isEndedByDoc || isExpired) {
-              refinedPast.push(session);
-            } else {
-              refinedUpcoming.push(session);
-            }
-          });
-
-          const unique = (arr) => Array.from(new Map(arr.map(s => [getSessionId(s), s])).values());
-          
-          setUpcoming(unique(refinedUpcoming));
-          setPast(unique(refinedPast));
-        }
-      } catch (err) {
-        console.error("Error:", err);
-      } finally {
-        setLoading(false);
+      if (userRole === "Doctor") {
+        data = await getDoctorSessions();
+      } else {
+        data = await getMySessions();
       }
-    };
-    fetchSessions();
-  }, [userRole]);
+
+      const allSessions = Array.isArray(data) ? data : [...(data?.upcoming || []), ...(data?.past || [])];
+
+      allSessions.forEach(session => {
+        const sessionStart = parseDateTime(session.date, session.time);
+        const diffInMinutes = (now - sessionStart) / (1000 * 60);
+
+        const isEndedByDoc = session.status === "Completed" || session.status === "Ended" || session.isEnded === true;
+        const isExpired = diffInMinutes > 15;
+
+        // لو السيشن منتهية أو فات ميعادها بـ 15 دقيقة تروح للـ Past
+        if (isEndedByDoc || isExpired) {
+          refinedPast.push(session);
+        } else {
+          refinedUpcoming.push(session);
+        }
+      });
+
+      const unique = (arr) => Array.from(new Map(arr.map(s => [getSessionId(s), s])).values());
+      
+      setUpcoming(unique(refinedUpcoming));
+      setPast(unique(refinedPast));
+
+    } catch (err) {
+      console.error("Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchSessions();
+}, [userRole]);
 
   if (loading) return <div className="page-wrapper">Loading...</div>;
 
