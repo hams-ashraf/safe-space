@@ -18,7 +18,6 @@ export default function AddDoctorPage() {
     aboutSession: "",
     therapyApproach: "",
 
-    // 👇 UI only (not sent to API)
     phone: "",
     rating: "",
     reviewsNumber: "",
@@ -38,7 +37,7 @@ export default function AddDoctorPage() {
     try {
       setLoading(true);
 
-      // 👇 send ONLY API fields
+      
       await addDoctor({
         fullName: form.fullName,
         email: form.email,
@@ -51,12 +50,12 @@ export default function AddDoctorPage() {
         therapyApproach: form.therapyApproach,
       });
 
-      alert("Doctor added successfully ✅");
-      navigate("/doctors");
+      alert("Doctor added successfully");
+      navigate("/admin/doctors");
 
     } catch (error) {
       console.log(error);
-      alert("Failed to add doctor ❌");
+      alert("Failed to add doctor");
     } finally {
       setLoading(false);
     }

@@ -63,6 +63,16 @@ const imageUrl = doctor.profileImageUrl
       </div>
     );
   }
+  async function handleDelete(id) {
+  try {
+    await deleteDoctor(id);
+
+    setDoctors(prev => prev.filter(d => d.id !== id));
+  } catch (error) {
+    console.log(error);
+    alert("Delete failed");
+  }
+}
 const groupSlots = doctor.availableSlots?.filter(
   (slot) => slot.type === "Group"
 );

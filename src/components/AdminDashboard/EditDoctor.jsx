@@ -4,6 +4,7 @@ import { doctorsData } from "../Shared/adminDummyData";
 import { getAllDoctors, updateDoctor } from "../../api/dashboard";
 import "./EditDoctor.css";
 
+
 export default function EditDoctor() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -66,27 +67,33 @@ export default function EditDoctor() {
       setLoading(true);
 
       const payload = {
-        fullName: form.fullName || form.name,
-        position: form.position,
-        specialization: form.specialization,
-        yearOfExperience: Number(form.yearOfExperience || form.yearsOfExperience),
-        about: form.about,
-        aboutSession: form.aboutSession || "",
-        therapyApproach: form.therapyApproach,
+  fullName: form.fullName || form.name,
+  position: form.position,
+  specialization: form.specialization,
+  yearOfExperience: Number(form.yearOfExperience || form.yearsOfExperience || 0),
+  about: form.about,
+  aboutSession: form.aboutSession || "",
+  therapyApproach: form.therapyApproach,
+  
 
-        availableSlots: Array.isArray(form.availableSlots)
-          ? form.availableSlots
-          : [],
-      };
-
+  availableSlots: (form.availableSlots || []).length > 0
+  ? form.availableSlots.map(s => ({
+      date: new Date(s.date).toISOString(),
+      time: s.time
+    }))
+  : undefined
+  
+};
+ console.log("ID:", id);
+console.log("PAYLOAD:", payload);
       await updateDoctor(id, payload);
 
-      alert("Doctor updated successfully ✅");
-      navigate("/doctors");
+      alert("Doctor updated successfully ");
+      navigate("/admin/doctors");
 
     } catch (error) {
       console.log("Update error:", error);
-      alert("Failed to update doctor ❌");
+      alert("Failed to update doctor ");
     } finally {
       setLoading(false);
     }

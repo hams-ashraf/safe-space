@@ -125,14 +125,28 @@ useEffect(() => {
     try {
       await new Promise((r) => setTimeout(r, 500));
       if (image) {
-        const formData = new FormData();
-        formData.append("image", image);
+  const formData = new FormData();
+  formData.append("image", image);
 
-        await fetch("/api/DoctorDashboard/UpdateProfile", {
-            method: "PUT",
-            body: formData,
-        });
-        }
+  const token = localStorage.getItem("token");
+
+const res = await fetch("/api/DoctorDashboard/UpdateProfile", {
+  method: "PUT",
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  body: formData,
+});
+
+  if (!res.ok) {
+    throw new Error("Failed to update profile image");
+  }
+
+  const updatedDoctor = await res.json();
+
+  setDoctor(updatedDoctor);
+  setAvatarPreview(updatedDoctor.imageUrl || defaultAvatar);
+}
         if (isPasswordChangeAttempt) {
   const token = localStorage.getItem("token");
 

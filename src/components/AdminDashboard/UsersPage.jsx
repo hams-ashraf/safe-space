@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { usersData } from "../Shared/adminDummyData";
-import { getAllUsers } from "../../api/dashboard"; // 👈 API
+import { getAllUsers } from "../../api/dashboard"; 
 import "../AdminDashboard/AdminDashboard.css";
 import "./UsersPage.css";
+import { deleteUser } from "../../api/dashboard";
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -18,17 +19,17 @@ export default function UsersPage() {
 
         const data = await getAllUsers();
 
-        // 👇 لو API رجع داتا
+        
         if (data && data.length > 0) {
           setUsers(data);
         } else {
-          setUsers(usersData); // 👈 fallback
+          setUsers(usersData); 
         }
 
       } catch (error) {
         console.log("Users API not ready:", error);
 
-        // 👇 fallback لو API وقع
+        
         setUsers(usersData);
       } finally {
         setLoading(false);
@@ -38,9 +39,17 @@ export default function UsersPage() {
     fetchUsers();
   }, []);
 
-  function removeUser(id) {
+ async function removeUser(id) {
+  try {
+    await deleteUser(id);
+
     setUsers((prev) => prev.filter((u) => u.id !== id));
+
+    console.log("Deleted successfully");
+  } catch (error) {
+    console.log("DELETE ERROR:", error.response?.data || error.message);
   }
+}
 
   return (
     <div className="users-page">
@@ -77,10 +86,10 @@ export default function UsersPage() {
                     </Link>
 
                     <button
-                      className="admin-btn admin-btn-danger"
-                      onClick={() => removeUser(u.id)}
+                    className="admin-btn admin-btn-danger"
+                    onClick={() => removeDoctor(d.id)}
                     >
-                      Cancel
+                    Delete
                     </button>
                   </td>
                 </tr>

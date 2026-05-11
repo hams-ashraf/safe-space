@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { getAllDoctors } from "../../api/dashboard";
 import "../AdminDashboard/AdminDashboard.css";
 import "./DoctorsPage.css";
+import { deleteDoctor } from "../../api/dashboard";
 
 export default function DoctorsPage() {
   const [query, setQuery] = useState("");
@@ -37,9 +38,18 @@ useEffect(() => {
     );
   }, [doctors, query]);
 
-  function removeDoctor(id) {
+  async function removeDoctor(id) {
+  try {
+    await deleteDoctor(id);
+
     setDoctors((prev) => prev.filter((d) => d.id !== id));
+
+    alert("Doctor deleted successfully");
+  } catch (error) {
+    console.log(error);
+    alert("Delete failed");
   }
+}
 
   return (
     <div className="doctors-page">
@@ -82,12 +92,9 @@ useEffect(() => {
           Edit
         </Link>
 
-        <button
-          className="admin-btn admin-btn-danger"
-          onClick={() => removeDoctor(d.id)}
-        >
-          Cancel
-        </button>
+        <button className="admin-btn admin-btn-danger" onClick={() => removeDoctor(d.id)}>
+                    Delete
+                  </button>
       </td>
     </tr>
   ))

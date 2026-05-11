@@ -15,7 +15,8 @@ export const addDoctor = async (doctorData) => {
   return res.data;
 };
 export const updateDoctor = async (id, doctorData) => {
-  const res = await api.put(`/Admin/UpdateDoctor/${id}`, doctorData);
+  const res = await api.put(`/Admin/UpdateDoctorInfo/${id}`, doctorData
+  );
   return res.data;
 };
 export const deleteDoctor = async (id) => {
@@ -23,7 +24,15 @@ export const deleteDoctor = async (id) => {
 };
 
 export const deleteUser = async (id) => {
-  return await api.delete(`/Admin/DeletePatient/${id}`);
+  try {
+    const res = await api.delete(`/Admin/DeletePatient/${id}`);
+    console.log("SUCCESS DELETE USER:", res);
+    return res.data;
+  } catch (err) {
+    console.log("DELETE USER ERROR STATUS:", err.response?.status);
+    console.log("DELETE USER ERROR DATA:", err.response?.data);
+    throw err;
+  }
 };
 export const getDashboardStats = async () => {
   const res = await api.get("/Admin/DashboardStats");

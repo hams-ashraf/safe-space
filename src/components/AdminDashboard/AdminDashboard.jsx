@@ -6,6 +6,8 @@ import { getAllDoctors } from "../../api/dashboard";
 import { getAllUsers } from "../../api/dashboard";
 import "./AdminDashboard.css";
 import { getDashboardStats} from "../../api/dashboard";
+import { deleteDoctor } from "../../api/dashboard";
+import { deleteUser } from "../../api/dashboard";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -50,14 +52,30 @@ export default function AdminDashboard() {
     [users.length, doctors.length,totalSessions]
   );
 
-  function removeUser(id) {
+  async function removeUser(id) {
+  try {
+    await deleteUser(id);
+
     setUsers((prev) => prev.filter((u) => u.id !== id));
-  }
 
-  function removeDoctor(id) {
+    console.log("Deleted successfully");
+  } catch (error) {
+    console.log("DELETE ERROR:", error.response?.data || error.message);
+  }
+}
+
+  async function removeDoctor(id) {
+  try {
+    await deleteDoctor(id);
+
     setDoctors((prev) => prev.filter((d) => d.id !== id));
-  }
 
+    alert("Doctor deleted successfully");
+  } catch (error) {
+    console.log(error);
+    alert("Delete failed");
+  }
+}
   return (
     <div className="admin-dashboard-page">
       <div className="admin-dashboard-stats">
@@ -98,7 +116,7 @@ export default function AdminDashboard() {
                     className="admin-btn admin-btn-danger"
                     onClick={() => removeUser(u.id)}
                   >
-                    Cancel
+                    Delete
                   </button>
                 </td>
               </tr>
@@ -138,9 +156,12 @@ export default function AdminDashboard() {
                   <Link className="admin-btn admin-btn-secondary" to={`/admin/edit-doctor/${d.id}`}>
                     Edit
                   </Link>
-                  <button className="admin-btn admin-btn-danger" onClick={() => removeDoctor(d.id)}>
-                    Cancel
-                  </button>
+                  <button
+                    className="admin-btn admin-btn-danger"
+                    onClick={() => removeDoctor(d.id)}
+                    >
+                    Delete
+                    </button>
                 </td>
               </tr>
             ))}

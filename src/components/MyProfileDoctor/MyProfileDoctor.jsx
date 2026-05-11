@@ -13,36 +13,7 @@ if (!doctorId) {
   console.log("No doctorId found");
 }
 
-/** Sample reviews matching the Client Reviews reference layout */
-// const MOCK_CLIENT_REVIEWS = [
-//   {
-//     id: "r1",
-//     initials: "M.T.",
-//     displayName: "Anonymous",
-//     dateLabel: "Feb 2026",
-//     rating: 5,
-//     comment:
-//       "Dr. Johnson has been incredibly supportive throughout my journey. Her approach is gentle yet effective.",
-//   },
-//   {
-//     id: "r2",
-//     initials: "R.K.",
-//     displayName: "Anonymous",
-//     dateLabel: "Jan 2026",
-//     rating: 5,
-//     comment:
-//       "Highly recommend! She truly listens and provides practical strategies that have made a real difference.",
-//   },
-//   {
-//     id: "r3",
-//     initials: "L.S.",
-//     displayName: "Anonymous",
-//     dateLabel: "Jan 2026",
-//     rating: 4,
-//     comment:
-//       "Professional and empathetic. I feel comfortable sharing my thoughts and concerns with Dr. Johnson.",
-//   },
-// ];
+
 
 const MOCK_DOCTOR = {
   fullName: "Dr. Sample Physician",
@@ -59,7 +30,7 @@ const MOCK_DOCTOR = {
     "Board Certified Psychiatry",
     "Advanced Trauma-Informed Care Certificate",
   ],
-//   reviews: MOCK_CLIENT_REVIEWS,
+
   imageUrl: null,
 };
 
@@ -113,7 +84,7 @@ export default function MyProfileDoctor() {
 }, []);
 
   const handleAddSlot = async () => {
-  console.log("BTN CLICKED 🔥");
+  
 
   if (!slotDate || !slotTime) return;
 
@@ -128,7 +99,7 @@ export default function MyProfileDoctor() {
 
     await addDoctorSlot(data);
 
-    alert("Slot added successfully ✅");
+    alert("Slot added successfully ");
 
     setSlotDate("");
     setSlotTime("");
@@ -136,7 +107,7 @@ export default function MyProfileDoctor() {
 
   } catch (error) {
     console.error("Error:", error);
-    alert("Failed to add slot ❌");
+    alert("Failed to add slot ");
   }
 };
 

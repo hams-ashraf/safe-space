@@ -77,15 +77,18 @@ const handleStartChat = async () => {
     try {
 const formattedDate = selectedDate;
 
+const token = localStorage.getItem("token");
+
 const res = await fetch(
-  `http://doctorprofile.runasp.net/api/Sessions/AvailableSlots?DoctorId=${id}&date=${formattedDate}&type=${sessionType}`
+  `http://doctorprofile.runasp.net/api/Sessions/AvailableSlots?DoctorId=${id}&date=${formattedDate}&type=${sessionType}`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
 );
 const data = await res.json();
  
-
-console.log("RAW API RESPONSE:", data);
-console.log("sessionType:", sessionType);
-console.log("selectedDate:", selectedDate);
 
 
 setSlots(data);
