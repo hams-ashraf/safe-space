@@ -52,7 +52,7 @@ export default function Meeting() {
 
   const getAvatarUrl = (gender) => {
     const isFemale = typeof gender === "string" && gender.trim().toLowerCase() === "female";
-    return isFemale 
+    return isFemale
       ? "https://cdn-icons-png.flaticon.com/512/4140/4140047.png" // Girl
       : "https://cdn-icons-png.flaticon.com/512/4140/4140048.png"; // Boy
   };
@@ -62,12 +62,12 @@ export default function Meeting() {
 
   if (isDoctor) {
     // Doctor Interface 
-    myGenderStr = session?.doctorGender || session?.DoctorGender; 
-    otherGenderStr = session?.gender || session?.Gender;        
+    myGenderStr = session?.doctorGender || session?.DoctorGender;
+    otherGenderStr = session?.gender || session?.Gender;
   } else {
     // Patient Interface 
-    myGenderStr = session?.patientGender || session?.PatientGender; 
-    otherGenderStr = session?.doctorGender || session?.DoctorGender; 
+    myGenderStr = session?.patientGender || session?.PatientGender;
+    otherGenderStr = session?.doctorGender || session?.DoctorGender;
   }
 
   const myAvatarUrl = getAvatarUrl(myGenderStr);
@@ -79,7 +79,7 @@ export default function Meeting() {
     2,
     "0"
   )}:${String(elapsedSeconds % 60).padStart(2, "0")}`;
-  
+
   const isDoctorJoined = participants.some(p => String(p.userId) === String(doctorId));
   const otherParticipants = participants.filter(p => String(p.userId) !== String(doctorId));
   const otherHasJoined = participants.length > 0;
@@ -100,7 +100,7 @@ export default function Meeting() {
     try {
       await updateNotes(session.sessionId, notesContent);
       setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000); 
+      setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
       console.error("Failed to save notes", err);
       alert("Failed to save notes. Please try again.");
@@ -151,7 +151,7 @@ export default function Meeting() {
 
         const distortion = ctx.createWaveShaper();
         distortion.oversample = "4x";
-        distortion.curve = new Float32Array([0, 0]); 
+        distortion.curve = new Float32Array([0, 0]);
         distortionRef.current = distortion;
 
         const tremoloGain = ctx.createGain();
@@ -160,7 +160,7 @@ export default function Meeting() {
 
         const osc = ctx.createOscillator();
         osc.type = "square";
-        osc.frequency.value = 30; 
+        osc.frequency.value = 30;
         tremoloOscRef.current = osc;
         osc.connect(tremoloGain.gain);
         osc.start();
@@ -190,7 +190,7 @@ export default function Meeting() {
       }
 
       if (audioCtxRef.current) {
-        audioCtxRef.current.close().catch(() => {});
+        audioCtxRef.current.close().catch(() => { });
       }
 
       if (peerConnectionRef.current) {
@@ -233,7 +233,7 @@ export default function Meeting() {
 
     // ensure running 
     if (ctx.state === "suspended") {
-      ctx.resume().catch(() => {});
+      ctx.resume().catch(() => { });
     }
 
     try {
@@ -246,7 +246,7 @@ export default function Meeting() {
       // no-op
     }
 
-    
+
     filter.type = "lowpass";
     filter.frequency.value = 20000;
     filter.Q.value = 0.7;
@@ -262,10 +262,10 @@ export default function Meeting() {
       filter.type = "highpass";
       filter.frequency.value = 800; // Cut off all bass/mids below 800Hz
       filter.Q.value = 1.0;
-      
+
       compressor.threshold.value = -35;
       compressor.ratio.value = 12; // Heavy compression to pick up whispers
-      
+
       source.connect(filter);
       filter.connect(compressor);
       compressor.connect(dest);
@@ -277,7 +277,7 @@ export default function Meeting() {
       filter.type = "lowshelf";
       filter.frequency.value = 350; // Boost everything below 350Hz
       filter.gain.value = 25; // +25dB bass boost! (extremely noticeable)
-      
+
       source.connect(filter);
       filter.connect(dest);
       return;
@@ -288,11 +288,11 @@ export default function Meeting() {
       filter.type = "bandpass";
       filter.frequency.value = 1500;
       filter.Q.value = 1.5;
-      
+
       setDistortionAmount(80); // Very high distortion
       tremoloGain.gain.value = 1; // 100% AM depth
       if (tremoloOscRef.current) tremoloOscRef.current.frequency.value = 50; // 50Hz Dalek modulation
-      
+
       source.connect(filter);
       filter.connect(distortion);
       distortion.connect(tremoloGain);
@@ -379,18 +379,21 @@ export default function Meeting() {
         const joinedUserId = payload?.userId;
         const joinedConnId = payload?.connectionId;
         const myUserId = currentUser?.id;
-        
+
         if (joinedUserId && myUserId && String(joinedUserId) === String(myUserId)) {
-          return; 
+          return;
         }
-        
+
         setParticipants((prev) => {
           const exists = prev.some((p) => String(p.userId) === String(joinedUserId));
           if (exists) return prev;
+          const gender = payload.PatientGender || payload.User?.Gender || payload.gender || payload.Gender || "male";
+          const name = payload.patientName || payload.PatientName || payload.User?.DisplayName || payload.User?.FullName || payload.User?.UserName || payload.displayName || payload.userName || payload.fullName || `Member ${prev.length + 1}`;
+          
           return [...prev, { 
             ...payload, 
-            name: payload.displayName || payload.userName || payload.fullName || `Member ${prev.length + 1}`,
-            gender: payload.gender || "male"
+            name: name,
+            gender: gender
           }];
         });
 
@@ -408,14 +411,17 @@ export default function Meeting() {
 
       hubConnection.on("ReceiveOffer", async (payload) => {
         const { fromConnectionId, sdp } = payload;
-        
+
         setParticipants((prev) => {
           if (prev.some((p) => p.connectionId === fromConnectionId)) return prev;
+          const gender = payload.PatientGender || payload.User?.Gender || payload.gender || payload.Gender || "male";
+          const name = payload.patientName || payload.PatientName || payload.User?.DisplayName || payload.User?.FullName || payload.User?.UserName || payload.displayName || payload.userName || "Participant";
+          
           return [...prev, { 
             connectionId: fromConnectionId, 
             userId: payload.userId || "peer",
-            name: payload.displayName || payload.userName || "Participant",
-            gender: payload.gender || "male"
+            name: name,
+            gender: gender
           }];
         });
 
@@ -459,14 +465,14 @@ export default function Meeting() {
 
       hubConnection.on("ParticipantLeft", (payload) => {
         const leftUserId = payload?.userId;
-        
+
         setParticipants((prev) =>
           prev.filter((p) => String(p.userId) !== String(leftUserId))
         );
-        
-    
+
+
         const isLeftUserDoctor = String(leftUserId) === String(doctorId);
-        
+
         if (!isGroup || isLeftUserDoctor) {
           setForceEndCall(true);
         }
@@ -507,8 +513,8 @@ export default function Meeting() {
                 ...p,
                 connectionId: p.connectionId || `conn-${idx}`,
                 userId: p.userId || p,
-                name: p.displayName || p.userName || p.fullName || `Member ${idx + 1}`,
-                gender: p.gender || "male"
+                name: p.patientName || p.PatientName || p.User?.DisplayName || p.User?.FullName || p.User?.UserName || p.displayName || p.userName || p.fullName || `Member ${idx + 1}`,
+                gender: p.PatientGender || p.User?.Gender || p.gender || p.Gender || "male"
               })).filter((p) => String(p.userId) !== String(myId));
               return [...prev, ...others];
             });
@@ -653,9 +659,8 @@ export default function Meeting() {
             <h3 className="person-name">You</h3>
             <span className={`person-badge ${isMuted ? "muted" : "speaking"}`}>
               <i
-                className={`fa-solid ${
-                  isMuted ? "fa-microphone-slash" : "fa-microphone"
-                }`}
+                className={`fa-solid ${isMuted ? "fa-microphone-slash" : "fa-microphone"
+                  }`}
               />
               {isMuted ? "Muted" : "Speaking now"}
             </span>
@@ -700,18 +705,18 @@ export default function Meeting() {
               {/* Doctor Slot in Group (Joined or Waiting) */}
               {!isDoctor && (
                 <div className="meeting-person doctor-slot">
-                   <div className={`avatar-ring small ${isDoctorJoined ? "" : "opacity-50"}`}>
-                      <img
-                        src={otherAvatarUrl}
-                        alt="Doctor avatar"
-                        className="avatar-image"
-                      />
-                   </div>
-                   <h3 className="person-name small">{otherPersonName}</h3>
-                   <span className={`person-badge small ${isDoctorJoined ? "listening" : "waiting"}`}>
-                      <i className={`fa-solid ${isDoctorJoined ? "fa-headphones-simple" : "fa-hourglass-half"}`} />
-                      {isDoctorJoined ? "Joined" : "Waiting..."}
-                   </span>
+                  <div className={`avatar-ring small ${isDoctorJoined ? "" : "opacity-50"}`}>
+                    <img
+                      src={otherAvatarUrl}
+                      alt="Doctor avatar"
+                      className="avatar-image"
+                    />
+                  </div>
+                  <h3 className="person-name small">{otherPersonName}</h3>
+                  <span className={`person-badge small ${isDoctorJoined ? "listening" : "waiting"}`}>
+                    <i className={`fa-solid ${isDoctorJoined ? "fa-headphones-simple" : "fa-hourglass-half"}`} />
+                    {isDoctorJoined ? "Joined" : "Waiting..."}
+                  </span>
                 </div>
               )}
 
@@ -732,7 +737,7 @@ export default function Meeting() {
                   </span>
                 </div>
               ))}
-              
+
               {!isDoctor && !isDoctorJoined && otherParticipants.length === 0 && (
                 <div className="waiting-placeholder">
                   <p className="text-muted small mt-3">
@@ -765,9 +770,8 @@ export default function Meeting() {
           <button type="button" className="action-btn" onClick={handleToggleMute}>
             <span className={`action-icon ${isMuted ? "muted" : "success"}`}>
               <i
-                className={`fa-solid ${
-                  isMuted ? "fa-microphone-slash" : "fa-microphone"
-                }`}
+                className={`fa-solid ${isMuted ? "fa-microphone-slash" : "fa-microphone"
+                  }`}
               />
             </span>
             <span>{isMuted ? "Unmute" : "Mute"}</span>
@@ -793,9 +797,8 @@ export default function Meeting() {
                   <li key={option.label}>
                     <button
                       type="button"
-                      className={`dropdown-item voice-item ${
-                        selectedVoice === option.label ? "active" : ""
-                      }`}
+                      className={`dropdown-item voice-item ${selectedVoice === option.label ? "active" : ""
+                        }`}
                       onClick={() => setSelectedVoice(option.label)}
                     >
                       <span className="voice-item-left">
