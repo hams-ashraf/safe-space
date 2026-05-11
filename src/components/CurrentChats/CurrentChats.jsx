@@ -86,37 +86,37 @@ export default function CurrentChats() {
 
   useEffect(() => {
     if (!currentChatId) return;
-async function fetchData() {
+      async function fetchData() {
       try {
-        setLoading(true);
-        let msgsRes;
-        
-        if (userRole === "Doctor") {
-          msgsRes = await getDoctorChatMessages(currentChatId);
-          setHeaderData({ 
-            fullName: msgsRes.data.patientName || "Patient Account" 
-          });  
+          setLoading(true);
+          let msgsRes;
+          
+          if (userRole === "Doctor") {
+            msgsRes = await getDoctorChatMessages(currentChatId);
+            setHeaderData({ 
+              fullName: msgsRes.data.patientName || "Patient Account" 
+            });  
 
-          const formatted = (msgsRes.data.messages || []).map(m => ({
-            ...m,
-            id: m.messageId || m.id,
-            messageText: m.text || m.messageText
-          }));
-          setMessages(formatted);  
-        }  
-        else {
-          msgsRes = await getChatMessages(currentChatId);
-          const targetDocId = realDocId || currentChatId;
-          const docRes = await getDoctorById(targetDocId); 
-          setHeaderData(docRes.data);
+            const formatted = (msgsRes.data.messages || []).map(m => ({
+              ...m,
+              id: m.messageId || m.id,
+              messageText: m.text || m.messageText
+            }));
+            setMessages(formatted);  
+          }  
+          else {
+            msgsRes = await getChatMessages(currentChatId);
+            const targetDocId = realDocId || currentChatId;
+            const docRes = await getDoctorById(targetDocId); 
+            setHeaderData(docRes.data);
 
-          const formatted = (msgsRes.data || []).map(m => ({
-            ...m,
-            id: m.id || m.messageId,
-            messageText: m.messageText || m.text
-          }));
-          setMessages(formatted);
-        }
+            const formatted = (msgsRes.data || []).map(m => ({
+              ...m,
+              id: m.id || m.messageId,
+              messageText: m.messageText || m.text
+            }));
+            setMessages(formatted);
+          }
 
       } catch (err) {
         console.error("Fetch Error:", err);

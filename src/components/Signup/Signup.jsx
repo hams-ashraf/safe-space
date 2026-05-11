@@ -118,7 +118,7 @@ export default function Signup() {
       // alert("Account created successfully!");
       // navigate("/login");
     setSuccessMessage("Account created successfully! Verify Email to login...");
-    
+
     setTimeout(() => {
         navigate("/login");
     }, 3000);
