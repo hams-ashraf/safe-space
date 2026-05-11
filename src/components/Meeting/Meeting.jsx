@@ -44,6 +44,7 @@ export default function Meeting() {
   ];
 
   const isDoctor = isDoctorUser();
+  const isGroup = session?.sessionType !== "OneToOne";
   const currentUser = getStoredUser();
   const myName = currentUser?.fullName || "You";
   const otherPersonName = isDoctor ? (session?.patientName || "Patient") : (session?.doctorName || "Dr. Sarah");
@@ -59,7 +60,7 @@ export default function Meeting() {
   let otherGenderStr = null;
 
   if (isDoctor) {
-    // Doctor Interface (using DoctorSessions API)
+    // Doctor Interface 
     myGenderStr = session?.doctorGender || session?.DoctorGender; // Doctor's own gender
     otherGenderStr = session?.gender || session?.Gender;         // Patient's gender in this API
   } else {
@@ -227,7 +228,7 @@ export default function Meeting() {
 
     if (!ctx || !source || !dest || !filter || !compressor || !distortion || !tremoloGain) return;
 
-    // ensure running (some browsers start suspended until user gesture)
+    // ensure running 
     if (ctx.state === "suspended") {
       ctx.resume().catch(() => {});
     }
@@ -623,7 +624,8 @@ export default function Meeting() {
         {/* Hidden audio element to play remote sound */}
         <audio ref={remoteAudioRef} autoPlay hidden />
 
-        <div className="meeting-avatars">
+        <div className={`meeting-avatars ${isGroup ? "group-mode" : ""}`}>
+          {/* My Avatar (Always present) */}
           <div className="meeting-person">
             <div className="avatar-ring">
               <img
@@ -643,35 +645,81 @@ export default function Meeting() {
             </span>
           </div>
 
-          <div className="voice-wave">
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
+          {!isGroup && (
+            <>
+              <div className="voice-wave">
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+              </div>
 
-          <div className="meeting-person">
-            <div className="avatar-ring">
-              <img
-                src={otherAvatarUrl}
-                alt="Other person avatar"
-                className={`avatar-image ${!otherHasJoined ? "opacity-50" : ""}`}
-              />
+              <div className="meeting-person">
+                <div className="avatar-ring">
+                  <img
+                    src={otherAvatarUrl}
+                    alt="Other person avatar"
+                    className={`avatar-image ${!otherHasJoined ? "opacity-50" : ""}`}
+                  />
+                </div>
+                <h3 className="person-name">{otherPersonName}</h3>
+                {otherHasJoined ? (
+                  <span className="person-badge listening">
+                    <i className="fa-solid fa-headphones-simple" />
+                    Listening
+                  </span>
+                ) : (
+                  <span className="person-badge waiting" style={{ color: "#6c757d", border: "1px dashed #ced4da", background: "#f8f9fa", fontWeight: "600", fontSize: "0.9rem" }}>
+                    <i className="fa-solid fa-hourglass-half" />
+                    Waiting for {otherPersonName.split(' ')[0]}...
+                  </span>
+                )}
+              </div>
+            </>
+          )}
+
+          {isGroup && (
+            <div className="participants-grid">
+              {participants.map((p, idx) => (
+                <div className="meeting-person participant-item" key={p.connectionId || idx}>
+                  <div className="avatar-ring small">
+                    <img
+                      src={getAvatarUrl("male")} // Default to male for anonymous participants
+                      alt="Participant avatar"
+                      className="avatar-image"
+                    />
+                  </div>
+                  <h3 className="person-name small">Member {idx + 1}</h3>
+                  <span className="person-badge listening small">
+                    <i className="fa-solid fa-headphones-simple" />
+                    Listening
+                  </span>
+                </div>
+              ))}
+              
+              {participants.length === 0 && (
+                <div className="waiting-placeholder">
+                  <div className="doctor-waiting-view">
+                    <div className="avatar-ring small">
+                      <img
+                        src={otherAvatarUrl}
+                        alt="Doctor avatar"
+                        className="avatar-image opacity-50"
+                      />
+                    </div>
+                    <h4 className="mt-2 mb-1" style={{ color: '#1f4137', fontWeight: '700' }}>
+                      Waiting for {otherPersonName}...
+                    </h4>
+                    <p className="text-muted small">
+                      <i className="fa-solid fa-users me-1"></i>
+                      Waiting for other members to join the session
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
-            <h3 className="person-name">{otherPersonName}</h3>
-            {otherHasJoined ? (
-              <span className="person-badge listening">
-                <i className="fa-solid fa-headphones-simple" />
-                Listening
-              </span>
-            ) : (
-              <span className="person-badge waiting" style={{ color: "#6c757d", border: "1px dashed #ced4da", background: "#f8f9fa", fontWeight: "600", fontSize: "0.9rem" }}>
-                <i className="fa-solid fa-hourglass-half" />
-                Waiting for {otherPersonName.split(' ')[0]}...
-              </span>
-            )}
-          </div>
+          )}
         </div>
 
         <div className="meeting-safe-message">
