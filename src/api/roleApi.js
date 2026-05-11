@@ -35,12 +35,10 @@ function roleLc() {
   return (localStorage.getItem(ROLE_KEY) || "").trim().toLowerCase();
 }
 
-/** Doctors: الأزرار تظهر للمريض فقط */
 export function isPatientUser() {
   return roleLc() === "patient";
 }
 
-/** Meeting: زر Notes يظهر للدكتور فقط */
 export function isDoctorUser() {
   return roleLc() === "doctor";
 }
