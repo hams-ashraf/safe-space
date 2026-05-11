@@ -45,6 +45,7 @@ export default function Meeting() {
 
   const isDoctor = isDoctorUser();
   const isGroup = session?.sessionType !== "OneToOne";
+  const doctorId = session?.doctorId || session?.DoctorId;
   const currentUser = getStoredUser();
   const myName = currentUser?.fullName || "You";
   const otherPersonName = isDoctor ? (session?.patientName || "Patient") : (session?.doctorName || "Dr. Sarah");
@@ -78,7 +79,9 @@ export default function Meeting() {
     2,
     "0"
   )}:${String(elapsedSeconds % 60).padStart(2, "0")}`;
-
+  
+  const isDoctorJoined = participants.some(p => String(p.userId) === String(doctorId));
+  const otherParticipants = participants.filter(p => String(p.userId) !== String(doctorId));
   const otherHasJoined = participants.length > 0;
 
   useEffect(() => {
@@ -387,7 +390,11 @@ export default function Meeting() {
         setParticipants((prev) => {
           const exists = prev.some((p) => String(p.userId) === String(joinedUserId));
           if (exists) return prev;
-          return [...prev, payload];
+          return [...prev, { 
+            ...payload, 
+            name: payload.displayName || payload.userName || payload.fullName || `Member ${prev.length + 1}`,
+            gender: payload.gender || "male"
+          }];
         });
 
         // We are the existing participant, send an offer to the new participant
@@ -409,7 +416,12 @@ export default function Meeting() {
         // Fallback to register the other person if we didn't get ParticipantJoined
         setParticipants((prev) => {
           if (prev.some((p) => p.connectionId === fromConnectionId)) return prev;
-          return [...prev, { connectionId: fromConnectionId, userId: "peer" }];
+          return [...prev, { 
+            connectionId: fromConnectionId, 
+            userId: payload.userId || "peer",
+            name: payload.displayName || payload.userName || "Participant",
+            gender: payload.gender || "male"
+          }];
         });
 
         try {
@@ -452,12 +464,18 @@ export default function Meeting() {
 
       hubConnection.on("ParticipantLeft", (payload) => {
         const leftUserId = payload?.userId;
+        
         setParticipants((prev) =>
           prev.filter((p) => String(p.userId) !== String(leftUserId))
         );
         
-        // If the other person leaves the 1-on-1 call, end the session for us too
-        setForceEndCall(true);
+        // Only force end the call for everyone if the DOCTOR leaves 
+        // OR if it's a 1-on-1 session and the other person leaves.
+        const isLeftUserDoctor = String(leftUserId) === String(doctorId);
+        
+        if (!isGroup || isLeftUserDoctor) {
+          setForceEndCall(true);
+        }
       });
 
       // Just in case the backend broadcasts an explicit CallEnded event
@@ -491,7 +509,13 @@ export default function Meeting() {
             // The backend returned the existing participants
             setParticipants((prev) => {
               const myId = currentUser?.id;
-              const others = existing.filter((p) => String(p?.userId || p) !== String(myId));
+              const others = existing.map((p, idx) => ({
+                ...p,
+                connectionId: p.connectionId || `conn-${idx}`,
+                userId: p.userId || p,
+                name: p.displayName || p.userName || p.fullName || `Member ${idx + 1}`,
+                gender: p.gender || "male"
+              })).filter((p) => String(p.userId) !== String(myId));
               return [...prev, ...others];
             });
           }
@@ -681,16 +705,35 @@ export default function Meeting() {
 
           {isGroup && (
             <div className="participants-grid">
-              {participants.map((p, idx) => (
+              {/* Doctor Slot in Group (Joined or Waiting) */}
+              {!isDoctor && (
+                <div className="meeting-person doctor-slot">
+                   <div className={`avatar-ring small ${isDoctorJoined ? "" : "opacity-50"}`}>
+                      <img
+                        src={otherAvatarUrl}
+                        alt="Doctor avatar"
+                        className="avatar-image"
+                      />
+                   </div>
+                   <h3 className="person-name small">{otherPersonName}</h3>
+                   <span className={`person-badge small ${isDoctorJoined ? "listening" : "waiting"}`}>
+                      <i className={`fa-solid ${isDoctorJoined ? "fa-headphones-simple" : "fa-hourglass-half"}`} />
+                      {isDoctorJoined ? "Joined" : "Waiting..."}
+                   </span>
+                </div>
+              )}
+
+              {/* Other Members */}
+              {otherParticipants.map((p, idx) => (
                 <div className="meeting-person participant-item" key={p.connectionId || idx}>
                   <div className="avatar-ring small">
                     <img
-                      src={getAvatarUrl("male")} // Default to male for anonymous participants
+                      src={getAvatarUrl(p.gender)}
                       alt="Participant avatar"
                       className="avatar-image"
                     />
                   </div>
-                  <h3 className="person-name small">Member {idx + 1}</h3>
+                  <h3 className="person-name small">{p.name || `Member ${idx + 1}`}</h3>
                   <span className="person-badge listening small">
                     <i className="fa-solid fa-headphones-simple" />
                     Listening
@@ -698,24 +741,12 @@ export default function Meeting() {
                 </div>
               ))}
               
-              {participants.length === 0 && (
+              {!isDoctor && !isDoctorJoined && otherParticipants.length === 0 && (
                 <div className="waiting-placeholder">
-                  <div className="doctor-waiting-view">
-                    <div className="avatar-ring small">
-                      <img
-                        src={otherAvatarUrl}
-                        alt="Doctor avatar"
-                        className="avatar-image opacity-50"
-                      />
-                    </div>
-                    <h4 className="mt-2 mb-1" style={{ color: '#1f4137', fontWeight: '700' }}>
-                      Waiting for {otherPersonName}...
-                    </h4>
-                    <p className="text-muted small">
-                      <i className="fa-solid fa-users me-1"></i>
-                      Waiting for other members to join the session
-                    </p>
-                  </div>
+                  <p className="text-muted small mt-3">
+                    <i className="fa-solid fa-circle-info me-1"></i>
+                    Waiting for the session to start...
+                  </p>
                 </div>
               )}
             </div>
