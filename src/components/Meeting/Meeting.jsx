@@ -52,6 +52,7 @@ export default function Meeting() {
 
   const getAvatarUrl = (gender) => {
     const isFemale = typeof gender === "string" && gender.trim().toLowerCase() === "female";
+    if (gender === "neutral") return "https://cdn-icons-png.flaticon.com/512/149/149071.png"; // WhatsApp-like neutral icon
     return isFemale
       ? "https://cdn-icons-png.flaticon.com/512/4140/4140047.png" // Girl
       : "https://cdn-icons-png.flaticon.com/512/4140/4140048.png"; // Boy
@@ -387,13 +388,11 @@ export default function Meeting() {
         setParticipants((prev) => {
           const exists = prev.some((p) => String(p.userId) === String(joinedUserId));
           if (exists) return prev;
-          const gender = payload.PatientGender || payload.User?.Gender || payload.gender || payload.Gender || "male";
-          const name = payload.patientName || payload.PatientName || payload.User?.DisplayName || payload.User?.FullName || payload.User?.UserName || payload.displayName || payload.userName || payload.fullName || `Member ${prev.length + 1}`;
           
           return [...prev, { 
             ...payload, 
-            name: name,
-            gender: gender
+            name: `Member ${prev.length + 1}`,
+            gender: "neutral"
           }];
         });
 
@@ -414,14 +413,12 @@ export default function Meeting() {
 
         setParticipants((prev) => {
           if (prev.some((p) => p.connectionId === fromConnectionId)) return prev;
-          const gender = payload.PatientGender || payload.User?.Gender || payload.gender || payload.Gender || "male";
-          const name = payload.patientName || payload.PatientName || payload.User?.DisplayName || payload.User?.FullName || payload.User?.UserName || payload.displayName || payload.userName || "Participant";
           
           return [...prev, { 
             connectionId: fromConnectionId, 
             userId: payload.userId || "peer",
-            name: name,
-            gender: gender
+            name: `Member ${prev.length + 1}`,
+            gender: "neutral"
           }];
         });
 
@@ -513,8 +510,8 @@ export default function Meeting() {
                 ...p,
                 connectionId: p.connectionId || `conn-${idx}`,
                 userId: p.userId || p,
-                name: p.patientName || p.PatientName || p.User?.DisplayName || p.User?.FullName || p.User?.UserName || p.displayName || p.userName || p.fullName || `Member ${idx + 1}`,
-                gender: p.PatientGender || p.User?.Gender || p.gender || p.Gender || "male"
+                name: `Member ${idx + 1}`,
+                gender: "neutral"
               })).filter((p) => String(p.userId) !== String(myId));
               return [...prev, ...others];
             });
@@ -720,7 +717,7 @@ export default function Meeting() {
                 </div>
               )}
 
-              {/* Other Members */}
+              {/* Other Members (Patients) */}
               {otherParticipants.map((p, idx) => (
                 <div className="meeting-person participant-item" key={p.connectionId || idx}>
                   <div className="avatar-ring small">
@@ -737,13 +734,41 @@ export default function Meeting() {
                   </span>
                 </div>
               ))}
-
-              {!isDoctor && !isDoctorJoined && otherParticipants.length === 0 && (
+              
+              {/* Waiting Placeholder for Doctor or Patient */}
+              {otherParticipants.length === 0 && (
                 <div className="waiting-placeholder">
-                  <p className="text-muted small mt-3">
-                    <i className="fa-solid fa-circle-info me-1"></i>
-                    Waiting for the session to start...
-                  </p>
+                  <div className="doctor-waiting-view">
+                    {isDoctor ? (
+                      <>
+                        <i className="fa-solid fa-users-viewfinder mb-2" style={{ fontSize: '2rem', color: '#30bf94', opacity: 0.5 }}></i>
+                        <h4 className="mt-2 mb-1" style={{ color: '#1f4137', fontWeight: '700' }}>
+                          Waiting for participants...
+                        </h4>
+                        <p className="text-muted small">
+                          The session will start as soon as members join
+                        </p>
+                      </>
+                    ) : (
+                      !isDoctorJoined && (
+                        <>
+                          <div className="avatar-ring small opacity-50">
+                            <img
+                              src={otherAvatarUrl}
+                              alt="Doctor avatar"
+                              className="avatar-image"
+                            />
+                          </div>
+                          <h4 className="mt-2 mb-1" style={{ color: '#1f4137', fontWeight: '700' }}>
+                            Waiting for {otherPersonName}...
+                          </h4>
+                          <p className="text-muted small">
+                            Waiting for the session leader to join
+                          </p>
+                        </>
+                      )
+                    )}
+                  </div>
                 </div>
               )}
             </div>
