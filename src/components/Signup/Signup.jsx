@@ -97,6 +97,12 @@ export default function Signup() {
   const handleSignup = async (e) => {
     e.preventDefault();
     setSubmitted(true);
+    const currentErrors = { ...errors };
+      if (!formData.gender) {
+        currentErrors.gender = "Gender is required";
+      }
+
+      setErrors(currentErrors);
 
     const hasErrors = Object.values(errors).some((err) => err);
     const hasEmpty = Object.values(formData).some((v) => !v);
@@ -115,11 +121,11 @@ export default function Signup() {
 
       // alert("Account created successfully!");
       // navigate("/login");
-    setSuccessMessage("Account created successfully! Verify Email to login...");
-
-    setTimeout(() => {
-        navigate("/login");
-    }, 3000);
+      
+      setSuccessMessage("Account created successfully! Verify Email to login...");
+      setTimeout(() => {
+          navigate("/login");
+      }, 3000);
 
 
     } catch (err) {
@@ -226,7 +232,13 @@ export default function Signup() {
           </div>
 
           <div className="signup-field">
-            <div className="signup-gender-options">
+            <div className="signup-gender-options"
+                        style={{ 
+                  border: submitted && errors.gender ? "2px solid red" : "1px solid transparent",
+                  borderRadius: "8px",
+                  padding: "5px"
+                }}
+            >
               <label>
                 <input
                   type="radio"
