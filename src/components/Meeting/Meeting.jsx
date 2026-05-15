@@ -81,8 +81,10 @@ export default function Meeting() {
     "0"
   )}:${String(elapsedSeconds % 60).padStart(2, "0")}`;
 
-  const isDoctorJoined = participants.some(p => String(p.userId) === String(doctorId));
-  const otherParticipants = participants.filter(p => String(p.userId) !== String(doctorId));
+  const isDoctorJoined = participants.some(p => p.isDoctor || (doctorId && String(p.userId) === String(doctorId)));
+
+  const otherParticipants = participants.filter(p => !p.isDoctor && (!doctorId || String(p.userId) !== String(doctorId)));
+  
   const otherHasJoined = participants.length > 0;
 
   const normalizeParticipant = (p) => {
@@ -92,6 +94,41 @@ export default function Meeting() {
       ...p,
       userId: uid,
       connectionId: cid
+    };
+  };
+
+  const identifyParticipant = (normalized, idx) => {
+    let pName = normalized.name || `Member ${idx}`;
+    let pGender = normalized.gender || "neutral";
+
+    let isUserDoctor = false;
+    if (doctorId && String(normalized.userId) === String(doctorId)) isUserDoctor = true;
+    if (pName && otherPersonName && String(pName).toLowerCase().includes(String(otherPersonName).toLowerCase())) isUserDoctor = true;
+    if (pName && otherPersonName && String(otherPersonName).toLowerCase().includes(String(pName).toLowerCase())) isUserDoctor = true;
+    if (normalized.role && String(normalized.role).toLowerCase() === 'doctor') isUserDoctor = true;
+    if (normalized.isHost) isUserDoctor = true;
+
+    if (isUserDoctor) {
+      pName = otherPersonName;
+      pGender = otherGenderStr;
+    } else if (isDoctor) {
+      const patientData = (session?.patients || session?.Patients)?.find(
+        (p) => String(p.id || p.userId || p.UserId || p.PatientId || p.patientId) === String(normalized.userId)
+      );
+      if (patientData) {
+        pName = patientData.name || patientData.Name || pName;
+        pGender = patientData.gender || patientData.Gender || pGender;
+      }
+    } else {
+      pName = `Member ${idx}`;
+      pGender = "neutral";
+    }
+
+    return {
+      ...normalized,
+      name: pName,
+      gender: pGender,
+      isDoctor: isUserDoctor
     };
   };
 
@@ -401,33 +438,11 @@ export default function Meeting() {
         }
 
         setParticipants((prev) => {
-          const exists = prev.some((p) => String(p.userId) === String(joinedUserId));
+          const exists = prev.some((p) => (joinedUserId && String(p.userId) === String(joinedUserId)) || (joinedConnId && p.connectionId === joinedConnId));
           if (exists) return prev;
 
-          const isJoinedUserDoctor = doctorId && String(joinedUserId) === String(doctorId);
-          
-          let pName = `Member ${prev.length + 1}`;
-          let pGender = "neutral";
-
-          if (isJoinedUserDoctor) {
-            pName = otherPersonName;
-            pGender = otherGenderStr;
-          } else if (isDoctor) {
-            // If I am the doctor, try to find this patient's real info
-            const patientData = (session?.patients || session?.Patients)?.find(
-              (p) => String(p.id || p.userId || p.UserId || p.PatientId || p.patientId) === String(joinedUserId)
-            );
-            if (patientData) {
-              pName = patientData.name || patientData.Name || pName;
-              pGender = patientData.gender || patientData.Gender || pGender;
-            }
-          }
-          
-          return [...prev, { 
-            ...normalized, 
-            name: pName,
-            gender: pGender
-          }];
+          const identifiedParticipant = identifyParticipant(normalized, prev.length + 1);
+          return [...prev, identifiedParticipant];
         });
 
         if (joinedConnId) {
@@ -442,41 +457,10 @@ export default function Meeting() {
         }
       });
 
-      hubConnection.on("ReceiveOffer", async (payload) => {
-        const normalized = normalizeParticipant(payload);
-        const fromConnectionId = normalized.connectionId;
-
-        setParticipants((prev) => {
-          if (prev.some((p) => p.connectionId === fromConnectionId)) return prev;
-          
-          const isJoinedUserDoctor = doctorId && String(normalized.userId) === String(doctorId);
-
-          let pName = `Member ${prev.length + 1}`;
-          let pGender = "neutral";
-
-          if (isJoinedUserDoctor) {
-            pName = otherPersonName;
-            pGender = otherGenderStr;
-          } else if (isDoctor) {
-            const patientData = (session?.patients || session?.Patients)?.find(
-              (p) => String(p.id || p.userId || p.UserId || p.PatientId || p.patientId) === String(normalized.userId)
-            );
-            if (patientData) {
-              pName = patientData.name || patientData.Name || pName;
-              pGender = patientData.gender || patientData.Gender || pGender;
-            }
-          }
-
-          return [...prev, { 
-            ...normalized,
-            name: pName,
-            gender: pGender
-          }];
-        });
-
+      hubConnection.on("ReceiveOffer", async (fromConnectionId, offerStr) => {
         try {
           const pc = setupPeerConnection(hubConnection, fromConnectionId);
-          const offer = JSON.parse(sdp);
+          const offer = JSON.parse(offerStr);
           await pc.setRemoteDescription(new RTCSessionDescription(offer));
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
@@ -486,12 +470,11 @@ export default function Meeting() {
         }
       });
 
-      hubConnection.on("ReceiveAnswer", async (payload) => {
-        const { sdp } = payload;
+      hubConnection.on("ReceiveAnswer", async (fromConnectionId, answerStr) => {
         try {
           const pc = peerConnectionRef.current;
           if (pc) {
-            const answer = JSON.parse(sdp);
+            const answer = JSON.parse(answerStr);
             await pc.setRemoteDescription(new RTCSessionDescription(answer));
           }
         } catch (err) {
@@ -499,12 +482,11 @@ export default function Meeting() {
         }
       });
 
-      hubConnection.on("ReceiveIceCandidate", async (payload) => {
-        const { candidate } = payload;
+      hubConnection.on("ReceiveIceCandidate", async (fromConnectionId, candidateStr) => {
         try {
           const pc = peerConnectionRef.current;
           if (pc) {
-            const rtcCandidate = new RTCIceCandidate(JSON.parse(candidate));
+            const rtcCandidate = new RTCIceCandidate(JSON.parse(candidateStr));
             await pc.addIceCandidate(rtcCandidate);
           }
         } catch (err) {
@@ -559,29 +541,7 @@ export default function Meeting() {
               const myId = currentUser?.id;
               const others = existing.map((p, idx) => {
                 const normalized = normalizeParticipant(p);
-                const isUserDoctor = doctorId && String(normalized.userId) === String(doctorId);
-                
-                let pName = `Member ${idx + 1}`;
-                let pGender = "neutral";
-
-                if (isUserDoctor) {
-                  pName = otherPersonName;
-                  pGender = otherGenderStr;
-                } else if (isDoctor) {
-                  const patientData = (session?.patients || session?.Patients)?.find(
-                    (pd) => String(pd.id || pd.userId || pd.UserId || pd.PatientId || pd.patientId) === String(normalized.userId)
-                  );
-                  if (patientData) {
-                    pName = patientData.name || patientData.Name || pName;
-                    pGender = patientData.gender || patientData.Gender || pGender;
-                  }
-                }
-
-                return {
-                  ...normalized,
-                  name: pName,
-                  gender: pGender
-                };
+                return identifyParticipant(normalized, idx + 1);
               }).filter((p) => String(p.userId) !== String(myId));
               return [...prev, ...others];
             });
