@@ -19,8 +19,6 @@ export default function Signup() {
 
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
-
-//state جديده علشان الرساله اللي تظهر
   const [formError, setFormError] = useState("");
 
   const handleChange = (e) => {
@@ -64,7 +62,7 @@ export default function Signup() {
 
       if (
         updatedData.confirmPassword &&
-        updatedData.confirmPassword !== value
+        updatedData.confirmPassword !== value //قيمه ال pass يعني
       ) {
         newErrors.confirmPassword = "Passwords do not match";
       } else {

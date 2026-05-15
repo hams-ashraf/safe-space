@@ -1,5 +1,4 @@
 
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Sessions.css";
@@ -13,20 +12,20 @@ function RoomCards() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // const getSessionId = (session) => session.sessionsId;
   const getSessionId = (session) => session.sessionId || session.sessionsId || session.id;
 
+  const formatTime12h = (time24) => {
+    if (!time24) return "";
+    const [hour, minute] = time24.split(":");
+    const date = new Date();
+    date.setHours(Number(hour), Number(minute));
+    return date.toLocaleTimeString("en-US", { hour: 'numeric', minute: '2-digit', hour12: true });
+  };
 
   const parseDateTime = (dateStr, timeStr) => {
     try {
       const datePart = dateStr.split("T")[0];
-      let [time, modifier] = timeStr.split(" ");
-      let [hours, minutes] = time.split(":");
-      
-      if (hours === "12") hours = "00";
-      if (modifier === "PM") hours = parseInt(hours, 10) + 12;
-      
-      return new Date(`${datePart}T${hours.toString().padStart(2, '0')}:${minutes}:00`);
+      return new Date(`${datePart}T${timeStr}:00`);
     } catch (e) {
       return new Date(dateStr);
     }
@@ -53,49 +52,37 @@ function RoomCards() {
   const userRole = localStorage.getItem("userRole");
 
   useEffect(() => {
-  const fetchSessions = async () => {
-    try {
-      let data;
-      const now = new Date();
-      const refinedUpcoming = [];
-      const refinedPast = [];
+    const fetchSessions = async () => {
+      try {
+        let data;
+        const now = new Date();
+        const refinedUpcoming = [];
+        const refinedPast = [];
 
-      if (userRole === "Doctor") {
-        data = await getDoctorSessions();
-      } else {
-        data = await getMySessions();
-      }
+        if (userRole === "Doctor") { data = await getDoctorSessions(); } 
+        else { data = await getMySessions(); }
 
-      const allSessions = Array.isArray(data) ? data : [...(data?.upcoming || []), ...(data?.past || [])];
+        const allSessions = Array.isArray(data) ? data : [...(data?.upcoming || []), ...(data?.past || [])];
 
-      allSessions.forEach(session => {
-        const sessionStart = parseDateTime(session.date, session.time);
-        const diffInMinutes = (now - sessionStart) / (1000 * 60);
+        allSessions.forEach(session => {
+          const sessionStart = parseDateTime(session.date, session.time);
+          const diffInMinutes = (now - sessionStart) / (1000 * 60);
 
-        const isEndedByDoc = session.status === "Completed" || session.status === "Ended" || session.isEnded === true;
-        const isExpired = diffInMinutes > 15;
+          const isEndedByDoc = session.status === "Completed" || session.status === "Ended" || session.isEnded === true;
+          const isExpired = diffInMinutes > 60;
 
-        // لو السيشن منتهية أو فات ميعادها بـ 15 دقيقة تروح للـ Past
-        if (isEndedByDoc || isExpired) {
-          refinedPast.push(session);
-        } else {
-          refinedUpcoming.push(session);
-        }
-      });
+          if (isEndedByDoc || isExpired) { refinedPast.push(session); } 
+          else { refinedUpcoming.push(session); }
+        });
 
-      const unique = (arr) => Array.from(new Map(arr.map(s => [getSessionId(s), s])).values());
-      
-      setUpcoming(unique(refinedUpcoming));
-      setPast(unique(refinedPast));
-
-    } catch (err) {
-      console.error("Error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchSessions();
-}, [userRole]);
+        const unique = (arr) => Array.from(new Map(arr.map(s => [getSessionId(s), s])).values());
+        setUpcoming(unique(refinedUpcoming));
+        setPast(unique(refinedPast));
+      } catch (err) { console.error("Error:", err); } 
+      finally { setLoading(false); }
+    };
+    fetchSessions();
+  }, [userRole]);
 
   if (loading) return <div className="page-wrapper">Loading...</div>;
 
@@ -123,7 +110,7 @@ function RoomCards() {
               </div>
               <div className="session-info">
                 <span><i className="bi bi-calendar"></i> {session.date?.split("T")[0]}</span>
-                <span><i className="bi bi-clock"></i> {session.time}</span>
+                <span><i className="bi bi-clock"></i> {formatTime12h(session.time)}</span>
               </div>
               <div className="card-actions">
                 <button className="join-btn primary" onClick={() => handleJoinSession(session)} disabled={joiningSessionId === getSessionId(session)}>
@@ -147,7 +134,7 @@ function RoomCards() {
                     <div className="past-title">{session.sessionType || "Session"}</div>
                     <div className="past-doctor">with {session.doctorName}</div>
                     <div className="past-meta">
-                      <span>{session.date?.split("T")[0]}</span> | <span>{session.time}</span>
+                      <span>{session.date?.split("T")[0]}</span> | <span>{formatTime12h(session.time)}</span>
                     </div>
                   </div>
                   <div className="past-actions-side"><button className="book-again-btn">Book Again</button></div>
