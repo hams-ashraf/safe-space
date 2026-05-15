@@ -14,14 +14,29 @@ export default function Home() {
   const [therapists, setTherapists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  
+
   const isDoctor = isDoctorUser();
   const [upcomingSessions, setUpcomingSessions] = useState([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
   const [joiningSessionId, setJoiningSessionId] = useState(null);
   const [joinError, setJoinError] = useState("");
-
   const navigate = useNavigate();
+
+  const formatTime12h = (time24) => {
+    if (!time24) return "";
+    try {
+      const [hour, minute] = time24.split(":");
+      const date = new Date();
+      date.setHours(Number(hour), Number(minute));
+      return date.toLocaleTimeString("en-US", { 
+        hour: 'numeric', 
+        minute: '2-digit', 
+        hour12: true 
+      });
+    } catch (e) {
+      return time24;
+    }
+  };
 
   useEffect(() => {
     async function fetchDoctors() {
@@ -46,10 +61,12 @@ export default function Home() {
           let upcoming = [];
           if (Array.isArray(res)) {
             upcoming = res;
+          } else if (res && Array.isArray(res.Upcoming)) {
+            upcoming = res.Upcoming;
           } else if (res && Array.isArray(res.upcoming)) {
             upcoming = res.upcoming;
           } else if (res && typeof res === "object") {
-            upcoming = res.data || res.upcoming || [];
+            upcoming = res.data || res.Upcoming || res.upcoming || [];
           }
 
           const now = new Date();
@@ -62,7 +79,7 @@ export default function Home() {
           upcoming = upcoming.filter(s => {
             const sid = s.sessionId || s.sessionsId || s.id;
             if (sid && endedSessions.some(es => String(es) === String(sid))) {
-              return false; 
+              return false;
             }
 
             const status = String(s.status || s.Status || "").toLowerCase();
@@ -80,7 +97,7 @@ export default function Home() {
 
                 const isSameYear = year === todayYear;
                 const matchesToday = (p1 === todayMonth && p2 === todayDay) || (p1 === todayDay && p2 === todayMonth);
-                
+
                 if (!isSameYear || !matchesToday) {
                   return false;
                 }
@@ -113,7 +130,7 @@ export default function Home() {
     }
     const sessionId = session.sessionId || session.sessionsId || session.id;
     if (!sessionId) return;
-    
+
     setJoiningSessionId(sessionId);
     try {
       const callData = await joinCall({
@@ -190,17 +207,21 @@ export default function Home() {
                   <div className="card bg-white shadow-sm border-0 rounded-3 mb-3 mx-auto" key={session.sessionId || index} style={{ borderLeft: "4px solid #41655d", width: "100%" }}>
                     <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center p-4">
                       <div className="mb-3 mb-md-0">
-                        <h5 className="fw-bold mb-1" style={{ color: "#41655d" }}>{session.patientName}</h5>
-                        <div className="d-flex align-items-center gap-3 text-muted small mt-2">
+                        <h5 className="fw-bold mb-1" style={{ color: "#41655d" }}>
+                          {(session.sessionType || session.SessionType) === "OneToOne"
+                            ? (session.patientName || session.PatientName || (session.Patients && session.Patients[0]?.Name) || (session.patients && session.patients[0]?.name) || "Patient")
+                            : <span style={{ fontSize: '0.95rem', opacity: 0.9 }}>{session.sessionType || session.SessionType || "Group"} Session <span className="fw-normal">({session.PatientsCount || session.patientsCount || (session.Patients?.length) || 0} Members)</span></span>}
+                        </h5>
+                        <div className="d-flex align-items-center gap-3 mt-2" style={{ color: "#5a7a72", fontSize: "1.05rem", fontWeight: "500" }}>
                           <span>
-                            <i className="fa-regular fa-clock me-1"></i> {session.time}
+                            <i className="fa-regular fa-clock me-1" style={{ color: "#30bf94" }}></i> {formatTime12h(session.time || session.Time)}
                           </span>
-                          <span>
-                            <i className="fa-solid fa-video me-1"></i> {session.sessionType === "OneToOne" ? "One to One" : "Group Therapy"}
+                          <span style={{ fontSize: "0.9rem", borderLeft: "1px solid #ddd", paddingLeft: "12px" }}>
+                            <i className="fa-solid fa-video me-1" style={{ opacity: 0.7 }}></i> {(session.sessionType || session.SessionType) === "OneToOne" ? "One to One" : "Group Therapy"}
                           </span>
                         </div>
                       </div>
-                      
+
                       <div>
                         <button
                           className="btn text-white px-4 py-2 rounded-3 fw-bold"
@@ -232,101 +253,101 @@ export default function Home() {
         <div className="container">
           <h2 className="text-center fw-bold mb-5" style={{ color: "#41655d" }}> Top Rated Therapists</h2>
 
-    {loading && <p className="text-center">Loading doctors...</p>}
-    {error && <p className="text-danger text-center">{error}</p>}
+          {loading && <p className="text-center">Loading doctors...</p>}
+          {error && <p className="text-danger text-center">{error}</p>}
 
-    <div className="row g-4">
-      {topRatedDoctors.map((t) => (
-  <div className="col-md-4" key={t.id}>
-    <div
-      className="card shadow-sm text-center top-rated-card h-100 d-flex flex-column"
-      onClick={() => navigate(`/doctor/${t.id}`)}
-      style={{ cursor: "pointer" }}
-    >
-      <img
-        src={`http://doctorprofile.runasp.net${t.imageUrl}`}
-        className="card-img-top"
-        alt={t.fullName}
-      />
+          <div className="row g-4">
+            {topRatedDoctors.map((t) => (
+              <div className="col-md-4" key={t.id}>
+                <div
+                  className="card shadow-sm text-center top-rated-card h-100 d-flex flex-column"
+                  onClick={() => navigate(`/doctor/${t.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <img
+                    src={`http://doctorprofile.runasp.net${t.imageUrl}`}
+                    className="card-img-top"
+                    alt={t.fullName}
+                  />
 
-      <div className="card-body d-flex flex-column flex-grow-1">
-        <h5 className="card-title">{t.fullName}</h5>
-        <p className="card-text">{t.specialization}</p>
+                  <div className="card-body d-flex flex-column flex-grow-1">
+                    <h5 className="card-title">{t.fullName}</h5>
+                    <p className="card-text">{t.specialization}</p>
 
-        <div className="text-warning">
-          {Array.from({ length: Math.floor(t.rating) }).map((_, i) => (
-            <i key={i} className="fa-solid fa-star"></i>
-          ))}
-          {Array.from({ length: 5 - Math.floor(t.rating) }).map((_, i) => (
-            <i key={i} className="fa-regular fa-star"></i>
-          ))}
-        </div>
+                    <div className="text-warning">
+                      {Array.from({ length: Math.floor(t.rating) }).map((_, i) => (
+                        <i key={i} className="fa-solid fa-star"></i>
+                      ))}
+                      {Array.from({ length: 5 - Math.floor(t.rating) }).map((_, i) => (
+                        <i key={i} className="fa-regular fa-star"></i>
+                      ))}
+                    </div>
 
-        <p className="card-text mb-0 mt-3 flex-grow-1 d-flex align-items-center justify-content-center text-center">
-          Years of Experience: {t.yearOfExperience}
-        </p>    
-      </div>
-    </div>
-  </div>
-))}
-    </div>
-  </div>
-</section>
-{/* Section 3: Anonymous Feedback */}
-<section className="feedback-section py-5">
-  <div className="container">
-    <h2 className="text-center fw-bold mb-5">Anonymous Feedback 💬</h2>
-    <div className="row g-4">
-      <div className="col-md-4">
-        <div className="card shadow-sm h-100 p-4 text-center">
-          <div className="text-warning mb-3 fs-5">
-            <i className="fa-solid fa-star"></i>
-            <i className="fa-solid fa-star"></i>
-            <i className="fa-solid fa-star"></i>
-            <i className="fa-solid fa-star"></i>
-            <i className="fa-solid fa-star"></i>
+                    <p className="card-text mb-0 mt-3 flex-grow-1 d-flex align-items-center justify-content-center text-center">
+                      Years of Experience: {t.yearOfExperience}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-          <p className="text-muted fst-italic">
-            “I finally felt safe talking about things I never shared before.
-            The anonymous feature made all the difference.”
-          </p>
         </div>
-      </div>
-      <div className="col-md-4">
-        <div className="card shadow-sm h-100 p-4 text-center">
-          <div className="text-warning mb-3 fs-5">
-            <i className="fa-solid fa-star"></i>
-            <i className="fa-solid fa-star"></i>
-            <i className="fa-solid fa-star"></i>
-            <i className="fa-solid fa-star"></i>
-            <i className="fa-regular fa-star"></i>
+      </section>
+      {/* Section 3: Anonymous Feedback */}
+      <section className="feedback-section py-5">
+        <div className="container">
+          <h2 className="text-center fw-bold mb-5">Anonymous Feedback 💬</h2>
+          <div className="row g-4">
+            <div className="col-md-4">
+              <div className="card shadow-sm h-100 p-4 text-center">
+                <div className="text-warning mb-3 fs-5">
+                  <i className="fa-solid fa-star"></i>
+                  <i className="fa-solid fa-star"></i>
+                  <i className="fa-solid fa-star"></i>
+                  <i className="fa-solid fa-star"></i>
+                  <i className="fa-solid fa-star"></i>
+                </div>
+                <p className="text-muted fst-italic">
+                  “I finally felt safe talking about things I never shared before.
+                  The anonymous feature made all the difference.”
+                </p>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="card shadow-sm h-100 p-4 text-center">
+                <div className="text-warning mb-3 fs-5">
+                  <i className="fa-solid fa-star"></i>
+                  <i className="fa-solid fa-star"></i>
+                  <i className="fa-solid fa-star"></i>
+                  <i className="fa-solid fa-star"></i>
+                  <i className="fa-regular fa-star"></i>
+                </div>
+                <p className="text-muted fst-italic">
+                  “This platform helped me during one of the hardest times in my life.
+                  Knowing my identity was protected gave me peace.”
+                </p>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="card shadow-sm h-100 p-4 text-center">
+                <div className="text-warning mb-3 fs-5">
+                  <i className="fa-solid fa-star"></i>
+                  <i className="fa-solid fa-star"></i>
+                  <i className="fa-solid fa-star"></i>
+                  <i className="fa-solid fa-star"></i>
+                  <i className="fa-solid fa-star"></i>
+                </div>
+                <p className="text-muted fst-italic">
+                  “A truly safe space. I felt heard, respected, and supported
+                  without fear of judgment.”
+                </p>
+              </div>
+            </div>
           </div>
-          <p className="text-muted fst-italic">
-            “This platform helped me during one of the hardest times in my life.
-            Knowing my identity was protected gave me peace.”
-          </p>
         </div>
-      </div>
-      <div className="col-md-4">
-        <div className="card shadow-sm h-100 p-4 text-center">
-          <div className="text-warning mb-3 fs-5">
-            <i className="fa-solid fa-star"></i>
-            <i className="fa-solid fa-star"></i>
-            <i className="fa-solid fa-star"></i>
-            <i className="fa-solid fa-star"></i>
-            <i className="fa-solid fa-star"></i>
-          </div>
-          <p className="text-muted fst-italic">
-            “A truly safe space. I felt heard, respected, and supported
-            without fear of judgment.”
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
-      
+
     </>
   )
 }
