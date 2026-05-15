@@ -105,11 +105,15 @@ export default function Meeting() {
 
 
   const handleSaveNotes = async () => {
-    if (!session?.sessionId) return;
+    const sid = session?.sessionId || session?.sessionsId || session?.SessionId || session?.SessionsId || session?.id;
+    if (!sid) {
+      console.error("No session ID found to save notes");
+      return;
+    }
     setIsSavingNotes(true);
     setSaveSuccess(false);
     try {
-      await updateNotes(session.sessionId, notesContent);
+      await updateNotes(sid, notesContent);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
@@ -136,7 +140,7 @@ export default function Meeting() {
         const dest = ctx.createMediaStreamDestination();
         destRef.current = dest;
 
-        // For Doctor: Just pass the raw audio without heavy Voice Changer nodes
+        // For Doctor: Just pass the raw audio 
         if (isDoctor) {
           source.connect(dest);
           localStreamRef.current = dest.stream;
@@ -269,13 +273,13 @@ export default function Meeting() {
     if (tremoloOscRef.current) tremoloOscRef.current.frequency.value = 30;
 
     if (option === "Soft Voice") {
-      // Thin, airy, whispering sound
+      // Even thinner, airier, and more whispering
       filter.type = "highpass";
-      filter.frequency.value = 800; // Cut off all bass/mids below 800Hz
-      filter.Q.value = 1.0;
+      filter.frequency.value = 1500; // Increased from 800 for extra thinness
+      filter.Q.value = 0.5;
 
-      compressor.threshold.value = -35;
-      compressor.ratio.value = 12; // Heavy compression to pick up whispers
+      compressor.threshold.value = -45; // Lower threshold to pick up very quiet sounds
+      compressor.ratio.value = 20; // Maximum compression for that "breath-y" feel
 
       source.connect(filter);
       filter.connect(compressor);
@@ -402,10 +406,27 @@ export default function Meeting() {
 
           const isJoinedUserDoctor = doctorId && String(joinedUserId) === String(doctorId);
           
+          let pName = `Member ${prev.length + 1}`;
+          let pGender = "neutral";
+
+          if (isJoinedUserDoctor) {
+            pName = otherPersonName;
+            pGender = otherGenderStr;
+          } else if (isDoctor) {
+            // If I am the doctor, try to find this patient's real info
+            const patientData = (session?.patients || session?.Patients)?.find(
+              (p) => String(p.id || p.userId || p.UserId || p.PatientId || p.patientId) === String(joinedUserId)
+            );
+            if (patientData) {
+              pName = patientData.name || patientData.Name || pName;
+              pGender = patientData.gender || patientData.Gender || pGender;
+            }
+          }
+          
           return [...prev, { 
             ...normalized, 
-            name: isJoinedUserDoctor ? otherPersonName : `Member ${prev.length + 1}`,
-            gender: isJoinedUserDoctor ? otherGenderStr : "neutral"
+            name: pName,
+            gender: pGender
           }];
         });
 
@@ -430,10 +451,26 @@ export default function Meeting() {
           
           const isJoinedUserDoctor = doctorId && String(normalized.userId) === String(doctorId);
 
+          let pName = `Member ${prev.length + 1}`;
+          let pGender = "neutral";
+
+          if (isJoinedUserDoctor) {
+            pName = otherPersonName;
+            pGender = otherGenderStr;
+          } else if (isDoctor) {
+            const patientData = (session?.patients || session?.Patients)?.find(
+              (p) => String(p.id || p.userId || p.UserId || p.PatientId || p.patientId) === String(normalized.userId)
+            );
+            if (patientData) {
+              pName = patientData.name || patientData.Name || pName;
+              pGender = patientData.gender || patientData.Gender || pGender;
+            }
+          }
+
           return [...prev, { 
             ...normalized,
-            name: isJoinedUserDoctor ? otherPersonName : `Member ${prev.length + 1}`,
-            gender: isJoinedUserDoctor ? otherGenderStr : "neutral"
+            name: pName,
+            gender: pGender
           }];
         });
 
@@ -490,7 +527,6 @@ export default function Meeting() {
         }
       });
 
-      // Just in case the backend broadcasts an explicit CallEnded event
       hubConnection.on("CallEnded", () => {
         setForceEndCall(true);
       });
@@ -524,10 +560,27 @@ export default function Meeting() {
               const others = existing.map((p, idx) => {
                 const normalized = normalizeParticipant(p);
                 const isUserDoctor = doctorId && String(normalized.userId) === String(doctorId);
+                
+                let pName = `Member ${idx + 1}`;
+                let pGender = "neutral";
+
+                if (isUserDoctor) {
+                  pName = otherPersonName;
+                  pGender = otherGenderStr;
+                } else if (isDoctor) {
+                  const patientData = (session?.patients || session?.Patients)?.find(
+                    (pd) => String(pd.id || pd.userId || pd.UserId || pd.PatientId || pd.patientId) === String(normalized.userId)
+                  );
+                  if (patientData) {
+                    pName = patientData.name || patientData.Name || pName;
+                    pGender = patientData.gender || patientData.Gender || pGender;
+                  }
+                }
+
                 return {
                   ...normalized,
-                  name: isUserDoctor ? otherPersonName : `Member ${idx + 1}`,
-                  gender: isUserDoctor ? otherGenderStr : "neutral"
+                  name: pName,
+                  gender: pGender
                 };
               }).filter((p) => String(p.userId) !== String(myId));
               return [...prev, ...others];
@@ -606,7 +659,7 @@ export default function Meeting() {
   async function handleLeaveSession() {
     try {
       if (isDoctor) {
-        const callId = callData?.id || callData?.callSessionId || session?.sessionId;
+        const callId = callData?.id || callData?.callSessionId || session?.sessionId || session?.sessionsId || session?.SessionsId;
         if (callId) {
           try {
             await endCall(callId);
