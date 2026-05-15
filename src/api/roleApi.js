@@ -10,7 +10,6 @@ export function saveLoginIdentity(data) {
   if (data?.user != null) {
     localStorage.setItem(USER_KEY, JSON.stringify(data.user));
     
-    // Ensure patientId and doctorId are also saved based on the role
     const roleLc = String(data.role).toLowerCase();
     if (roleLc === "patient") {
         const pId = data.patientId || data.user.patientId || data.user.id;

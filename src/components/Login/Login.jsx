@@ -6,9 +6,9 @@ import "./Login.css";
 export default function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({}); 
   const [serverError, setServerError] = useState("");
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -17,7 +17,7 @@ export default function Login() {
 
     if (name === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
       newErrors.email = "Invalid email format";
-    else newErrors.email = "";
+    else newErrors.email = "";//
 
     if (name === "password" && value === "")
       newErrors.password = "Password is required";
@@ -31,7 +31,7 @@ export default function Login() {
   e.preventDefault();
 
   try {
-    const res = await loginUser(formData);
+    const res = await loginUser(formData)
     const token = res.data?.token;
     const user = res.data?.user;
     const role = res.data?.role;
@@ -42,7 +42,7 @@ export default function Login() {
   navigate("/admin/dashboard", { replace: true });
 } 
 else if (role === "Doctor") {
-  navigate("/", { replace: true }); د
+  navigate("/", { replace: true }); 
 } 
 else {
   navigate("/", { replace: true });
