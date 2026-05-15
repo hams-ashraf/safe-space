@@ -85,6 +85,16 @@ export default function Meeting() {
   const otherParticipants = participants.filter(p => String(p.userId) !== String(doctorId));
   const otherHasJoined = participants.length > 0;
 
+  const normalizeParticipant = (p) => {
+    const uid = p.userId || p.UserId || p.userid || (typeof p === 'string' || typeof p === 'number' ? p : null);
+    const cid = p.connectionId || p.ConnectionId || p.connectionid;
+    return {
+      ...p,
+      userId: uid,
+      connectionId: cid
+    };
+  };
+
   useEffect(() => {
     const timerId = setInterval(() => {
       setElapsedSeconds((prev) => prev + 1);
@@ -377,8 +387,9 @@ export default function Meeting() {
 
     const attachListeners = (hubConnection) => {
       hubConnection.on("ParticipantJoined", async (payload) => {
-        const joinedUserId = payload?.userId;
-        const joinedConnId = payload?.connectionId;
+        const normalized = normalizeParticipant(payload);
+        const joinedUserId = normalized.userId;
+        const joinedConnId = normalized.connectionId;
         const myUserId = currentUser?.id;
 
         if (joinedUserId && myUserId && String(joinedUserId) === String(myUserId)) {
@@ -388,11 +399,13 @@ export default function Meeting() {
         setParticipants((prev) => {
           const exists = prev.some((p) => String(p.userId) === String(joinedUserId));
           if (exists) return prev;
+
+          const isJoinedUserDoctor = doctorId && String(joinedUserId) === String(doctorId);
           
           return [...prev, { 
-            ...payload, 
-            name: `Member ${prev.length + 1}`,
-            gender: "neutral"
+            ...normalized, 
+            name: isJoinedUserDoctor ? otherPersonName : `Member ${prev.length + 1}`,
+            gender: isJoinedUserDoctor ? otherGenderStr : "neutral"
           }];
         });
 
@@ -409,16 +422,18 @@ export default function Meeting() {
       });
 
       hubConnection.on("ReceiveOffer", async (payload) => {
-        const { fromConnectionId, sdp } = payload;
+        const normalized = normalizeParticipant(payload);
+        const fromConnectionId = normalized.connectionId;
 
         setParticipants((prev) => {
           if (prev.some((p) => p.connectionId === fromConnectionId)) return prev;
           
+          const isJoinedUserDoctor = doctorId && String(normalized.userId) === String(doctorId);
+
           return [...prev, { 
-            connectionId: fromConnectionId, 
-            userId: payload.userId || "peer",
-            name: `Member ${prev.length + 1}`,
-            gender: "neutral"
+            ...normalized,
+            name: isJoinedUserDoctor ? otherPersonName : `Member ${prev.length + 1}`,
+            gender: isJoinedUserDoctor ? otherGenderStr : "neutral"
           }];
         });
 
@@ -461,14 +476,14 @@ export default function Meeting() {
       });
 
       hubConnection.on("ParticipantLeft", (payload) => {
-        const leftUserId = payload?.userId;
+        const normalized = normalizeParticipant(payload);
+        const leftUserId = normalized.userId;
 
         setParticipants((prev) =>
           prev.filter((p) => String(p.userId) !== String(leftUserId))
         );
 
-
-        const isLeftUserDoctor = String(leftUserId) === String(doctorId);
+        const isLeftUserDoctor = doctorId && String(leftUserId) === String(doctorId);
 
         if (!isGroup || isLeftUserDoctor) {
           setForceEndCall(true);
@@ -506,13 +521,15 @@ export default function Meeting() {
             // The backend returned the existing participants
             setParticipants((prev) => {
               const myId = currentUser?.id;
-              const others = existing.map((p, idx) => ({
-                ...p,
-                connectionId: p.connectionId || `conn-${idx}`,
-                userId: p.userId || p,
-                name: `Member ${idx + 1}`,
-                gender: "neutral"
-              })).filter((p) => String(p.userId) !== String(myId));
+              const others = existing.map((p, idx) => {
+                const normalized = normalizeParticipant(p);
+                const isUserDoctor = doctorId && String(normalized.userId) === String(doctorId);
+                return {
+                  ...normalized,
+                  name: isUserDoctor ? otherPersonName : `Member ${idx + 1}`,
+                  gender: isUserDoctor ? otherGenderStr : "neutral"
+                };
+              }).filter((p) => String(p.userId) !== String(myId));
               return [...prev, ...others];
             });
           }
