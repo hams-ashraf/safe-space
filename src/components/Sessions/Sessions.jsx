@@ -12,7 +12,7 @@ function RoomCards() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const getSessionId = (session) => session.sessionId || session.sessionsId || session.id;
+  const getSessionId = (session) => session.sessionId || session.SessionId || session.id;
 
   const formatTime12h = (time24) => {
     if (!time24) return "";
@@ -59,27 +59,56 @@ function RoomCards() {
         const refinedUpcoming = [];
         const refinedPast = [];
 
-        if (userRole === "Doctor") { data = await getDoctorSessions(); } 
-        else { data = await getMySessions(); }
+        if (userRole === "Doctor") { 
+          data = await getDoctorSessions(); 
+        } else { 
+          data = await getMySessions(); 
+        }
 
-        const allSessions = Array.isArray(data) ? data : [...(data?.upcoming || []), ...(data?.past || [])];
+        const allSessions = Array.isArray(data) 
+          ? data 
+          : [...(data?.Upcoming || data?.upcoming || []), ...(data?.Past || data?.past || [])];
 
         allSessions.forEach(session => {
-          const sessionStart = parseDateTime(session.date, session.time);
+          const dateVal = session.date || session.Date;
+          const timeVal = session.time || session.Time;
+          const sessionStart = parseDateTime(dateVal, timeVal);
           const diffInMinutes = (now - sessionStart) / (1000 * 60);
 
           const isEndedByDoc = session.status === "Completed" || session.status === "Ended" || session.isEnded === true;
           const isExpired = diffInMinutes > 60;
 
-          if (isEndedByDoc || isExpired) { refinedPast.push(session); } 
-          else { refinedUpcoming.push(session); }
+          if (isEndedByDoc || isExpired) { 
+            refinedPast.push(session); 
+          } else { 
+            refinedUpcoming.push(session); 
+          }
         });
 
-        const unique = (arr) => Array.from(new Map(arr.map(s => [getSessionId(s), s])).values());
-        setUpcoming(unique(refinedUpcoming));
-        setPast(unique(refinedPast));
-      } catch (err) { console.error("Error:", err); } 
-      finally { setLoading(false); }
+        if (userRole === "Doctor") {
+          const seenGroups = new Map();
+          const doctorUpcoming = refinedUpcoming.filter(session => {
+            const type = session.SessionType || session.sessionType;
+            if (type === "Group") {
+              const groupKey = `${session.Date || session.date}-${session.Time || session.time}`;
+              if (seenGroups.has(groupKey)) return false;
+              seenGroups.set(groupKey, true);
+              return true;
+            }
+            return true;
+          });
+          setUpcoming(doctorUpcoming);
+          setPast(refinedPast);
+        } else {
+          setUpcoming(refinedUpcoming);
+          setPast(refinedPast);
+        }
+
+      } catch (err) { 
+        console.error("Error fetching sessions:", err); 
+      } finally { 
+        setLoading(false); 
+      }
     };
     fetchSessions();
   }, [userRole]);
@@ -97,29 +126,43 @@ function RoomCards() {
 
       <div className="cards-container">
         {upcoming.length === 0 ? <p className="no-data">No upcoming sessions found</p> : 
-          upcoming.map((session, index) => (
-            <div className="room-card" key={getSessionId(session) || index}>
-              <div className="session-header">
-                <div>
-                  <div className="session-type-name">{session.sessionType || "Group"}</div>
-                  <div className="session-doctor">
-                    {userRole === "Patient" ? `with ${session.doctorName}` : `with ${session.patientName}`}
+          upcoming.map((session, index) => {
+            const patientsList = session.Patients || session.patients || [];
+            const sessionType = session.SessionType || session.sessionType;
+            const date = session.Date || session.date;
+            const time = session.Time || session.time;
+
+            return (
+              <div className="room-card" key={`${getSessionId(session)}-${index}`}>
+                <div className="session-header">
+                  <div>
+                    <div className="session-type-name">{sessionType || "Group"}</div>
+                    <div className="session-doctor">
+                      {userRole === "Patient" 
+                        ? `with ${session.doctorName || "Doctor"}` 
+                        : (sessionType === "Group") 
+                          ? "" 
+                          : (patientsList.length > 0)
+                            ? `with ${patientsList[0].Name || patientsList[0].name}` 
+                            : ""
+                      }
+                    </div>
                   </div>
+                  <div className="call-badge"><i className="bi bi-camera-video"></i> {sessionType || "Group"}</div>
                 </div>
-                <div className="call-badge"><i className="bi bi-camera-video"></i> {session.sessionType || "Group"}</div>
+                <div className="session-info">
+                  <span><i className="bi bi-calendar"></i> {date?.split("T")[0]}</span>
+                  <span><i className="bi bi-clock"></i> {formatTime12h(time)}</span>
+                </div>
+                <div className="card-actions">
+                  <button className="join-btn primary" onClick={() => handleJoinSession(session)} disabled={joiningSessionId === getSessionId(session)}>
+                    {joiningSessionId === getSessionId(session) ? "Joining..." : "Join Session"}
+                  </button>
+                  <button className="reschedule-btn">Reschedule</button>
+                </div>
               </div>
-              <div className="session-info">
-                <span><i className="bi bi-calendar"></i> {session.date?.split("T")[0]}</span>
-                <span><i className="bi bi-clock"></i> {formatTime12h(session.time)}</span>
-              </div>
-              <div className="card-actions">
-                <button className="join-btn primary" onClick={() => handleJoinSession(session)} disabled={joiningSessionId === getSessionId(session)}>
-                  {joiningSessionId === getSessionId(session) ? "Joining..." : "Join Session"}
-                </button>
-                <button className="reschedule-btn">Reschedule</button>
-              </div>
-            </div>
-          ))
+            );
+          })
         }
       </div>
 
@@ -131,10 +174,10 @@ function RoomCards() {
               past.map((session, index) => (
                 <div className="past-row-card" key={`past-${index}`}>
                   <div className="past-info-side">
-                    <div className="past-title">{session.sessionType || "Session"}</div>
-                    <div className="past-doctor">with {session.doctorName}</div>
+                    <div className="past-title">{session.SessionType || session.sessionType || "Session"}</div>
+                    <div className="past-doctor">with {session.doctorName || "Doctor"}</div>
                     <div className="past-meta">
-                      <span>{session.date?.split("T")[0]}</span> | <span>{formatTime12h(session.time)}</span>
+                      <span>{(session.Date || session.date)?.split("T")[0]}</span> | <span>{formatTime12h(session.Time || session.time)}</span>
                     </div>
                   </div>
                   <div className="past-actions-side"><button className="book-again-btn">Book Again</button></div>
