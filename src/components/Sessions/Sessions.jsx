@@ -12,8 +12,7 @@ function RoomCards() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const getSessionId = (session) => session.sessionId || session.SessionId || session.id;
-
+const getSessionId = (session) => session.sessionId || session.sessionsId || session.id;
   const formatTime12h = (time24) => {
     if (!time24) return "";
     const [hour, minute] = time24.split(":");
