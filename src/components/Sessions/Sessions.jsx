@@ -130,12 +130,17 @@ const getSessionId = (session) => session.sessionId || session.sessionsId || ses
             const sessionType = session.SessionType || session.sessionType;
             const date = session.Date || session.date;
             const time = session.Time || session.time;
+            const pCount = session.PatientsCount ?? session.patientsCount ?? patientsList.length ?? 0;            
 
             return (
               <div className="room-card" key={`${getSessionId(session)}-${index}`}>
                 <div className="session-header">
                   <div>
-                    <div className="session-type-name">{sessionType || "Group"}</div>
+                    <div className="session-type-name">{sessionType || "Group"}
+                     {sessionType === "Group" && userRole === "Doctor" && (
+                        <span className="patients-count-badge">({pCount} Patients)</span>
+                      )}
+                    </div>
                     <div className="session-doctor">
                       {userRole === "Patient" 
                         ? `with ${session.doctorName || "Doctor"}` 
