@@ -23,7 +23,7 @@ export default function Meeting() {
   const navigate = useNavigate();
   const localStreamRef = useRef(null);
   const rawMicStreamRef = useRef(null);
-  const peerConnectionRef = useRef(null);
+  const peerConnectionsRef = useRef({});
   const remoteAudioRef = useRef(null);
   const audioCtxRef = useRef(null);
   const sourceRef = useRef(null);
@@ -98,15 +98,19 @@ export default function Meeting() {
   };
 
   const identifyParticipant = (normalized, idx) => {
-    let pName = normalized.name || `Member ${idx}`;
-    let pGender = normalized.gender || "neutral";
+    let pName = normalized.name || normalized.Name || null;
+    let pGender = normalized.gender || normalized.Gender || "neutral";
 
     let isUserDoctor = false;
-    if (doctorId && String(normalized.userId) === String(doctorId)) isUserDoctor = true;
-    if (pName && otherPersonName && String(pName).toLowerCase().includes(String(otherPersonName).toLowerCase())) isUserDoctor = true;
-    if (pName && otherPersonName && String(otherPersonName).toLowerCase().includes(String(pName).toLowerCase())) isUserDoctor = true;
-    if (normalized.role && String(normalized.role).toLowerCase() === 'doctor') isUserDoctor = true;
-    if (normalized.isHost) isUserDoctor = true;
+    
+    // Only patients need to identify if the joining user is the doctor
+    if (!isDoctor) {
+      if (doctorId && String(normalized.userId) === String(doctorId)) isUserDoctor = true;
+      if (pName && otherPersonName && String(pName).toLowerCase().includes(String(otherPersonName).toLowerCase())) isUserDoctor = true;
+      if (pName && otherPersonName && String(otherPersonName).toLowerCase().includes(String(pName).toLowerCase())) isUserDoctor = true;
+      if (normalized.role && String(normalized.role).toLowerCase() === 'doctor') isUserDoctor = true;
+      if (normalized.isHost) isUserDoctor = true;
+    }
 
     if (isUserDoctor) {
       pName = otherPersonName;
@@ -119,8 +123,9 @@ export default function Meeting() {
         pName = patientData.name || patientData.Name || pName;
         pGender = patientData.gender || patientData.Gender || pGender;
       }
+      if (!pName) pName = "Patient";
     } else {
-      pName = `Member ${idx}`;
+      pName = null;
       pGender = "neutral";
     }
 
@@ -139,7 +144,6 @@ export default function Meeting() {
 
     return () => clearInterval(timerId);
   }, []);
-
 
   const handleSaveNotes = async () => {
     const sid = session?.sessionId || session?.sessionsId || session?.SessionId || session?.SessionsId || session?.id;
@@ -245,10 +249,10 @@ export default function Meeting() {
         audioCtxRef.current.close().catch(() => { });
       }
 
-      if (peerConnectionRef.current) {
-        peerConnectionRef.current.close();
-        peerConnectionRef.current = null;
-      }
+      Object.values(peerConnectionsRef.current).forEach(pc => {
+        if (pc) pc.close();
+      });
+      peerConnectionsRef.current = {};
     };
   }, []);
 
@@ -380,15 +384,13 @@ export default function Meeting() {
     const hubCandidates = [
       "https://doctorprofile.runasp.net/callHub",
       "http://doctorprofile.runasp.net/callHub",
-      "https://doctorprofile.runasp.net/api/callHub",
-      "http://doctorprofile.runasp.net/api/callHub",
       "/callHub"
     ];
 
     let activeConnection = null;
 
     const setupPeerConnection = (hubConn, targetConnId) => {
-      if (peerConnectionRef.current) return peerConnectionRef.current;
+      if (peerConnectionsRef.current[targetConnId]) return peerConnectionsRef.current[targetConnId];
 
       const pc = new RTCPeerConnection({
         iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -418,11 +420,12 @@ export default function Meeting() {
 
       pc.ontrack = (event) => {
         if (remoteAudioRef.current && event.streams[0]) {
+          
           remoteAudioRef.current.srcObject = event.streams[0];
         }
       };
 
-      peerConnectionRef.current = pc;
+      peerConnectionsRef.current[targetConnId] = pc;
       return pc;
     };
 
@@ -438,10 +441,15 @@ export default function Meeting() {
         }
 
         setParticipants((prev) => {
-          const exists = prev.some((p) => (joinedUserId && String(p.userId) === String(joinedUserId)) || (joinedConnId && p.connectionId === joinedConnId));
-          if (exists) return prev;
-
+          const existingIdx = prev.findIndex((p) => (joinedUserId && String(p.userId) === String(joinedUserId)) || (joinedConnId && p.connectionId === joinedConnId));
           const identifiedParticipant = identifyParticipant(normalized, prev.length + 1);
+
+          if (existingIdx !== -1) {
+            const updated = [...prev];
+            updated[existingIdx] = { ...updated[existingIdx], ...identifiedParticipant };
+            return updated;
+          }
+
           return [...prev, identifiedParticipant];
         });
 
@@ -450,44 +458,114 @@ export default function Meeting() {
             const pc = setupPeerConnection(hubConnection, joinedConnId);
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
-            await hubConnection.invoke("SendOffer", roomId, joinedConnId, JSON.stringify(offer));
+            
+            const offerWithMeta = {
+              type: offer.type,
+              sdp: offer.sdp,
+              meta_userId: currentUser?.id,
+              meta_name: myName,
+              meta_isDoctor: isDoctor
+            };
+
+            await hubConnection.invoke("SendOffer", roomId, joinedConnId, JSON.stringify(offerWithMeta));
           } catch (err) {
-            console.error("Error sending offer to new participant", err);
+            console.error("Error creating offer", err);
           }
         }
       });
 
-      hubConnection.on("ReceiveOffer", async (fromConnectionId, offerStr) => {
+      hubConnection.on("ReceiveOffer", async (...args) => {
         try {
+          let fromConnectionId, offerStr;
+          if (args.length === 1 && typeof args[0] === 'object') {
+            fromConnectionId = args[0].fromConnectionId || args[0].FromConnectionId;
+            offerStr = args[0].sdp || args[0].Sdp;
+          } else if (args.length >= 2) {
+            fromConnectionId = args[0];
+            offerStr = args[1];
+            if (typeof args[2] === 'string' && args[2].includes('type')) {
+              offerStr = args[2];
+            }
+          }
+          if (!offerStr || !fromConnectionId) return;
+          
+          const offerWithMeta = JSON.parse(offerStr);
+          
           const pc = setupPeerConnection(hubConnection, fromConnectionId);
-          const offer = JSON.parse(offerStr);
-          await pc.setRemoteDescription(new RTCSessionDescription(offer));
+          await pc.setRemoteDescription(new RTCSessionDescription(offerWithMeta));
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
           await hubConnection.invoke("SendAnswer", fromConnectionId, JSON.stringify(answer));
+
+          setParticipants((prev) => {
+            const existingIdx = prev.findIndex((p) => p.connectionId === fromConnectionId);
+            
+            const syntheticPayload = {
+              connectionId: fromConnectionId,
+              userId: offerWithMeta.meta_userId || null,
+              name: offerWithMeta.meta_name || null
+            };
+            
+            const normalized = normalizeParticipant(syntheticPayload);
+            const identified = identifyParticipant(normalized, prev.length + 1);
+            
+            if (offerWithMeta.meta_isDoctor) {
+               identified.isDoctor = true;
+               identified.name = otherPersonName || "Doctor"; 
+            }
+
+            if (existingIdx !== -1) {
+              const updated = [...prev];
+              updated[existingIdx] = { ...updated[existingIdx], ...identified };
+              return updated;
+            }
+            return [...prev, identified];
+          });
         } catch (err) {
           console.error("Error receiving offer and sending answer", err);
         }
       });
 
-      hubConnection.on("ReceiveAnswer", async (fromConnectionId, answerStr) => {
+      hubConnection.on("ReceiveAnswer", async (...args) => {
         try {
-          const pc = peerConnectionRef.current;
+          let fromConnectionId, answerStr;
+          if (args.length === 1 && typeof args[0] === 'object') {
+            fromConnectionId = args[0].fromConnectionId || args[0].FromConnectionId;
+            answerStr = args[0].sdp || args[0].Sdp;
+          } else if (args.length >= 2) {
+            fromConnectionId = args[0];
+            answerStr = args[1];
+            if (typeof args[2] === 'string' && args[2].includes('type')) answerStr = args[2];
+          }
+          if (!answerStr || !fromConnectionId) return;
+          
+          const pc = peerConnectionsRef.current[fromConnectionId];
           if (pc) {
-            const answer = JSON.parse(answerStr);
-            await pc.setRemoteDescription(new RTCSessionDescription(answer));
+             const answer = JSON.parse(answerStr);
+             await pc.setRemoteDescription(new RTCSessionDescription(answer));
           }
         } catch (err) {
           console.error("Error handling answer", err);
         }
       });
 
-      hubConnection.on("ReceiveIceCandidate", async (fromConnectionId, candidateStr) => {
+      hubConnection.on("ReceiveIceCandidate", async (...args) => {
         try {
-          const pc = peerConnectionRef.current;
+          let fromConnectionId, candidateStr;
+          if (args.length === 1 && typeof args[0] === 'object') {
+            fromConnectionId = args[0].fromConnectionId || args[0].FromConnectionId;
+            candidateStr = args[0].candidate || args[0].Candidate;
+          } else if (args.length >= 2) {
+            fromConnectionId = args[0];
+            candidateStr = args[1];
+            if (typeof args[2] === 'string' && args[2].includes('candidate')) candidateStr = args[2];
+          }
+          if (!candidateStr || !fromConnectionId) return;
+          
+          const pc = peerConnectionsRef.current[fromConnectionId];
           if (pc) {
-            const rtcCandidate = new RTCIceCandidate(JSON.parse(candidateStr));
-            await pc.addIceCandidate(rtcCandidate);
+             const rtcCandidate = new RTCIceCandidate(JSON.parse(candidateStr));
+             await pc.addIceCandidate(rtcCandidate);
           }
         } catch (err) {
           console.error("Error adding ICE candidate", err);
@@ -496,13 +574,22 @@ export default function Meeting() {
 
       hubConnection.on("ParticipantLeft", (payload) => {
         const normalized = normalizeParticipant(payload);
-        const leftUserId = normalized.userId;
+        const leftId = normalized.userId || normalized.connectionId || (typeof payload === 'string' ? payload : null);
 
-        setParticipants((prev) =>
-          prev.filter((p) => String(p.userId) !== String(leftUserId))
-        );
+        // Find the leaving participant to get their connectionId for WebRTC cleanup
+        setParticipants((prev) => {
+          const leavingParticipant = prev.find((p) => String(p.userId) === String(leftId) || String(p.connectionId) === String(leftId));
+          if (leavingParticipant && leavingParticipant.connectionId) {
+            const pc = peerConnectionsRef.current[leavingParticipant.connectionId];
+            if (pc) {
+              pc.close();
+              delete peerConnectionsRef.current[leavingParticipant.connectionId];
+            }
+          }
+          return prev.filter((p) => String(p.userId) !== String(leftId) && String(p.connectionId) !== String(leftId));
+        });
 
-        const isLeftUserDoctor = doctorId && String(leftUserId) === String(doctorId);
+        const isLeftUserDoctor = doctorId && String(leftId) === String(doctorId);
 
         if (!isGroup || isLeftUserDoctor) {
           setForceEndCall(true);
@@ -514,7 +601,16 @@ export default function Meeting() {
       });
 
       hubConnection.onreconnecting(() => setConnectionStatus("Reconnecting..."));
-      hubConnection.onreconnected(() => setConnectionStatus("Connected"));
+      
+      hubConnection.onreconnected(async () => {
+        setConnectionStatus("Connected");
+        try {
+          await hubConnection.invoke("JoinCallRoom", roomId);
+        } catch (err) {
+          console.error("Failed to rejoin room after reconnect", err);
+        }
+      });
+      
       hubConnection.onclose(() => setConnectionStatus("Disconnected"));
     };
 
@@ -536,7 +632,6 @@ export default function Meeting() {
           await hubConnection.start();
           const existing = await hubConnection.invoke("JoinCallRoom", roomId);
           if (Array.isArray(existing)) {
-            // The backend returned the existing participants
             setParticipants((prev) => {
               const myId = currentUser?.id;
               const others = existing.map((p, idx) => {
@@ -585,6 +680,11 @@ export default function Meeting() {
         }
       };
       cleanup();
+
+      Object.values(peerConnectionsRef.current).forEach(pc => {
+        if (pc) pc.close();
+      });
+      peerConnectionsRef.current = {};
     };
   }, [roomId, micReady]);
 
