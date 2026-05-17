@@ -59,6 +59,7 @@ export default function CurrentChats() {
     return () => { if (newConnection) newConnection.stop(); };
   }, []);
 
+  //مسؤاله عن الrealtime اي رساله هتيجي هتظهر في الشات علطول
   useEffect(() => {
     if (connection && currentChatId) {
       connection.start()
@@ -68,7 +69,7 @@ export default function CurrentChats() {
           connection.on("ReceiveMessage", (msg) => {
             setMessages((prev) => {
               const mId = msg.messageId || msg.id;
-              if (prev.some(m => (m.id || m.messageId) === mId)) return prev;
+              if (prev.some(m => (m.id || m.messageId) === mId)) return prev;//الفكره كلها اني بمنع التكرار بشوف المسج اللي جايه دي  لو لقيت في الprev رساله بنفس الid خلاص متخدهاش
               
               return [...prev, {
                 id: mId,
@@ -77,12 +78,15 @@ export default function CurrentChats() {
                 sendAt: msg.sendAt || new Date().toISOString(),
                 isSaved: msg.isSaved || false
               }];
-            });
+            });//اخد كوبي من الرسايل واضيف عليه الجديد
           });
         })
         .catch(err => console.error("Connection Error: ", err));
     }
   }, [connection, currentChatId]);
+
+
+// ده هيجيب الرسايل القديمه علي حسب انا دكتور ولا بييشنت وانا في انهي شات اصلا ومع مين وكمان بيانات المريض او الدكتور
 
   useEffect(() => {
     if (!currentChatId) return;
@@ -124,9 +128,6 @@ export default function CurrentChats() {
         setLoading(false);
       }
     }
-
-
-
     fetchData();
   }, [currentChatId, userRole, realDocId]);
 
