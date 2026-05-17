@@ -97,12 +97,12 @@ const handleFinalSubmit = async () => {
       <div className="detection-overlay">
         <div className="detection-container text-center">
           <h2 className="mb-4 fw-bold text-success">SafeSpace Analysis</h2>
-          <div className="p-4 rounded-4 shadow-sm bg-white border text-start">
+          <div className="p-4 rounded-4 shadow-sm bg-white border text-start fs-4">
             <h4 className="fw-bold">{result.condition || "Analysis Result"}</h4>
             <div className={`badge p-2 mb-3 ${result.severity === 'Severe' ? 'bg-danger' : 'bg-warning text-dark'}`}>
               {result.severity}
             </div>
-            <p className="fs-6 text-muted">{result.message}</p>
+            <p className="fs-5 text-muted">{result.message}</p>
           </div>
           <button className="btn-detection btn-green mt-4" onClick={() => window.location.reload()}>
             New Test
@@ -160,7 +160,7 @@ const handleFinalSubmit = async () => {
                     <input
                       type="radio"
                       className="d-none"
-                      name={`opt-${currentQuestion}`} // اسم فريد لكل مجموعة راديو
+                      name={`opt-${currentQuestion}`} 
                       checked={answers[currentQuestion] === option}
                       onChange={() => setAnswers({ ...answers, [currentQuestion]: option })}
                     />
