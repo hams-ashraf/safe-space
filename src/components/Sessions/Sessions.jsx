@@ -13,6 +13,7 @@ function RoomCards() {
   const navigate = useNavigate();
 
 const getSessionId = (session) => session.sessionId || session.sessionsId || session.id;
+
   const formatTime12h = (time24) => {
     if (!time24) return "";
     const [hour, minute] = time24.split(":");
@@ -124,7 +125,7 @@ const getSessionId = (session) => session.sessionId || session.sessionsId || ses
       )}
 
       <div className="cards-container">
-        {upcoming.length === 0 ? <p className="no-data">No upcoming sessions found</p> : 
+        {upcoming.length === 0 ? <p className="no-data">No upcoming sessions </p> : 
           upcoming.map((session, index) => {
             const patientsList = session.Patients || session.patients || [];
             const sessionType = session.SessionType || session.sessionType;
@@ -174,7 +175,7 @@ const getSessionId = (session) => session.sessionId || session.sessionsId || ses
         <>
           <h3 className="page-title mt-5">Past Sessions</h3>
           <div className="past-sessions-list">
-            {past.length === 0 ? <p className="no-data">No past sessions found</p> : 
+            {past.length === 0 ? <p className="no-data">No past sessions </p> : 
               past.map((session, index) => (
                 <div className="past-row-card" key={`past-${index}`}>
                   <div className="past-info-side">
