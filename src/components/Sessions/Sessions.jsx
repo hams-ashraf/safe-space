@@ -137,7 +137,7 @@ const getSessionId = (session) => session.sessionId || session.sessionsId || ses
               <div className="room-card" key={`${getSessionId(session)}-${index}`}>
                 <div className="session-header">
                   <div>
-                    <div className="session-type-name">{sessionType || "Group"}
+                    <div className="session-type-name">
                      {sessionType === "Group" && userRole === "Doctor" && (
                         <span className="patients-count-badge">({pCount} Patients)</span>
                       )}
