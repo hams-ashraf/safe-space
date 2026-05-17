@@ -185,7 +185,7 @@ const getSessionId = (session) => session.sessionId || session.sessionsId || ses
                       <span>{(session.Date || session.date)?.split("T")[0]}</span> | <span>{formatTime12h(session.Time || session.time)}</span>
                     </div>
                   </div>
-                  <div className="past-actions-side"><button className="book-again-btn">Book Again</button></div>
+                  <div className="past-actions-side"><button className="book-again-btn" onClick={() => navigate(`/doctor/${session.doctorId || session.doctorID}`)}>Book Again</button></div>
                 </div>
               ))
             }
