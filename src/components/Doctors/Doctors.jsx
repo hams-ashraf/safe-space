@@ -80,7 +80,7 @@ export default function Doctors() {
             <div className="col" key={index}>
               <div className="doctors-therapist-card">
                 <div className="doctors-img-wrapper">
-                  <img src={`http://doctorprofile.runasp.net${t.imageUrl}`} alt={t.fullName} />
+                  <img src={`https://doctorprofile.runasp.net${t.imageUrl}`} alt={t.fullName} />
                   <span className="doctors-rating-badge">⭐ {t.rating}</span>
                 </div>
                 <div className="card-body">

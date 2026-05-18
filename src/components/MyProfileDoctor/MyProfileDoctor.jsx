@@ -120,7 +120,7 @@ export default function MyProfileDoctor() {
 }
 
   const imageSrc = doctor.imageUrl
-    ? `http://doctorprofile.runasp.net${doctor.imageUrl}`
+    ? `https://doctorprofile.runasp.net${doctor.imageUrl}`
     : doctorImg;
 
   const certs = doctor.certifications?.length

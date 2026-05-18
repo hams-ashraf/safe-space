@@ -6,7 +6,7 @@ import "./EditProfileDoctor.css";
 const defaultAvatar =
   "data:image/svg+xml," +
   encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><rect fill="#e8eeeb" width="160" height="160"/><circle cx="80" cy="64" r="28" fill="#b8cfc6"/><ellipse cx="80" cy="128" rx="48" ry="36" fill="#b8cfc6"/></svg>`
+    `<svg xmlns="https://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><rect fill="#e8eeeb" width="160" height="160"/><circle cx="80" cy="64" r="28" fill="#b8cfc6"/><ellipse cx="80" cy="128" rx="48" ry="36" fill="#b8cfc6"/></svg>`
   );
 
 function getFirstNewPasswordRuleError(password) {
