@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Symptoms.css";
 import { generateQuestionApi, analyzeSymptomsApi } from "../../api/symptomsApi";
-
+// feeling
 const feelingsList = [
   { label: "Sad", emoji: "😢" },
   { label: "Anxious", emoji: "😰" },
