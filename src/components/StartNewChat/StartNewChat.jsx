@@ -92,7 +92,7 @@ export default function StartNewChat() {
                 >
                   <div className="sn-avatar-side">
                     {doc.imageUrl ? (
-                      <img src={`http://doctorprofile.runasp.net${doc.imageUrl}`} alt={doc.fullName} className="sn-doctor-img" />
+                      <img src={`https://doctorprofile.runasp.net${doc.imageUrl}`} alt={doc.fullName} className="sn-doctor-img" />
                     ) : (
                       <div className="sn-initials-circle">{doc.fullName?.charAt(0).toUpperCase()}</div>
                     )}

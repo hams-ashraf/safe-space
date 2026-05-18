@@ -36,7 +36,7 @@ export default function Aichat() {
   }, [messages, isTyping]);
 
   useEffect(() => {
-    const hubUrl = "http://doctorprofile.runasp.net/ChatbotHub";
+    const hubUrl = "https://doctorprofile.runasp.net/ChatbotHub";
     let activeConnection = null;
 
     const startConnection = async () => {

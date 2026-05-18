@@ -265,7 +265,7 @@ export default function Home() {
                   style={{ cursor: "pointer" }}
                 >
                   <img
-                    src={`http://doctorprofile.runasp.net${t.imageUrl}`}
+                    src={`https://doctorprofile.runasp.net${t.imageUrl}`}
                     className="card-img-top"
                     alt={t.fullName}
                   />
