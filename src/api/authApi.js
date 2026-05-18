@@ -1,7 +1,7 @@
 import axios from "axios";
 import { saveLoginIdentity } from "./roleApi";
 const API = axios.create({
-  baseURL: "http://doctorprofile.runasp.net/api",
+  baseURL: "https://doctorprofile.runasp.net/api",
   headers: { "Content-Type": "application/json" },
 });
 

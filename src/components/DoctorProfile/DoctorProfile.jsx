@@ -69,7 +69,7 @@ export default function DoctorProfile() {
       try {
         const token = localStorage.getItem("token");
         const res = await fetch(
-          `http://doctorprofile.runasp.net/api/Sessions/AvailableSlots?DoctorId=${id}&date=${selectedDate}&type=${sessionType}`,
+          `https://doctorprofile.runasp.net/api/Sessions/AvailableSlots?DoctorId=${id}&date=${selectedDate}&type=${sessionType}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const data = await res.json();
@@ -104,7 +104,7 @@ export default function DoctorProfile() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://doctorprofile.runasp.net/api/Sessions/Book", {
+      const res = await fetch("https://doctorprofile.runasp.net/api/Sessions/Book", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ availableSlotsId: selectedSlot.availableSlotsId }),
@@ -130,7 +130,7 @@ export default function DoctorProfile() {
             <div className="col-12 col-lg-4">
               <div className="position-relative doctor-photo-wrap">
                 <div className="overflow-hidden rounded-4">
-                  <img src={doctor ? `http://doctorprofile.runasp.net${doctor.imageUrl}` : doctorImg} className="w-100 doctor-photo" alt="Doctor" />
+                  <img src={doctor ? `https://doctorprofile.runasp.net${doctor.imageUrl}` : doctorImg} className="w-100 doctor-photo" alt="Doctor" />
                 </div>
                 <div className="doctor-rating-badge">
                   <i className="fa-solid fa-star text-warning me-1"></i>

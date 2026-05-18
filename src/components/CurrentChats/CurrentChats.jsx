@@ -47,7 +47,7 @@ export default function CurrentChats() {
   
   useEffect(() => {
     const newConnection = new signalR.HubConnectionBuilder()
-      .withUrl("http://doctorprofile.runasp.net/chatHub", {
+      .withUrl("https://doctorprofile.runasp.net/chatHub", {
         skipNegotiation: true,
         transport: signalR.HttpTransportType.WebSockets
       })
@@ -151,7 +151,7 @@ export default function CurrentChats() {
     
     try {
       await axios.post(
-        `http://doctorprofile.runasp.net/api/Chat/SaveMessage/${msgId}`,
+        `https://doctorprofile.runasp.net/api/Chat/SaveMessage/${msgId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -173,7 +173,7 @@ export default function CurrentChats() {
             <div className="d-flex align-items-center ms-2">
               {headerData.imageUrl ? (
                 <img 
-                  src={`http://doctorprofile.runasp.net${headerData.imageUrl}`} 
+                  src={`https://doctorprofile.runasp.net${headerData.imageUrl}`} 
                   className="rounded-circle border" 
                   style={{ width: '40px', height: '40px', objectFit: 'cover' }}
                   alt="profile" 

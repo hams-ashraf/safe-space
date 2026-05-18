@@ -13,7 +13,7 @@ export default function SessionDetails() {
   async function fetchSession() {
     try {
       const res = await fetch(
-        `http://doctorprofile.runasp.net/api/Sessions/${decodedId}`
+        `https://doctorprofile.runasp.net/api/Sessions/${decodedId}`
       );
 
       const data = await res.json();

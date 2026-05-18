@@ -21,18 +21,18 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://doctorprofile.runasp.net',
+        target: 'https://doctorprofile.runasp.net',
         changeOrigin: true,
         secure: false,
       },
       '/callHub': {
-        target: 'http://doctorprofile.runasp.net',
+        target: 'https://doctorprofile.runasp.net',
         changeOrigin: true,
         secure: false,
         ws: true,
       },
       '/hubs': {
-        target: 'http://doctorprofile.runasp.net',
+        target: 'https://doctorprofile.runasp.net',
         changeOrigin: true,
         secure: false,
         ws: true,
