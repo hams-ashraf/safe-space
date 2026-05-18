@@ -177,19 +177,6 @@ const getSessionStartTs = (session) => {
                 </p>
               </div>
 
-              <div className="d-flex justify-content-between">
-                <p className="text-gray">Active Streak</p>
-                <p className="fw-bolder text-green fs-5">
-                  {user.streak || 0} weeks
-                </p>
-              </div>
-
-              <div className="d-flex justify-content-between">
-                <p className="text-gray mb-0">Wellness Score</p>
-                <p className="fw-bolder text-green fs-5 mb-0">
-                  {user.wellnessScore || 0}
-                </p>
-              </div>
             </div>
           </div>
 
