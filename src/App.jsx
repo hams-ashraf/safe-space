@@ -14,7 +14,7 @@ import Signup from "./components/Signup/Signup";
 import Login from "./components/Login/Login";
 import ProtectedRoute from "./components/Protectedroute/Protectedroute";
 import EditProfile from "./components/editProfile/editProfile";
-import StartNewChat from "./components/Startnewchat/Startnewchat";
+import StartNewChat from "./components/StartNewChat/StartNewChat";
 import CurrentChats from "./components/CurrentChats/CurrentChats";
 import MyProfileDoctor from "./components/MyProfileDoctor/MyProfileDoctor";
 import EditProfileDoctor from "./components/EditProfileDoctor/EditProfileDoctor";
