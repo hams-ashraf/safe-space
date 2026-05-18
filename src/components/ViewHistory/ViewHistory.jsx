@@ -76,7 +76,7 @@ useEffect(() => {
       const token = localStorage.getItem("token");
 
       const res = await fetch(
-        "http://doctorprofile.runasp.net/api/DoctorSessions/MySessions",
+        "https://doctorprofile.runasp.net/api/DoctorSessions/MySessions",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -107,7 +107,7 @@ const fetchNotes = async (sessionId) => {
     const token = localStorage.getItem("token");
 
     const res = await fetch(
-      `http://doctorprofile.runasp.net/api/DoctorSessions/${sessionId}/Notes`,
+      `https://doctorprofile.runasp.net/api/DoctorSessions/${sessionId}/Notes`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

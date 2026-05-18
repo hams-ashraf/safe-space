@@ -42,7 +42,7 @@ export default function DoctorDetails() {
 }
 
 const imageUrl = doctor.profileImageUrl
-  ? `http://doctorprofile.runasp.net${doctor.profileImageUrl}`
+  ? `https://doctorprofile.runasp.net${doctor.profileImageUrl}`
   : defaultImage; 
 
   if (loading) {

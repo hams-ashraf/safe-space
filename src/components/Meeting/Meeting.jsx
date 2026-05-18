@@ -35,6 +35,7 @@ export default function Meeting() {
   const tremoloGainRef = useRef(null);
   const session = location.state?.session;
   const callData = location.state?.callData;
+  const isLeavingRef = useRef(false);
 
   const voiceOptions = [
     { label: "Normal", icon: "fa-solid fa-wave-square" },
@@ -383,7 +384,7 @@ export default function Meeting() {
 
     const hubCandidates = [
       "https://doctorprofile.runasp.net/callHub",
-      "http://doctorprofile.runasp.net/callHub",
+      "https://doctorprofile.runasp.net/callHub",
       "/callHub"
     ];
 
@@ -690,7 +691,9 @@ export default function Meeting() {
 
   useEffect(() => {
     if (forceEndCall) {
-      alert("The session has ended because the other participant left.");
+      if (!isDoctor && !isLeavingRef.current) {
+        alert("The session has ended because the other participant left.");
+      }
       handleLeaveSession();
     }
   }, [forceEndCall]);
@@ -717,9 +720,10 @@ export default function Meeting() {
   };
 
   async function handleLeaveSession() {
+    isLeavingRef.current = true;
     try {
       if (isDoctor) {
-        const callId = callData?.id || callData?.callSessionId || session?.sessionId || session?.sessionsId || session?.SessionsId;
+        const callId = callData?.callSessionId || callData?.CallSessionId || callData?.id || callData?.Id || session?.sessionId || session?.sessionsId || session?.SessionsId || session?.id || session?.Id;
         if (callId) {
           try {
             await endCall(callId);
