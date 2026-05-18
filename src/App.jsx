@@ -21,7 +21,7 @@ import EditProfileDoctor from "./components/EditProfileDoctor/EditProfileDoctor"
 import ViewHistory from "./components/ViewHistory/ViewHistory";
 import SessionDetails from "./components/SessionDetails/SessionDetails";
 
-import AdminLayout from "./components/Shared/AdminLayout";
+import AdminLayout from "./components/shared/AdminLayout";
 import AdminDashboard from "./components/AdminDashboard/AdminDashboard";
 import UsersPage from "./components/AdminDashboard/UsersPage";
 import UserDetails from "./components/AdminDashboard/UserDetails";
