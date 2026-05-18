@@ -163,7 +163,6 @@ const getSessionId = (session) => session.sessionId || session.sessionsId || ses
                   <button className="join-btn primary" onClick={() => handleJoinSession(session)} disabled={joiningSessionId === getSessionId(session)}>
                     {joiningSessionId === getSessionId(session) ? "Joining..." : "Join Session"}
                   </button>
-                  <button className="reschedule-btn">Reschedule</button>
                 </div>
               </div>
             );
